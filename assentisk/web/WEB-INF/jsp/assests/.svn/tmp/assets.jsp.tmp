@@ -1,0 +1,480 @@
+<%@ taglib uri="/WEB-INF/tld/c-1_0.tld" prefix="c"%>
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<link rel="shortcut icon" href="images/favicon.ico">
+
+		<link href="css/font-awesome.css" rel="stylesheet">
+		
+		<script type="text/javascript" charset="utf8" src="js/jquery.js"></script>
+		<script src="js/angular.min.js"></script>
+		<title>Assentisk</title>
+
+		<link href="css/custom.css" rel="stylesheet">
+		<link rel="stylesheet" href="css/jquery.mCustomScrollbar.css">
+
+		<script type="text/javascript">
+
+var rowID;
+ var sortingOrder = 'ID';
+function assetsController($scope,$http,$filter) {
+
+			$("div.leftpanelinner>ul>li#asset").addClass("nav-parent nav-active");
+			$("div.leftpanelinner>ul>li#asset>ul").css("display","block");
+			$("div.leftpanelinner>ul>li#asset>ul>li#assets").addClass("active");
+		
+    $scope.sortingOrder = sortingOrder;
+    $scope.reverse = false; 
+    $scope.filteredItems = [];
+    $scope.groupedItems = [];
+    $scope.itemsPerPage = 15;
+    $scope.pagedItems = [];
+    $scope.currentPage = 0;
+  	$http.get('assetsList.assets.htm').
+    success(function(data, status, headers, config) {
+	
+    $scope.items = data.assetsBeans;
+     $("#imageloader").css("display", "none");
+      $("#complete").css("display", "block");
+                         var searchMatch = function (haystack, needle) {
+        if (!needle) {
+            return true;
+        }
+        return haystack.toString().toLowerCase().indexOf(needle.toLowerCase()) !== -1;
+    };
+
+    // init the filtered items
+    $scope.search = function () {
+        $scope.filteredItems = $filter('filter')($scope.items, function (item) {
+            for(var attr in item) {
+                if (searchMatch(item[attr], $scope.query))
+                    return true;
+            }
+            return false;
+        });
+        // take care of the sorting order
+        if ($scope.sortingOrder !== '') {
+            $scope.filteredItems = $filter('orderBy')($scope.filteredItems, $scope.sortingOrder, $scope.reverse);
+        }
+        $scope.currentPage = 0;
+        // now group by pages
+        $scope.groupToPages();
+    };
+    
+    // calculate page in place
+    $scope.groupToPages = function () {
+        $scope.pagedItems = [];
+        
+        for (var i = 0; i < $scope.filteredItems.length; i++) {
+            if (i % $scope.itemsPerPage === 0) {
+                $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)] = [ $scope.filteredItems[i] ];
+            } else {
+                $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)].push($scope.filteredItems[i]);
+            }
+        }
+    };
+    
+    $scope.range = function (start, end) {
+        var ret = [];
+        if (!end) {
+            end = start;
+            start = 0;
+        }
+        for (var i = start; i < end; i++) {
+            ret.push(i);
+        }
+        return ret;
+    };
+    
+    $scope.prevPage = function () {
+        if ($scope.currentPage > 0) {
+            $scope.currentPage--;
+        }
+    };
+    
+    $scope.nextPage = function () {
+        if ($scope.currentPage < $scope.pagedItems.length - 1) {
+            $scope.currentPage++;
+        }
+    };
+    
+    $scope.setPage = function () {
+        $scope.currentPage = this.n;
+    };
+
+    // functions have been describe process the data for display
+    $scope.search();
+
+    // change sorting order
+    $scope.sort_by = function(newSortingOrder) {
+        if ($scope.sortingOrder == newSortingOrder)
+            $scope.reverse = !$scope.reverse;
+
+        $scope.sortingOrder = newSortingOrder;
+    };
+    }).
+    error(function(data, status, headers, config) {
+      // log error
+    });
+    
+    
+    $scope.removeRow = function(stateid) {
+    
+   
+                   
+       };
+ 
+}
+assetsController.$inject = ['$scope','$http','$filter'];  
+
+function confirmRow(id)
+{
+	rowID = id;
+	$('#divConfirmAlert').show();
+
+
+}
+function deleteRow(action)
+{	
+	
+	if(action == 'yes')
+	{
+		$('#divConfirmAlert').delay(1500).fadeOut('slow');		
+		$.get("deleteasset.assets.htm?id="+rowID,function(data,status){ location.reload(true);});
+	}
+	else
+	{
+		$('#divConfirmAlert').hide();
+	}
+}
+
+function openScheduler(){
+  		$('#dialog-1').modal('show');
+  	}
+  	
+  	
+								function checkValidation(){
+								
+									
+									var myexcel=document.getElementById("myexcel").value;
+									var extension = myexcel.split('.').pop().toUpperCase();
+									
+									if(myexcel==''){
+										$('#excelAlert').show();
+										$('#excelAlert').delay(1500).fadeOut('slow');	
+									
+									}else if(extension != 'XLS' && extension != 'XLSX' ){
+										$('#formatAlert').show();
+										$('#formatAlert').delay(1500).fadeOut('slow');	
+											
+									}
+									else{
+										document.getElementById("homeForm").submit();
+									}
+									
+								}
+
+</script>
+	</head>
+
+
+	<body class="<c:out value="${sessionScope.bodyClass}"></c:out>">
+
+		<section>
+
+		<%@include file="/WEB-INF/jsp/leftpanel.jsp"%>
+		<div class="mainpanel">
+			<%@include file="/WEB-INF/jsp/header.jsp"%>
+			
+			
+			<div class="modal fade" id="dialog-1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			        <h4 class="modal-title" id="exampleModalLabel">Upload Employee Sheet</h4>
+			      <form name="homeForm" id="homeForm" action='importAssetsExcel.org.htm' method="post" enctype="multipart/form-data">
+					  &nbsp;
+					  <table>
+					  <tr>
+					  <td>
+			          <input type="file" name="myexcel" id="myexcel" style="margin-top: 0px; top: 6px; width: 202px; margin-right: 34px;">
+					  </td>
+					  </tr>
+					  <tr><td>&nbsp;&nbsp;&nbsp;</td></tr>
+					  <tr>
+					  <td>
+					  <input type="button" class="btn btn-primary" value="UPLOAD" style="margin-right: 12px;" onclick="checkValidation();">
+					  </td>
+					  </tr>
+					  </table>
+			    	</form>
+			        
+			      </div>
+			      <div class="modal-body scheduler">
+			        
+			     <div class="bottomdiv">
+			     </div></div></div></div>
+			 </div>
+			<div class="pageheader">
+				<h2>
+					<c:out value="${sessionScope.Assets_Header}"/>
+				</h2>
+				<div class="breadcrumb-wrapper">
+					<span class="label"><c:out value="${sessionScope.DashBoard_YouAreHere}"/>:</span>
+					<ol class="breadcrumb">
+						<li>
+							<a href="dashboard.login.htm">Assentisk</a>
+						</li>
+						<li class="active">
+							<c:out value="${sessionScope.Assets_Header}"/>
+						</li>
+					</ol>
+				</div>
+			</div>
+
+			<div class="contentpanel">
+				<div ng-app="" ng-controller="assetsController">
+					<c:if test="${sessionScope.add_mod_14=='1'}">
+						<a class="btn btn-success" href="addasset.assets.htm" title="<c:out value="${sessionScope.tooltip_add}"/>"
+							style="margin-bottom: 10px;"><c:out value="${sessionScope.tooltip_add}"/>&nbsp;<i class="fa fa-plus"></i>
+						</a>
+					</c:if>
+					<div class="input-append">
+							<table><tbody>
+						<tr>
+				    		<td style="line-height:0px!important;"><span class="label" style="font-size: 14px;"><a href="downloadExcelForAssets.org.htm"  style="color: #4a535e;font-size: 14px;font-weight: normal;">Download Sample Copy</a></span></td>
+							<td><input type="button" class="btn btn-primary" value="BULK UPLOAD" style="margin-right: 12px;" onclick="openScheduler();"></td>
+							<td><input type="text" placeholder="<c:out value="${sessionScope.search}"/>" class="input-large search-query ng-pristine ng-valid" ng-change="search()" ng-model="query">
+            				<span class="add-on"><i class="icon-search"></i> </span></td>
+            			</tr>
+            		</tbody></table>
+					</div>
+					</br>
+					<div class="content demo-x">
+					<table class="table table-striped table-condensed table-hover"
+						id="categories">
+						<thead>
+							<tr>
+								<th class="aname">
+									
+									<a ng-click="sort_by('aname')"><i class="icon-sort"></i><c:out value="${sessionScope.assets_asset}"/>
+									</a>
+								</th>
+								
+								<th class="cname">
+									
+									<a ng-click="sort_by('cname')"><i class="icon-sort"></i><c:out value="${sessionScope.assets_category}"/>
+									</a>
+								</th>
+								
+								<th class="Name">
+									
+									<a ng-click="sort_by('Name')"><i class="icon-sort"></i><c:out value="${sessionScope.assets_location}"/>
+									</a>
+								</th>
+								
+								<th class="ApplicationName">
+								
+									<a ng-click="sort_by('ApplicationName')"><i class="icon-sort"></i>	<c:out value="${sessionScope.assets_application}"/>
+									</a>
+								</th>
+								
+								<th class="BusinessProcessName">
+									
+									<a ng-click="sort_by('BusinessProcessName')"><i class="icon-sort"></i><c:out value="${sessionScope.assets_buisness_process}"/>
+									</a>
+								</th>
+								
+							
+								
+								<th class="VendorName">
+								
+									<a ng-click="sort_by('VendorName')"><i class="icon-sort"></i><c:out value="${sessionScope.assets_vendor_name}"/>
+									</a>
+								</th>
+								
+								<th class="Initial Values">
+									
+									<a ng-click="sort_by('Initial Values')"><i class="icon-sort"></i><c:out value="${sessionScope.assets__initialvalues}"/>
+									</a>
+								</th>
+								
+								<th class="Type">
+									
+									<a ng-click="sort_by('Type')"><i class="icon-sort"></i><c:out value="${sessionScope.assets_type}"/>
+									</a>
+								</th>
+								
+								<th class="Quantity">
+									
+									<a ng-click="sort_by('Quantity')"><i class="icon-sort"></i><c:out value="${sessionScope.assets_quantity}"/>
+									</a>
+								</th>
+																
+								<th>
+									<c:out value="${sessionScope.assets_action}"/>
+								</th>
+
+							</tr>
+						</thead>
+
+						<tfoot>
+							<td colspan="11">
+								<div class="pagination pull-right">
+									<ul>
+										<li ng-class="{disabled: currentPage == 0}">
+											<a href ng-click="prevPage()">« <c:out value="${sessionScope.Footer_previous}"/></a>
+										</li>
+										<li ng-repeat="n in range(pagedItems.length)"
+											ng-class="{active: n == currentPage}" ng-click="setPage()">
+											<a href ng-bind="n + 1">1</a>
+										</li>
+										<li
+											ng-class="{disabled: currentPage == pagedItems.length - 1}">
+											<a href ng-click="nextPage()"><c:out value="${sessionScope.Footer_next}"/> »</a>
+										</li>
+									</ul>
+								</div>
+							</td>
+						</tfoot>
+						<tbody>
+							<tr
+								data-ng-repeat="item in pagedItems[currentPage] | orderBy:sortingOrder:reverse">
+
+								<td>
+									{{item.aname}}
+								</td>
+								<td>
+									{{item.cname}}
+								</td>
+								<td>
+									{{item.Name}}
+								</td>
+								<td>
+									{{item.ApplicationName}}
+								</td>
+								<td>
+									{{item.BusinessProcessName}}
+								</td>
+								
+								<td>
+									{{item.vendorId}}
+								</td>
+								
+								<td>
+									{{item.Initial_Values}}
+								</td>
+								<td>
+									{{item.type}}
+								</td>
+								<td>
+									{{item.quantity}}
+								</td>
+								<td class="center" style="width:170px;">
+									<c:if test="${sessionScope.edit_mod_14=='1'}">
+										<a class="btn btn-info"
+											href="editasset.assets.htm?assetid={{item.ID}}"
+											title="<c:out value="${sessionScope.tooltip_edit}"/>"><i class="fa fa-edit "></i>
+										</a>
+									</c:if>
+									<c:if test="${sessionScope.delete_mod_14=='1'}">
+										<button class="btn btn-danger"
+											onclick="confirmRow({{item.ID}})" title="<c:out value="${sessionScope.tooltip_delete}"/>">
+											<i class="fa fa-trash-o "></i>
+										</button>
+									</c:if>
+									<c:if test="${sessionScope.sch_mod_14=='1'}">            		 		
+            		 					<a class="btn btn-info"  href="schedule.assets.htm?id={{item.ID}}" title="<c:out value="${sessionScope.tooltip_schedule}"/>"><i class="fa fa-cogs"></i></a>	            		 
+            						</c:if>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+	</div>
+				</div>
+
+			</div>
+			<!-- panel-body -->
+		</div>
+		<!-- panel -->
+
+
+
+
+
+
+
+
+		</section>
+
+
+		<script src="js/jquery-1.11.1.min.js"></script>
+		<script src="js/jquery-migrate-1.2.1.min.js"></script>
+		<script src="js/jquery-ui-1.10.3.min.js"></script>
+		<script src="js/bootstrap.min.js"></script>
+		<script src="js/modernizr.min.js"></script>
+		<script src="js/jquery.custom.min.js"></script>
+		<script src="js/toggles.min.js"></script>
+		<script src="js/jquery.cookies.js"></script>
+		<script src="js/left-menu.js"></script>
+		<script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
+<script>
+		(function($){
+			$(window).load(function(){
+				
+				$.mCustomScrollbar.defaults.theme="light-2"; //set "light-2" as the default theme
+				
+				$(".demo-y").mCustomScrollbar();
+				
+				$(".demo-x").mCustomScrollbar({
+					axis:"x",
+					advanced:{autoExpandHorizontalScroll:true}
+				});
+				
+				$(".demo-yx").mCustomScrollbar({
+					axis:"yx"
+				});
+				
+				$(".scrollTo a").click(function(e){
+					e.preventDefault();
+					var $this=$(this),
+						rel=$this.attr("rel"),
+						el=rel==="content-y" ? ".demo-y" : rel==="content-x" ? ".demo-x" : ".demo-yx",
+						data=$this.data("scroll-to"),
+						href=$this.attr("href").split(/#(.+)/)[1],
+						to=data ? $(el).find(".mCSB_container").find(data) : el===".demo-yx" ? eval("("+href+")") : href,
+						output=$("#info > p code"),
+						outputTXTdata=el===".demo-yx" ? data : "'"+data+"'",
+						outputTXThref=el===".demo-yx" ? href : "'"+href+"'",
+						outputTXT=data ? "$('"+el+"').find('.mCSB_container').find("+outputTXTdata+")" : outputTXThref;
+					$(el).mCustomScrollbar("scrollTo",to);
+					output.text("$('"+el+"').mCustomScrollbar('scrollTo',"+outputTXT+");");
+				});
+				
+			});
+		})(jQuery);
+	</script>
+		
+
+		<div id="divConfirmAlert" class="error2">
+			<label>
+				<c:out value="${sessionScope.deleteRow}"/>
+			</label>
+			<span> <input type="button" value="Yes"
+					onclick="deleteRow('yes')" />
+			</span>
+			<span> <input type="button" value="No"
+					onclick="deleteRow('no')" />
+			</span>
+		</div>
+
+
+
+	</body>
+</html>

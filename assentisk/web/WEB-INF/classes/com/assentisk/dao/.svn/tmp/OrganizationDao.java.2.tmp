@@ -1,0 +1,188 @@
+package com.assentisk.dao;
+
+import java.util.List;
+
+import com.assentisk.bean.ApplicationsBean;
+import com.assentisk.bean.BusinessProcessesBean;
+import com.assentisk.bean.CityBean;
+import com.assentisk.bean.CompanyBean;
+import com.assentisk.bean.DepartmentBean;
+import com.assentisk.bean.EmployeeBean;
+import com.assentisk.bean.LanguageKeysBean;
+import com.assentisk.bean.LegalEntitiesBean;
+import com.assentisk.bean.LocationsBean;
+import com.assentisk.bean.StateBean;
+import com.assentisk.bean.UserRecordBean;
+import com.assentisk.bean.VendorBean;
+import com.assentisk.bean.employeesBean;
+
+public interface OrganizationDao {
+
+	public List<CompanyBean> getCompanyList();
+	
+	public void savecompany(String cname, String no, Integer isactive);
+
+	public void updatecompany(String cid,String cname, String no, Integer isactive);
+	
+	public List getcompany(String id);
+
+	public void deletecompany(String cid);
+	
+	public List<DepartmentBean> getDepartmentList();
+	
+	public List<LegalEntitiesBean> getLegalEntitiesList();
+	
+	public void savedepartment(Integer companyID, Integer branceID, String departmentName, String departmentDesc, String createdDate, Integer createdBy, String modifiedDate, Integer modifiedBy, Integer isActive);
+	
+	public void saveLegalEntity(String legalEntityName, String legalEntityDescription,Integer departmentID, Integer branchID,Integer companyPeriodID,String createdDate, Integer createdBy, String modifiedDate, Integer modifiedBy, Integer isActive, Integer employeeid);
+	
+	public void updatedDepartment(Integer departmentID,Integer companyID, Integer branchID, String departmentName, String departmentDesc, String modifiedDate, Integer modifiedBy, Integer isActive);
+	
+	public void updatedLegalEntity(Integer legalEntityID, String legalEntityName,String legalEntityDescription,Integer departmentID,Integer branchID, Integer companyPeriodID,String modifiedDate, Integer modifiedBy, Integer isActive, Integer employeeid);
+	
+	public List<DepartmentBean> getDepartmentById(Integer departmentID);
+
+	public List<LegalEntitiesBean> getLegalEntityById(Integer legalEntityID);
+	
+	public void deleteLegalEntity(Integer legalEntityID);
+	
+	public void deleteDepartment(Integer departmentID);
+		
+	public List getCmpList();
+	
+	public List getDepList();
+	
+	public List getBranchList();
+	
+	public List<LocationsBean> getLocationsList();
+	
+	public void saveLocation(String locationname, Integer countryid, Integer stateid, String cityid, String street, String address, String contactno, String zipcode, String phone1, String phone2, String email1, String email2, String fax1, String fax2, String url,String createdate, Integer createby, String modifieddate, Integer modifyby, Integer isactive);
+	
+	public void updateLocation(Integer locationid, String locationname, Integer countryid, Integer stateid, String cityid, String street, String address, String contactno, String zipcode, String phone1, String phone2, String email1, String email2, String fax1, String fax2, String url,String modifieddate, Integer modifyby, Integer isactive);
+	
+	public List<LocationsBean> getLocationById(Integer locationid);
+	
+	public List<StateBean> getStateByCountryID(Integer countryid);
+	
+	public List<CityBean> getCityByStateCountryID(Integer stateid, Integer countryid);
+	
+	public void deleteLocationById(Integer locationid);
+	
+	public List<ApplicationsBean> getApplicationsList();
+	
+	public List<BusinessProcessesBean> getBusinessProcessesList();
+		
+	public List getSelectBranchList(String id);
+	
+	public List getSelectDeptList(String branchid,String companyid);
+	
+	public void saveApplication(String applicationname, String locationid, String divisionid, Integer employeeid, String requestdate, String createdate, Integer createdby, String modifieddate, Integer modifyby, Integer isactive);
+	
+	public void updateApplication(Integer applicationid, String applicationname, String locationid, String divisionid, Integer employeeid,String modifieddate, Integer modifyby, Integer isactive);
+	
+	public List<ApplicationsBean> getApplicationDetailById(Integer applicationid);
+	
+	public void deleteApplicationById(Integer applicationid);
+	
+	public void saveBusinessProcess(String businessprocessname, String locationid, String divisionid, Integer employeeid, String requestdate, String createdate, Integer createdby, String modifieddate, Integer modifyby, Integer isactive);
+	
+	public List<BusinessProcessesBean> getBusinessProcessDetailById(Integer businessprocessid);
+	
+	public void updateBusinessProcess(Integer businessprocessid, String businessprocessname, String locationid, String divisionid, Integer employeeid,String modifieddate, Integer modifyby, Integer isactive);
+	
+	public void deleteBusinessProcessById(Integer businessprocessid);
+	
+	public int getEmployeeIdByName(String empname);
+	
+	public String getLocationIdByName(String locationName);
+	
+	public String getDivisionIdByName(String divisionName);	
+
+	public void userAuditTrail(String tableName, String rowID, String action, String changeDate, Integer changeBy, String ipAddress);
+	
+	public List<EmployeeBean> getEmployeeList();
+
+	public void saveEmployee(Integer userRecordID,Integer departmentID, String locationID, String empName, String email, Integer ReportingTo, String roleID,String requestDate, String createdDate,Integer createdBy, String modifiedDate,Integer modifiedBy, Integer isActive,String address,String city,Integer state,Integer country,String zip,String photo, String phone1, String phone2, String divisions, String email2);
+	
+	public void saveUserRecord(String employeeName,String username, String password, String emailID,String createdDate, String modificationDate);
+
+	public List<CompanyBean> getCompanyDetails();
+	
+	public List getCurrency();
+	
+	public void updatedCompany(int parseInt, String companyname,
+			String headOffice, String country, String city, String state,
+			String zip, String primaryContactName, String primaryContactNumber,
+			String primaryEmail, String legalContactName,
+			String legalContactNumber, String legalContactEmail,
+			String accountsContactName, String accountsContactNumber,
+			String accountsContactEmail, int status, String currentTime,
+			String currency);
+	
+	public int getUserRecordID();
+	
+	public List<EmployeeBean> getEmployeeRecordById(Integer employeeid);
+	
+    public void updateEmployee(Integer employeeid, Integer userRecordID,Integer departmentID, String locationID, String empName, String email, Integer ReportingTo, String roleID,String modifiedDate,Integer modifiedBy, Integer isActive,String address,String city,Integer state,Integer country,String zip,String photo, String phone1, String phone2, String divisions, String email2);
+	
+	public void udpateUserRecord(Integer employeeid,String employeeName,String username, String password, String emailID,String modificationDate);
+	
+	public String getLocationNameById(Integer locationid);
+	
+	public String getDivisionNameById(Integer divisionid);
+
+	public List getLicense();
+	
+	public List<LocationsBean> getLocationById(String ID);
+	
+	public List<LegalEntitiesBean> getDivisionById(String ID);
+	
+	public List<EmployeeBean> getEmployeeListByLicense();
+
+	public void updatePassword(String id, String newPassword);
+
+	public List getPassword(String id);
+
+	public void deleteEmployee(int parseInt);
+	
+	public List<VendorBean> getVendorList();
+
+	public List getCountryList();
+
+	public void insertVendorRecord(String designation, String vendorname,
+			String oname, String country, String stateid, String cityid,
+			String phone1, String phone2, String email1, String email2,
+			int status,String address);
+
+	public List<VendorBean> getVendorById(String vendorID);
+	
+	public void updateVendorRecord(String designation, String vendorname,
+			String oname, String country, String stateid, String cityid,
+			String phone1, String phone2, String email1, String email2,String vendorid,
+			int status,String address);
+	
+	public void deleteVendor(String deleteVendor);
+
+
+	public void saveEnglishConfg(String key, String value);
+
+	public List getLaungageKey(String language);
+
+
+	public List<LanguageKeysBean> getLanguageKeysList(String language);
+
+	public void updateLanguageKey(String languagekey, String launguageValue, String language);
+	
+	public List<UserRecordBean> checkUserName(String username);
+	
+	public List<LegalEntitiesBean> getDivisionsGroupList();
+	
+	public List<LocationsBean> getLocationsGroupList();
+	
+	public String getDivisionGroupById(String ID);
+
+	public String getLocationGroupById(String string);
+	}
+
+	
+

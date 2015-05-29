@@ -1,0 +1,95 @@
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/assentisk/!svn/ver/348/assentisk/web/WEB-INF/jsp/organization
+END
+applications.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/assentisk/!svn/ver/488/assentisk/web/WEB-INF/jsp/organization/applications.jsp
+END
+locations.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/assentisk/!svn/ver/488/assentisk/web/WEB-INF/jsp/organization/locations.jsp
+END
+vendor.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/assentisk/!svn/ver/488/assentisk/web/WEB-INF/jsp/organization/vendor.jsp
+END
+editbusinessprocess.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/assentisk/!svn/ver/488/assentisk/web/WEB-INF/jsp/organization/editbusinessprocess.jsp
+END
+employees.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/assentisk/!svn/ver/488/assentisk/web/WEB-INF/jsp/organization/employees.jsp
+END
+vendorEdit.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/assentisk/!svn/ver/407/assentisk/web/WEB-INF/jsp/organization/vendorEdit.jsp
+END
+addbusinessprocess.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/assentisk/!svn/ver/488/assentisk/web/WEB-INF/jsp/organization/addbusinessprocess.jsp
+END
+addvendor.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/assentisk/!svn/ver/488/assentisk/web/WEB-INF/jsp/organization/addvendor.jsp
+END
+editEmployees.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/assentisk/!svn/ver/488/assentisk/web/WEB-INF/jsp/organization/editEmployees.jsp
+END
+editapplication.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/assentisk/!svn/ver/488/assentisk/web/WEB-INF/jsp/organization/editapplication.jsp
+END
+addEmployees.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/assentisk/!svn/ver/488/assentisk/web/WEB-INF/jsp/organization/addEmployees.jsp
+END
+addapplication.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/assentisk/!svn/ver/488/assentisk/web/WEB-INF/jsp/organization/addapplication.jsp
+END
+editlocation.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/assentisk/!svn/ver/348/assentisk/web/WEB-INF/jsp/organization/editlocation.jsp
+END
+addlocation.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/assentisk/!svn/ver/348/assentisk/web/WEB-INF/jsp/organization/addlocation.jsp
+END
+businessprocesses.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/assentisk/!svn/ver/488/assentisk/web/WEB-INF/jsp/organization/businessprocesses.jsp
+END

@@ -1,0 +1,221 @@
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/assentisk/!svn/ver/357/assentisk/web/WEB-INF/jsp
+END
+table.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/assentisk/!svn/ver/1/assentisk/web/WEB-INF/jsp/table.jsp
+END
+editlegalentity.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/assentisk/!svn/ver/350/assentisk/web/WEB-INF/jsp/editlegalentity.jsp
+END
+dashboard.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/assentisk/!svn/ver/474/assentisk/web/WEB-INF/jsp/dashboard.jsp
+END
+permission.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/assentisk/!svn/ver/353/assentisk/web/WEB-INF/jsp/permission.jsp
+END
+header.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/assentisk/!svn/ver/474/assentisk/web/WEB-INF/jsp/header.jsp
+END
+legalentities.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/assentisk/!svn/ver/473/assentisk/web/WEB-INF/jsp/legalentities.jsp
+END
+addstate.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/assentisk/!svn/ver/350/assentisk/web/WEB-INF/jsp/addstate.jsp
+END
+branchList.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/assentisk/!svn/ver/112/assentisk/web/WEB-INF/jsp/branchList.jsp
+END
+editgroup.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/assentisk/!svn/ver/350/assentisk/web/WEB-INF/jsp/editgroup.jsp
+END
+audittrail.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/assentisk/!svn/ver/383/assentisk/web/WEB-INF/jsp/audittrail.jsp
+END
+form.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/assentisk/!svn/ver/1/assentisk/web/WEB-INF/jsp/form.jsp
+END
+country.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/assentisk/!svn/ver/474/assentisk/web/WEB-INF/jsp/country.jsp
+END
+editdepartment.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/assentisk/!svn/ver/350/assentisk/web/WEB-INF/jsp/editdepartment.jsp
+END
+adddepartment.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/assentisk/!svn/ver/350/assentisk/web/WEB-INF/jsp/adddepartment.jsp
+END
+editcompany.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/assentisk/!svn/ver/1/assentisk/web/WEB-INF/jsp/editcompany.jsp
+END
+addcountry.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/assentisk/!svn/ver/350/assentisk/web/WEB-INF/jsp/addcountry.jsp
+END
+editcity.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/assentisk/!svn/ver/83/assentisk/web/WEB-INF/jsp/editcity.jsp
+END
+addcity.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/assentisk/!svn/ver/83/assentisk/web/WEB-INF/jsp/addcity.jsp
+END
+editstate.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/assentisk/!svn/ver/350/assentisk/web/WEB-INF/jsp/editstate.jsp
+END
+resourceFile.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/assentisk/!svn/ver/78/assentisk/web/WEB-INF/jsp/resourceFile.jsp
+END
+editLanguage.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/assentisk/!svn/ver/78/assentisk/web/WEB-INF/jsp/editLanguage.jsp
+END
+addlegalentity.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/assentisk/!svn/ver/424/assentisk/web/WEB-INF/jsp/addlegalentity.jsp
+END
+group.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/assentisk/!svn/ver/474/assentisk/web/WEB-INF/jsp/group.jsp
+END
+departmentList.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/assentisk/!svn/ver/64/assentisk/web/WEB-INF/jsp/departmentList.jsp
+END
+companyView.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/assentisk/!svn/ver/476/assentisk/web/WEB-INF/jsp/companyView.jsp
+END
+department.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/assentisk/!svn/ver/473/assentisk/web/WEB-INF/jsp/department.jsp
+END
+addgroup.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/assentisk/!svn/ver/350/assentisk/web/WEB-INF/jsp/addgroup.jsp
+END
+company.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/assentisk/!svn/ver/474/assentisk/web/WEB-INF/jsp/company.jsp
+END
+passwordChange.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/assentisk/!svn/ver/161/assentisk/web/WEB-INF/jsp/passwordChange.jsp
+END
+city.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/assentisk/!svn/ver/474/assentisk/web/WEB-INF/jsp/city.jsp
+END
+languageAssentisk.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/assentisk/!svn/ver/161/assentisk/web/WEB-INF/jsp/languageAssentisk.jsp
+END
+login.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/assentisk/!svn/ver/473/assentisk/web/WEB-INF/jsp/login.jsp
+END
+editcountry.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/assentisk/!svn/ver/474/assentisk/web/WEB-INF/jsp/editcountry.jsp
+END
+leftpanel.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/assentisk/!svn/ver/474/assentisk/web/WEB-INF/jsp/leftpanel.jsp
+END
+addcompany.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/assentisk/!svn/ver/1/assentisk/web/WEB-INF/jsp/addcompany.jsp
+END
+state.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/assentisk/!svn/ver/474/assentisk/web/WEB-INF/jsp/state.jsp
+END

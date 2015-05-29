@@ -1,0 +1,380 @@
+<%@ taglib uri="/WEB-INF/tld/c-1_0.tld" prefix="c" %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+		<meta charset="utf-8">
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<link rel="shortcut icon" href="images/favicon.png" type="image/png">
+
+		<title>Assentisk</title>
+
+			<link href="css/custom.css" rel="stylesheet">
+		<script src="js/angular.min.js"></script>
+		
+		<link rel="stylesheet" href="css/jquery-ui.css">
+ 		<script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
+ 		<script src="js/jquery-ui.js"></script>
+ 		 <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css"/>
+ 		
+ 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+<script>							 
+									var assetapp = angular.module('assetapp', []);
+								
+									assetapp
+											.config( [
+													'$httpProvider',
+													function($httpProvider) {
+														$httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
+													} ]);
+								
+									function addAssetsController($scope, $http) {
+								
+										$("div.leftpanelinner>ul>li#asset").addClass("nav-parent nav-active");
+										$("div.leftpanelinner>ul>li#asset>ul").css("display","block");
+										$("div.leftpanelinner>ul>li#asset>ul>li#assets").addClass("active");
+								
+										$("#imageloader").css("display", "none");
+										$("#complete").css("display", "block");
+								
+										$scope.reset = function() {
+										};
+								
+										$scope.saveData = function() {
+											
+												var assetname = $scope.assetname;
+												var category = $scope.category;
+												var location = $scope.location;
+												var application = $scope.application;
+												var businessprocess = $scope.businessprocess;
+												var employee = $scope.employee;	
+												var re = /[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi;
+												var isSplChar = re.test(assetname); 
+												
+													
+												if(employee == '' || employee == 'undefined')
+												{													
+													employee = '0';
+												}
+												var vendors= $scope.vendorname;
+												
+												
+												if (assetname == '' || assetname == undefined) 
+												{
+													$('#assetAlert').show();
+													$('#assetAlert').delay(1500).fadeOut('slow');
+								
+												} 
+												
+												else if (category == '' || category == undefined) 
+												{
+													$('#categoryAlert').show();
+													$('#categoryAlert').delay(1500).fadeOut('slow');
+								
+												} 
+												else if (location == '' || location == undefined) 
+												{
+													$('#locationAlert').show();
+													$('#locationAlert').delay(1500).fadeOut('slow');
+								
+												} 
+												else if (application == '' || application == undefined) 
+												{
+													$('#applicationAlert').show();
+													$('#applicationAlert').delay(1500).fadeOut('slow');
+								
+												}
+												else if (businessprocess == '' || businessprocess == undefined) 
+												{
+													$('#businessProcessAlert').show();
+													$('#businessProcessAlert').delay(1500).fadeOut('slow');
+								
+												} 
+											
+												else if(assetname!='' && isSplChar)
+												{
+													
+														$('#characterAlert').show();
+														$('#characterAlert').delay(1500).fadeOut('slow');
+												
+													
+												}
+												
+												else
+												{
+												
+																								var responsePromise = $http
+														.post("saveasset.assets.htm?assetname=" + assetname
+																+ "&category="
+																+ $scope.category+"&location="+$scope.location+
+																"&application="+$scope.application+"&businessprocess="
+																+$scope.businessprocess+"&employee="+employee+"&vendors="+vendors+"&type="+$scope.type+"&initvalue="+$scope.initvalue+"&quantity="+$scope.quantity);
+												responsePromise
+														.success(function(data, status, headers, config) {
+															window.location.href = "assets.assets.htm";
+															$('#submitSucess').show();
+															$('#submitSucess').delay(1500).fadeOut('slow');
+														});
+														
+												}
+										};
+								
+									}
+</script>
+<script type="text/javascript">
+
+
+    $(function() {      
+        $("#vendorname").autocomplete({
+            source: function (request, response) {
+                $.getJSON("vendorList.ajaxresponse.htm", {
+                    term: request.term
+                }, response);
+            }
+        });
+    });
+
+</script>
+ 
+ <script type="text/javascript">
+
+function deleteVendor() {
+ 	$("#addVendors").find('option:selected').remove();
+   
+}
+
+
+</script>
+ 
+  
+ </head>
+
+<body class="<c:out value="${sessionScope.bodyClass}"></c:out>">
+
+
+<section>
+
+<%@include file="/WEB-INF/jsp/leftpanel.jsp"%>
+		<div class="mainpanel">
+			<%@include file="/WEB-INF/jsp/header.jsp"%>
+
+    <div class="pageheader">
+      <h2><c:out value="${sessionScope.Asset_addAsset}"/></h2>
+      <div class="breadcrumb-wrapper">
+        <span class="label"><c:out value="${sessionScope.DashBoard_YouAreHere}"/>:</span>
+        <ol class="breadcrumb">
+          <li><a href="dashboard.login.htm">Assentisk</a></li>
+          <li class="active"><c:out value="${sessionScope.Asset_addAsset}"/></li>
+        </ol>
+      </div>
+    </div>
+    
+    <div class="contentpanel">
+     
+      <div class="row">
+        <div class="col-md-12">
+          <div class="panel panel-default">
+            
+            <div class="panel-body" ng-app="assetapp" ng-controller="addAssetsController">
+            <form ng-submit="saveData()">        
+             
+               <div class="row">               
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label class="control-label"><c:out value="${sessionScope.assets_name}"/><font color="red">*</font></label>
+                    <input type="text" name="assetname" class="form-control" ng-model="assetname" maxlength="250">
+                  </div>
+                </div><!-- col-sm-6 -->
+              </div><!-- row -->
+              
+               <div class="row">               
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label class="control-label"><c:out value="${sessionScope.assets_type}"/></label>
+                    <select class="form-control" ng-model="type" ng-init="type=''">
+                    <option value="">-- Select Type --</option>                    	
+                    		<option value="Returnable">Returnable</option>
+                    		<option value="Not Returnable">Not Returnable</option>	                    	
+                    </select>
+                  </div>
+                </div><!-- col-sm-6 -->
+              </div><!-- row -->
+              
+            		<!-- row -->
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="control-label">
+									<c:out value="${sessionScope.assets_vendor_name}"/>
+						</label>
+												
+ 						<input type="text" name="vendorname" class="form-control" ng-model="vendorname" id="vendorname" ng-init="vendorname=''">					
+												
+					</div>
+			   </div>
+										<!-- col-sm-6 -->
+		 </div>
+									<!-- row -->
+              
+               <div class="row">               
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label class="control-label"><c:out value="${sessionScope.assets_category}"/><font color="red">*</font></label>
+                    <select class="form-control" ng-model="category" >
+                    <option value="">-- Select Category --</option>
+                    	<c:forEach var="list" items="${categoryList}">
+                    		<option value="<c:out value="${list.ID}"/>"><c:out value="${list.cname}"/></option>	
+                    	</c:forEach>
+                    </select>
+                  </div>
+                </div><!-- col-sm-6 -->
+              </div><!-- row -->
+              
+             <div class="row">               
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label class="control-label"><c:out value="${sessionScope.assets_location}"/><font color="red">*</font></label>
+                    <select class="form-control" ng-model="location" >
+                    <option value="">-- Select Location --</option>
+                    	<c:forEach var="list" items="${locationList}">
+                    		<option value="<c:out value="${list.LocationID}"/>"><c:out value="${list.Name}"/></option>	
+                    	</c:forEach>
+                    </select>
+                  </div>
+                </div><!-- col-sm-6 -->
+              </div><!-- row -->
+              
+              <div class="row">               
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label class="control-label"><c:out value="${sessionScope.assets_application}"/><font color="red">*</font></label>
+                    <select class="form-control" ng-model="application" >
+                    <option value="">-- Select Application --</option>
+                    	<c:forEach var="list" items="${applicationList}">
+                    		<option value="<c:out value="${list.ApplicationID}"/>"><c:out value="${list.ApplicationName}"/></option>	
+                    	</c:forEach>
+                    </select>
+                  </div>
+                </div><!-- col-sm-6 -->
+              </div><!-- row -->
+              
+               <div class="row">               
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label class="control-label"><c:out value="${sessionScope.assets_buisness_process}"/><font color="red">*</font></label>
+                    <select class="form-control" ng-model="businessprocess" >
+                    <option value="">-- Select Business Process --</option>
+                    	<c:forEach var="list" items="${businessProcessList}">
+                    		<option value="<c:out value="${list.BusinessProcessID}"/>"><c:out value="${list.BusinessProcessName}"/></option>	
+                    	</c:forEach>
+                    </select>
+                  </div>
+                </div><!-- col-sm-6 -->
+              </div><!-- row -->
+              
+              <div class="row">               
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label class="control-label"><c:out value="${sessionScope.assets_employe}"/></label>
+                    <select class="form-control" ng-model="employee">
+                    <option value="">-- Select Employee--</option>
+                    	<c:forEach var="list" items="${employeeList}">
+                    		<option value="<c:out value="${list.EmployeeID}"/>"><c:out value="${list.EmpName}"/></option>	
+                    	</c:forEach>
+                    </select>
+                  </div>
+                </div><!-- col-sm-6 -->
+              </div><!-- row -->
+              
+              
+              <div class="row">               
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label class="control-label"><c:out value="${sessionScope.assets__initialvalues}"/></label>
+                    <input type="text" name="initvalue" class="form-control" ng-model="initvalue" id="initvalue" ng-init="initvalue=''">
+                  </div>
+                </div><!-- col-sm-6 -->
+              </div><!-- row -->
+              
+               <div class="row">               
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label class="control-label"><c:out value="${sessionScope.assets_quantity}"/></label>
+                    <input type="text" name="quantity" class="form-control" ng-model="quantity" id="quantity" ng-init="quantity=''"> 
+                  </div>
+                </div><!-- col-sm-6 -->
+              </div><!-- row -->
+              
+			</br>			
+            <div class="panel-footer">
+              <button class="btn btn-primary" type="submit"><c:out value="${sessionScope.submit}"/></button>
+              <a href="assets.assets.htm"><button class="btn btn-primary" type="button"><c:out value="${sessionScope.cancel}"/></button></a>
+			  <button type="reset" class="btn btn-default" ng-click="reset()"><c:out value="${sessionScope.reset}"/></button>
+			  
+            </div>            
+            </form>
+          </div>
+        </div>
+        
+      </div>
+
+      
+
+      
+
+    </div><!-- contentpanel -->
+
+  </div><!-- mainpanel -->
+
+  </div>
+
+</section>
+
+
+<script src="js/jquery-1.11.1.min.js"></script>
+<script src="js/jquery-migrate-1.2.1.min.js"></script>
+<script src="js/jquery-ui-1.10.3.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/modernizr.min.js"></script>
+<script src="js/jquery.custom.min.js"></script>
+<script src="js/toggles.min.js"></script>
+<script src="js/jquery.cookies.js"></script>
+<script src="js/left-menu.js"></script>
+
+			<div id="submitSucess" class="success">
+			         <span > <c:out value="${sessionScope.SubmitAlert}"/></span>
+			 </div>
+			 
+			  <div  id="assetAlert" class="error2">
+			         <span > <c:out value="${sessionScope.assetNameAlert}"/></span>
+			 </div>
+			 
+			 <div  id="categoryAlert" class="error2">
+			         <span > <c:out value="${sessionScope.assetCategoryNameAlert}"/></span>
+			 </div>
+			 
+			  <div  id="locationAlert" class="error2">
+			         <span > <c:out value="${sessionScope.assetLocationNameAlert}"/> </span>
+			 </div>
+
+  			<div  id="applicationAlert" class="error2">
+			         <span > <c:out value="${sessionScope.assetApplicationNameAlert}"/></span>
+			 </div>
+			 <div  id="businessProcessAlert" class="error2">
+			         <span > <c:out value="${sessionScope.assetBusinessProcessNameAlert}"/></span>
+			 </div>
+			 		
+			 <div id="alreadyAdd" class="error2">
+			         <span > <c:out value="${sessionScope.assetAlreadyAlert}"/></span>
+			 </div>
+			 <div id="characterAlert" class="error2">
+			         <span > Special Characters are not allowed</span>
+			 </div>
+			 
+			
+
+</body>
+</html>

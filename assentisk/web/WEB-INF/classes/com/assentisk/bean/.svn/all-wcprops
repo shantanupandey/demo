@@ -1,0 +1,173 @@
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/assentisk/!svn/ver/358/assentisk/src/com/assentisk/bean
+END
+VendorContactBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/assentisk/!svn/ver/331/assentisk/src/com/assentisk/bean/VendorContactBean.java
+END
+MonthSectionBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/assentisk/!svn/ver/191/assentisk/src/com/assentisk/bean/MonthSectionBean.java
+END
+UserRecordBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/assentisk/!svn/ver/1/assentisk/src/com/assentisk/bean/UserRecordBean.java
+END
+SchedulerBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/assentisk/!svn/ver/191/assentisk/src/com/assentisk/bean/SchedulerBean.java
+END
+EmployeeBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/assentisk/!svn/ver/15/assentisk/src/com/assentisk/bean/EmployeeBean.java
+END
+LanguageKeysBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/assentisk/!svn/ver/191/assentisk/src/com/assentisk/bean/LanguageKeysBean.java
+END
+StateBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/assentisk/!svn/ver/1/assentisk/src/com/assentisk/bean/StateBean.java
+END
+BusinessProcessesBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/assentisk/!svn/ver/15/assentisk/src/com/assentisk/bean/BusinessProcessesBean.java
+END
+YearSectionBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/assentisk/!svn/ver/192/assentisk/src/com/assentisk/bean/YearSectionBean.java
+END
+CategoriesBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/assentisk/!svn/ver/191/assentisk/src/com/assentisk/bean/CategoriesBean.java
+END
+ApplicationsBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/assentisk/!svn/ver/1/assentisk/src/com/assentisk/bean/ApplicationsBean.java
+END
+WeekdayBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/assentisk/!svn/ver/192/assentisk/src/com/assentisk/bean/WeekdayBean.java
+END
+LegalEntitiesBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/assentisk/!svn/ver/1/assentisk/src/com/assentisk/bean/LegalEntitiesBean.java
+END
+VendorCategoryBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/assentisk/!svn/ver/192/assentisk/src/com/assentisk/bean/VendorCategoryBean.java
+END
+MasterBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/assentisk/!svn/ver/1/assentisk/src/com/assentisk/bean/MasterBean.java
+END
+LocationsBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/assentisk/!svn/ver/1/assentisk/src/com/assentisk/bean/LocationsBean.java
+END
+GroupBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/assentisk/!svn/ver/1/assentisk/src/com/assentisk/bean/GroupBean.java
+END
+VendorBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/assentisk/!svn/ver/281/assentisk/src/com/assentisk/bean/VendorBean.java
+END
+TimeBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/assentisk/!svn/ver/81/assentisk/src/com/assentisk/bean/TimeBean.java
+END
+AmcAssetBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/assentisk/!svn/ver/82/assentisk/src/com/assentisk/bean/AmcAssetBean.java
+END
+employeesBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/assentisk/!svn/ver/14/assentisk/src/com/assentisk/bean/employeesBean.java
+END
+AssetsBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/assentisk/!svn/ver/191/assentisk/src/com/assentisk/bean/AssetsBean.java
+END
+taskBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/assentisk/!svn/ver/358/assentisk/src/com/assentisk/bean/taskBean.java
+END
+DepartmentBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/assentisk/!svn/ver/1/assentisk/src/com/assentisk/bean/DepartmentBean.java
+END
+CountryBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/assentisk/!svn/ver/1/assentisk/src/com/assentisk/bean/CountryBean.java
+END
+CompanyBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/assentisk/!svn/ver/13/assentisk/src/com/assentisk/bean/CompanyBean.java
+END
+CityBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/assentisk/!svn/ver/1/assentisk/src/com/assentisk/bean/CityBean.java
+END
+RiskBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/assentisk/!svn/ver/273/assentisk/src/com/assentisk/bean/RiskBean.java
+END

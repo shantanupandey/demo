@@ -1,0 +1,905 @@
+<%@ taglib uri="/WEB-INF/tld/c-1_0.tld" prefix="c"%>
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<link rel="shortcut icon" href="images/favicon.png" type="image/png">
+
+		<title>Assentisk</title>
+
+		<link href="css/custom.css" rel="stylesheet">
+		<script src="js/angular.min.js"></script>
+
+	    <link rel="stylesheet" href="css/jquery-ui.css">
+ 		<script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
+ 		<script src="js/jquery-ui.js"></script>
+ 		
+	    <script>
+							
+							var employeeapp = angular.module('employeeapp', []);
+						
+							employeeapp
+									.config( [
+											'$httpProvider',
+											function($httpProvider) {
+												$httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
+											} ]);
+						
+							function addEmployeeController($scope, $http) {
+						
+								$("div.leftpanelinner>ul>li#organization").addClass(
+										"nav-parent nav-active");
+								$("div.leftpanelinner>ul>li#organization>ul").css("display", "block");
+								$("div.leftpanelinner>ul>li#organization>ul>li#employee").addClass(
+										"active");
+						
+								$("#imageloader").css("display", "none");
+								$("#complete").css("display", "block");
+						
+								$scope.saveData = function() {
+						
+									var stateid = document.getElementById("stateid").value
+									var cityid = document.getElementById("cityid").value
+						
+									var location = document.getElementById("location").value;
+									var division = document.getElementById("test").value;
+						
+									var roleid = [];
+									$.each($("input[name='roleid']:checked"), function() {
+										roleid.push($(this).val());
+									});
+									var locations='';
+									var myOpts = document.getElementById('addLocation').options;
+											for(var i = 0; i < myOpts.length; i++)
+											{
+												if(i == myOpts.length-1)
+												{
+												
+													locations = locations  +  myOpts[i].value ;	
+												}
+												else
+												{
+													
+													locations = locations + myOpts[i].value + "','";	
+												}
+											}
+											
+											
+											var divisions='';
+											var myDivs = document.getElementById('addDivision').options;
+											for(var i = 0; i < myDivs.length; i++)
+											{
+												if(i == myDivs.length-1)
+												{
+													divisions = divisions  +  myDivs[i].value ;	
+												}
+												else
+												{
+													divisions = divisions + myDivs[i].value + "','";	
+												}
+											}
+			
+									
+									
+									
+									var ename=$scope.ename;
+									var company=$scope.companyid;
+									var dept=$scope.departmentid;
+									var country=$scope.countryid;
+									var phone= $scope.phone1;
+									var email=$scope.email1;
+									var uname=$scope.username;
+									var pass=$scope.password;
+									var reporting=$scope.reportingid;
+									var email2=$scope.email2;
+									var filter = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;						
+									if (ename == '' || ename == undefined) {
+														$('#empAlert').show();
+														$('#empAlert').delay(1500).fadeOut('slow');
+										
+													} else if (company == '' || company == undefined) {
+										
+														$('#cAlert').show();
+														$('#cAlert').delay(1500).fadeOut('slow');
+													}
+													else if(dept == ''  || dept == undefined ){
+														$('#depAlert').show();
+														$('#depAlert').delay(1500).fadeOut('slow');
+													
+													}
+													else if(locations == ''  || locations == undefined ){
+														$('#lAlert').show();
+														$('#lAlert').delay(1500).fadeOut('slow');
+													
+													}
+													else if(divisions == ''  || divisions == undefined ){
+														$('#divAlert').show();
+														$('#divAlert').delay(1500).fadeOut('slow');
+													
+													}
+													else if(country == ''  || country == undefined ){
+														$('#counAlert').show();
+														$('#counAlert').delay(1500).fadeOut('slow');
+													
+													}
+													else if(stateid == ''  || stateid == undefined ){
+														$('#stAlert').show();
+														$('#stAlert').delay(1500).fadeOut('slow');
+													
+													}
+													else if(cityid == ''  || cityid == undefined ){
+														$('#cityAlert').show();
+														$('#cityAlert').delay(1500).fadeOut('slow');
+													
+													}
+													else if(phone == ''  || phone == undefined ){
+														
+														$('#phoneAlert').show();
+														$('#phoneAlert').delay(1500).fadeOut('slow');
+													
+													}
+													
+													else if(email == ''  || email == undefined ){
+														$('#emailAlert').show();
+														$('#emailAlert').delay(1500).fadeOut('slow');
+													
+													}
+													else if(!filter.test(email)){	
+        												$('#validEmailAlert').show();
+														$('#validEmailAlert').delay(1500).fadeOut('slow');
+													}
+													else if(email2!='' && !filter.test(email2) ){	
+        												$('#validEmailAlert').show();
+														$('#validEmailAlert').delay(1500).fadeOut('slow');
+													}
+													else if(uname == ''  || uname == undefined ){
+														$('#unameAlert').show();
+														$('#unameAlert').delay(1500).fadeOut('slow');
+													
+													}
+													else if(pass == ''  || pass == undefined ){
+														$('#passAlert').show();
+														$('#passAlert').delay(1500).fadeOut('slow');
+													
+													}
+													else if(roleid == ''  || roleid == undefined ){
+														$('#grpAlert').show();
+														$('#grpAlert').delay(1500).fadeOut('slow');
+													
+													}
+													else if(reporting == ''  || reporting == undefined ){
+														$('#repAlert').show();
+														$('#repAlert').delay(1500).fadeOut('slow');
+													
+													}
+													else if (!validatePhone(phone)) {
+													        $('#divPhoneErrorAlert').show();
+													        $('#divPhoneErrorAlert').delay(1500).fadeOut('slow');
+												   } 
+										
+													else {
+						
+		
+									var responsePromise = $http.post("saveEmployee.org.htm?ename="
+											+ $scope.ename + "&address=" + $scope.address
+											+ "&countryid=" + $scope.countryid + "&stateid=" + stateid
+											+ "&cityid=" + cityid + "&zip=" + $scope.zip + "&phone1="
+											+ $scope.phone1 + "&phone2=" + $scope.phone2 + "&email1="
+											+ $scope.email1 + "&email2=" + $scope.email2
+											+ "&locations=" + locations + "&divisions=" + divisions
+											+ "&isactive=" + $scope.isactive + "&username="
+											+ $scope.username + "&password=" + $scope.password
+											+ "&group=" + roleid + "&reporting=" + $scope.reportingid
+											+ "&companyid=" + $scope.companyid + "&departmentid="
+											+ $scope.departmentid);
+									responsePromise.success(function(data, status, headers, config) {
+									
+									    $('#submitSucess').show();
+										$('#submitSucess').delay(1500).fadeOut('slow');
+										window.location.href = "employees.org.htm";
+									});
+									}
+								};
+						
+								$scope.callState = function(id) {
+									var responsePromise = $http
+											.get("statelist.ajaxresponse.htm?countryid=" + id);
+									responsePromise.success(function(data, status, headers, config) {
+										document.getElementById("statelist").innerHTML = data;
+						
+									});
+								};
+						
+							}
+						
+							function callCity(stateid) {
+								var countryid = document.getElementById("countryid").value;
+								$.get("cityList.ajaxresponse.htm?countryid=" + countryid + "&stateid="
+										+ stateid, function(data, status) {
+									document.getElementById("cityList").innerHTML = data;
+								});
+							}
+							
+							function validatePhone(phone) {
+                            var filter = /^((\+[1-9]{1,4}[ \-]*)|(\([0-9]{2,3}\)[ \-]*)|([0-9]{2,4})[ \-]*)*?[0-9]{3,4}?[ \-]*[0-9]{3,4}?$/;
+							if (filter.test(phone)) {
+							return true;
+							}
+							else {
+							return false;
+							}
+							}
+</script>
+
+<script type="text/javascript">
+    $(function() {      
+        $("#location").autocomplete({
+            source: function (request, response) {
+                $.getJSON("locationList.ajaxresponse.htm", {
+                   term: request.term
+                }, response);
+            }
+        });
+        
+    }); 
+        
+</script>
+
+<script type="text/javascript">
+
+    $(function() {      
+        $("#test").autocomplete({
+            source: function (request, response) {
+                $.getJSON("divisionList.ajaxresponse.htm", {
+                    term: request.term
+                }, response);
+            }
+        });
+    });
+        
+</script>
+
+<script type="text/javascript">
+var numadded = 0;
+	function addLoc(){
+	var location=document.getElementById("location").value;
+	var addLocation = document.getElementById("addLocation");
+	var locations='';
+			//var selectedValues = document.getElementById("addLocation").value;
+	var flag=false;		
+	if(location!='')
+	{
+			var myOpts = document.getElementById('addLocation').options;
+			for(var i = 0; i < myOpts.length; i++)
+			{
+				if( myOpts[i].value == location)
+				{
+					$('#alreadyAdd').show();
+					$('#alreadyAdd').delay(1500).fadeOut('slow');
+					document.getElementById("location").value='';		
+					flag=true;
+					break;		
+				}
+				else
+				{
+					flag=false;
+				}
+				
+			}	
+			if(flag==false)
+			{
+				    if (numadded > 0) {
+						addLocation.value = addLocation.value + "\n";
+					}
+			
+					var OptionLoc = new Option(location, location);
+					numadded++;
+					addLocation.appendChild(OptionLoc);
+					document.getElementById("location").value='';
+					
+			}
+					
+	}
+	else
+	{
+				$('#wrongAdd').show();
+				$('#wrongAdd').delay(1500).fadeOut('slow');		
+					
+	}
+
+	}
+	
+
+function deleteLoc() {
+ 	$("#addLocation").find('option:selected').remove();
+   
+}
+</script>
+<script type="text/javascript">
+
+var noadded = 0;
+	function addDivision(){
+	var division=document.getElementById("test").value;
+	var addDivision = document.getElementById("addDivision");
+	var flag=false;		
+	if(division!='')
+	{
+			var myDivs = document.getElementById('addDivision').options;
+			for(var i = 0; i < myDivs.length; i++)
+			{
+				if( myDivs[i].value == division)
+				{
+					$('#alreadyAdd').show();
+					$('#alreadyAdd').delay(1500).fadeOut('slow');
+					document.getElementById("test").value='';		
+					flag=true;
+					break;		
+				}
+				else
+				{
+					flag=false;
+				}
+				
+			}	
+			if(flag==false)
+			{
+				    if (noadded > 0) {
+						addDivision.value = addDivision.value + "\n";
+					}
+			
+					var OptionDiv = new Option(division, division);
+					noadded++;
+					addDivision.appendChild(OptionDiv);
+					document.getElementById("test").value='';
+					
+			}
+					
+	}
+	else
+	{
+				$('#wrongDivs').show();
+				$('#wrongDivs').delay(1500).fadeOut('slow');		
+					
+					
+	}
+
+	}
+	
+
+function deleteDivision() {
+ 	$("#addDivision").find('option:selected').remove();
+   
+}
+
+function checkUserName()
+{
+	var username = document.getElementById("username").value;	
+	if(username!='')
+	{
+	$.get("checkusername.org.htm?username=" + username, function(data, status) {
+	
+									if(data == 'exist')
+									{
+										document.getElementById("username").value = "";
+										$('#checkNameAlert').show();
+									    $('#checkNameAlert').delay(1500).fadeOut('slow');
+									}
+								});
+								}
+}	
+</script>
+	</head>
+
+
+<body class="<c:out value="${sessionScope.bodyClass}"></c:out>">
+
+
+		<section>
+
+		<%@include file="/WEB-INF/jsp/leftpanel.jsp"%>
+
+		<div class="mainpanel">
+			<%@include file="/WEB-INF/jsp/header.jsp"%>
+
+			<div class="pageheader">
+				<h2>
+					Add Employee
+				</h2>
+				<div class="breadcrumb-wrapper">
+					<span class="label">You are here:</span>
+					<ol class="breadcrumb">
+						<li>
+							<a href="dashboard.login.htm">Assentisk</a>
+						</li>
+						<li class="active">
+							Add Employee
+						</li>
+					</ol>
+				</div>
+			</div>
+
+			<div class="contentpanel">
+
+				<div class="row">
+					<div class="col-md-12">
+						<div class="panel panel-default">
+
+							<div class="panel-body" ng-app="employeeapp"
+								ng-controller="addEmployeeController">
+								<form ng-submit="saveData()">
+									
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													Employee Name<font color="red">*</font>
+												</label>
+												<input type="text" name="ename" class="form-control"
+													ng-model="ename" maxlength="250" >
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									
+									
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													Company<font color="red">*</font>
+												</label>
+												<select class="form-control" ng-model="companyid"
+													>
+													<option value="">
+														-- Select Company --
+													</option>
+													<c:forEach var="list" items="${companyList}">
+														<option value="<c:out value="${list.CompanyID}"/>">
+															<c:out value="${list.CompanyName}" />
+														</option>
+													</c:forEach>
+												</select>
+											</div>
+										</div>									
+									</div>
+									
+									
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													Department<font color="red">*</font>
+												</label>
+												<select class="form-control" ng-model="departmentid"
+													>
+													<option value="">
+														-- Select Department --
+													</option>
+													<c:forEach var="list" items="${departmentList}">
+														<option value="<c:out value="${list.DepartmentID}"/>">
+															<c:out value="${list.DeptName}" />
+														</option>
+													</c:forEach>
+												</select>
+											</div>
+										</div>									
+									</div>
+									
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													Locations<font color="red">*</font>
+												</label>
+												<input type="text" id="location" name="locations" class="form-control" ng-model="locations" >
+												<a href="#"  onclick="addLoc()"><font color="green"><b>Add</b></font></a>
+												<select  name="addLocation" id="addLocation"  class="form-control" multiple="multiple">
+
+												</select>
+												 <a href="#"  onclick="deleteLoc()"><font color="red"><b>Delete</b></font></a>
+											
+											
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									
+											
+									<!-- row -->
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													Divisions<font color="red">*</font>
+												</label>
+												<input type="text" id="test" name="divisions" class="form-control"	ng-model="divisions">
+												<a href="#"  onclick="addDivision()"><font color="green"><b>Add</b></font></a>
+												<select  name="addDivision" id="addDivision"  class="form-control" multiple="multiple">
+
+												</select>
+												 <a href="#"  onclick="deleteDivision()"><font color="red"><b>Delete</b></font></a>
+												
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+																
+									
+									<!-- row -->
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													Address
+												</label>
+												<input type="text" name="address" class="form-control"
+													ng-model="address" maxlength="250" ng-init="address=''">
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+									
+								
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													Country<font color="red">*</font>
+												</label>
+												<select class="form-control" ng-model="countryid" id="countryid"
+													 ng-change="callState(countryid)">
+													<option value="">
+														-- Select Country --
+													</option>
+													<c:forEach var="list" items="${countryList}">
+														<option value="<c:out value="${list.CountryID}"/>">
+															<c:out value="${list.CountryName}" />
+														</option>
+													</c:forEach>
+												</select>
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													State<font color="red">*</font>
+												</label>
+												<span id="statelist"> <select class="form-control" id="stateid"
+														ng-model="stateid" >
+														<option value="">
+															-- Select State --
+														</option>
+
+													</select> </span>
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													City<font color="red">*</font>
+												</label>
+												<span id="cityList">
+												<select class="form-control" ng-model="cityid" id="cityid"
+													>
+													<option value="">
+														-- Select City --
+													</option>
+
+												</select>
+												</span>
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+									
+									
+										<!-- row -->
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													Zip
+												</label>
+												<input type="text" name="zip" class="form-control"
+													ng-model="zip" maxlength="20" ng-init="zip=''">
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+									
+									
+									
+									
+											<!-- row -->
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													Phone 1<font color="red">*</font>
+												</label>
+												<input type="text" name="phone1" class="form-control"
+													ng-model="phone1" maxlength="15">
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+									
+											
+											<!-- row -->
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													Phone 2
+												</label>
+												<input type="text" name="phone2" class="form-control"
+													ng-model="phone2" maxlength="15" ng-init="phone2=''">
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+									
+										
+											<!-- row -->
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													Email 1<font color="red">*</font>
+												</label>
+												<input type="text" name="email1" class="form-control"
+													ng-model="email1" maxlength="100">
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+									
+										<!-- row -->
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													Email 2
+												</label>
+												<input type="text" name="email2" class="form-control"
+													ng-model="email2" maxlength="100" ng-init="email2=''">
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+									
+									
+									
+									
+									
+
+
+									<div class="row" style="padding-top: 10px;display:none;">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													IsActive
+												</label>
+												 <input type="checkbox" name="isactive" ng-model="isactive" ng-init="isactive=true">
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									
+									<!-- row -->
+								<hr> 
+										<!-- row -->
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													Username<font color="red">*</font>
+												</label>
+												<input type="text" name="username" id="username" class="form-control"	ng-model="username"  ng-init='username =" "' maxlength="250" onblur="checkUserName();">
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+									
+										<!-- row -->
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													Password<font color="red">*</font>
+												</label>
+												<input type="password" name="password" class="form-control"	ng-model="password" maxlength="250">
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+									
+									<!-- row -->
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													Group<font color="red">*</font>
+												</label>
+												<div style="border: 1px solid lightgrey; padding-left: 50px;">
+													<c:forEach var="list" items="${groupList}">
+														<label>
+															<c:out value="${list.Gname}" />
+														</label>
+														<input type="checkbox" name="roleid"
+															id="test<c:out value="${list.GroupID}" />"
+															value="<c:out value="${list.GroupID}" />">
+														</br>
+													</c:forEach>
+												</div>
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+										<!-- row -->
+									
+									
+									
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													Reporting To<font color="red">*</font>
+												</label>
+												<select class="form-control" ng-model="reportingid" id="reportingid">
+													<option value="">
+														-- Select User --
+													</option>
+													<c:forEach var="list" items="${employeeList}" >
+														<option value="<c:out value="${list.EmployeeID}"/>">
+															<c:out value="${list.EmpName}" />
+														</option>
+													</c:forEach>
+												</select>
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div></br>
+	
+									<!-- row -->
+									<div class="panel-footer">
+										<button class="btn btn-primary" type="submit">
+											Submit
+										</button>
+										<a href="employees.org.htm"><button
+												class="btn btn-primary" type="button">
+												Cancel
+											</button> </a>
+										<button type="reset" class="btn btn-default"
+											ng-click="reset()">
+											Reset
+										</button>
+
+										
+									</div>
+									
+									
+									
+									
+									
+									
+									
+									
+									
+									
+									
+									
+								</form>
+							</div>
+						</div>
+
+					</div>
+
+
+
+
+
+				</div>
+				<!-- contentpanel -->
+
+			</div>
+			<!-- mainpanel -->
+
+		</div>
+
+		</section>
+
+
+		<script src="js/jquery-1.11.1.min.js"></script>
+		<script src="js/jquery-migrate-1.2.1.min.js"></script>
+		<script src="js/jquery-ui-1.10.3.min.js"></script>
+		<script src="js/bootstrap.min.js"></script>
+		<script src="js/modernizr.min.js"></script>
+		<script src="js/jquery.custom.min.js"></script>
+		<script src="js/toggles.min.js"></script>
+		<script src="js/jquery.cookies.js"></script>
+		<script src="js/left-menu.js"></script>
+
+					
+					<div id="submitSucess" class="success">
+						<span>  Submit Successfully  </span>
+					</div>
+					<div id="empAlert" class="error2">
+						<span> Enter Employee Name </span>
+					</div>
+					<div id="cAlert" class="error2">
+						<span> Select Company Name </span>
+					</div>
+					<div id="depAlert" class="error2">
+						<span> Select Department Name </span>
+					</div>
+					<div id="lAlert" class="error2">
+						<span> Add Location Name </span>
+					</div>
+					<div id="divAlert" class="error2">
+						<span> Add Division Name </span>
+					</div>
+					<div id="counAlert" class="error2">
+						<span> Select Country Name </span>
+					</div>
+					<div id="stAlert" class="error2">
+						<span> Select State Name </span>
+					</div>
+					<div id="cityAlert" class="error2">
+						<span> Select City Name </span>
+					</div>
+					<div id="phoneAlert" class="error2">
+						<span> Enter Phone Number </span>
+					</div>
+					<div id="emailAlert" class="error2">
+						<span> Enter Email Number </span>
+					</div>
+					<div id="unameAlert" class="error2">
+						<span> Enter Username</span>
+					</div>
+					<div id="passAlert" class="error2">
+						<span> Enter Password</span>
+					</div>
+					<div id="grpAlert" class="error2">
+						<span> Checked atleast One Group</span>
+					</div>
+					<div id="repAlert" class="error2">
+						<span> Select Reporting To</span>
+					</div>
+					<div id="validEmailAlert" class="error2">
+						<span> Email is required in valid format</span>
+					</div>
+  <div  id="checkNameAlert" class="error2">
+         <span > User Name already exists </span>
+ </div>
+ <div id="divPhoneErrorAlert" class="error2">
+						<span> Phone is required in valid format</span>
+					</div>
+
+	</body>
+</html>

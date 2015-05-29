@@ -1,0 +1,137 @@
+package com.assentisk.dao;
+
+import java.util.List;
+
+import com.assentisk.bean.AmcAssetBean;
+import com.assentisk.bean.AssetsBean;
+import com.assentisk.bean.CategoriesBean;
+import com.assentisk.bean.MonthSectionBean;
+import com.assentisk.bean.SchedulerBean;
+import com.assentisk.bean.TimeBean;
+import com.assentisk.bean.VendorBean;
+import com.assentisk.bean.WeekdayBean;
+import com.assentisk.bean.YearSectionBean;
+
+public interface AssestsDao {
+
+	public List<CategoriesBean> getCategoryList();
+	
+	public void addCategory(String categoryName, Integer isActive);
+	
+	public void updateCategory(Integer categoryID, String categoryName, Integer isActive);
+	
+	public void deleteCategory(Integer categoryID);
+	
+	public List<CategoriesBean> getCategoryDetailsById(Integer categoryid);
+	
+	public List<AssetsBean> getAssetsList();
+	
+	public List<VendorBean> getVendorList();
+	
+	public List<AssetsBean> getAssetDetailsById(Integer assetID);
+	
+	public void saveAsset(String assetName, Integer categoryID, Integer locationID, Integer applicationID, Integer businessprocessID, String employee, String createdDate, Integer createdBy, String modifiedDate, Integer modifiedBy, String vendorID, String type,String initvalue, String quantity);
+	
+	public void updateAsset(String assetName, Integer categoryID, Integer locationID, Integer applicationID, Integer businessprocessID, String employee,String modifiedDate, Integer modifiedBy, String vendorID, String assestID, String type,String initvalue, String quantity);
+	
+	public void deleteAsset(Integer assetID);
+	
+	public void saveAmcAsset(String amcName, Integer vendorID, String fromDate, String toDate, Integer assetID, String responsibleHead,String scheduledata);
+	
+	public void updateAmcAsset(String amcName, Integer vendorID, String fromDate, String toDate, Integer assetID, Integer id, String responsibleHead,String scheduledata);
+	
+	public int getAmcAssetID();
+	
+	public List<AssetsBean> getAmcDetailsByAsset(Integer assetsID);
+	
+	public String getVendorIdByName(String vendors);
+
+	public List<VendorBean> getVendorDetailsById(String string);
+
+	public void saveScheduler(String assetid, String startTime, String endTime,
+			String duration, String recurPattern, String recurOccurence,
+			String weekid, String dateStart, String endDate,
+			String endoccurence, String endRangePat,String userId,String status,
+			String schedulerID,String dailyRadio,String dailyrecur,String monthlyRadio,String daymonthlyrecur,String monthlyrecurmon,
+			String monthsection,String monthWeeksection,String daymonthlyyearrecur,String yearmonthlyRadio,String yearsection,
+			String ONyearrecur,String yearmonthsection,String yearmonthWeeksection);
+
+	public List<TimeBean> getTimeList();
+	
+	public List<SchedulerBean> getSchedulerList(String assetID);
+	
+	
+	public List<MonthSectionBean> getMonthSectionList();
+
+	public List<WeekdayBean> getWeekdayList();
+
+	public List<YearSectionBean> getYearSectionList();
+
+
+	public List<TimeBean> endTimeList(String startId);
+
+	public String gettime(String startID);
+	
+	public List<WeekdayBean> getday(String weekId);
+	
+	public String getMonthSection(String monthsection);
+	
+	public String getWeeksection(String Weeksection);
+	
+	public String getYearSection(String yearSection);
+	
+	public String getTimedata(String startTime);
+
+	public List<AmcAssetBean> getAMCdataList(String userId,String getsevenAfterDate);
+	
+	public List<CategoriesBean> checkCategoryName(String categoryName);
+	
+	public List<AssetsBean> checkAssetName(String assetName);
+	
+	public String getUserId(String Username);
+	public String getuserDataConcat(String userId);
+<<<<<<< .mine
+
+	//public void insertDaily(String assetid, String scheduledata);
+
+//	public String getDayBetween(String assetid);
+=======
+
+	public void insertDaily(String assetid, String scheduledata);
+
+	public String getDayBetween(String assetid);
+
+	public String getEndDate(String dateStart);
+
+	public String getEndAfterDate(String dateStart);
+
+	public String getWeeks(String weekid);
+	
+	public int getWeekCount(String weekid);
+
+	public void insertSchedulerData(String assetid, List<String> dateList,
+			String scheduledata, String amcname, String strDater,String assignedTo,String assignedBy,String startTime,String endTimer,String todate);
+
+	public String getsevenAfterDate();
+
+	public String getTime(String time);
+
+	public void cancelSchedulerData(String assetid);
+
+	public String getFlagTochange(String assetid, String startTime,
+			String endTimer, String duration, String recurPattern,
+			String recurOccurence, String weekid, String dateStart,
+			String endDater, String endoccurence, String endRangePat,
+			String userId, String status, String schedulerID,
+			String dailyRadio, String dailyrecur, String monthlyRadio,
+			String daymonthlyrecur, String monthlyrecurmon,
+			String monthsection, String monthWeeksection,
+			String daymonthlyyearrecur, String yearmonthlyRadio,
+			String yearsection, String oNyearrecur, String yearmonthsection,
+			String yearmonthWeeksection);
+
+	public String getMonth(String monthval);
+
+	public String getYearEndDate(String dateStart);
+>>>>>>> .r296
+}

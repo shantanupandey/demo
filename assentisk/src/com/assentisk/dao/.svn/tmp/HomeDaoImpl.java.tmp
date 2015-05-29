@@ -1,0 +1,59 @@
+package com.assentisk.dao;
+
+
+import java.util.List;
+
+import org.springframework.jdbc.core.JdbcTemplate;
+
+import com.assentisk.util.DBUtill;
+
+public class HomeDaoImpl implements HomeDao {
+
+	DBUtill dbUtil = new DBUtill();
+
+	JdbcTemplate jdbcTemplate = new JdbcTemplate();
+
+	public JdbcTemplate getJdbcTemplate() {
+		return jdbcTemplate;
+	}
+
+	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+		this.jdbcTemplate = jdbcTemplate;
+	}
+	
+	public List authenticate(String username, String password) {
+		
+		
+		String query = "select u.riskID,u.EmpUsername,u.UserRecordID,expandBar,(select RoleID from assentisk_employees where UserRecordID=u.UserRecordID) as groupID"+
+						" from assentisk_userrecord  u join assentisk_employees ae on ae.UserRecordID=u.UserRecordID where u.EmpUsername = '"+username+"' and u.EmpPassword = '"+password+"' " +
+								" and ae.isLicense='1' and ae.IsDeleted='1'";
+		List getList= jdbcTemplate.queryForList(query);
+		return getList;
+		
+	}
+	
+	public List getList(String query){
+		List List=jdbcTemplate.queryForList(query);
+		
+		return List;
+	}
+	public void updateExpandValue(String status,String userId){
+		jdbcTemplate.execute("update assentisk_userrecord set expandBar='"+status+"' where UserRecordID='"+userId+"'");
+		
+		
+	}
+	public List getGroupPermission(String groupIDs) {
+		String query = "select sum(view_mod) as view_mod,sum(add_mod) as add_mod,sum(edit_mod)as edit_mod,sum(delete_mod) as delete_mod,"
+				+ "sum(per_mod) as per_mod,moduleId from assentisk_grouppermission where groupId IN ("+groupIDs+") group by moduleId";
+		System.out.println("query--"+query);
+		List getList = jdbcTemplate.queryForList(query);
+		return getList;
+	}
+	public void updateRiskValue(String riskID,String userId){
+		jdbcTemplate.execute("update assentisk_userrecord set riskID='"+riskID+"' where UserRecordID='"+userId+"'");
+		
+		
+	}
+
+
+}

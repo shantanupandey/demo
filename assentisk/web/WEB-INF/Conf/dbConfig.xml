@@ -1,0 +1,38 @@
+
+<BED-Config>
+<BED-DETAILS id="casmaxtest">
+		<BED id='main_DB'>
+			<property name="username">
+			    <value>root</value>
+		    </property>
+		    <property name="password">
+			    <value>password</value>		
+		    </property>
+			<property name="url">
+				<value>192.168.1.172</value>
+			</property>
+			
+			<property name="port">
+				<value>3306</value>
+			</property>
+		</BED>
+		<BED id='evidence'>
+			<property name="username">
+			    <value>root</value>
+		    </property>
+		    <property name="password">
+			    <value>password</value>		
+		    </property>
+			<property name="url">
+				<value>192.168.1.172</value>
+			</property>
+			
+			<property name="port">
+				<value>3306</value>
+			</property>
+		</BED>
+	</BED-DETAILS>
+		
+</BED-Config>
+
+

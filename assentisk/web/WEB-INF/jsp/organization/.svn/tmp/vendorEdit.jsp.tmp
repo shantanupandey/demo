@@ -1,0 +1,471 @@
+<%@ taglib uri="/WEB-INF/tld/c-1_0.tld" prefix="c"%>
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<link rel="shortcut icon" href="images/favicon.png" type="image/png">
+
+		<title>Assentisk</title>
+
+		<link href="css/custom.css" rel="stylesheet">
+		<script src="js/angular.min.js"></script>
+		
+		<link rel="stylesheet" href="css/jquery-ui.css">
+ 		<script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
+ 		<script src="js/jquery-ui.js"></script>
+ 		 <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css"/>
+ 		
+ 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+ 		
+		<script>
+			
+				var vendorapp = angular.module('vendorapp', []);
+			
+				vendorapp
+						.config( [
+								'$httpProvider',
+								function($httpProvider) {
+									$httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
+								} ]);
+			
+				function addVendorController($scope, $http) {
+			
+					$("div.leftpanelinner>ul>li#organization").addClass(
+							"nav-parent nav-active");
+					$("div.leftpanelinner>ul>li#organization>ul").css("display", "block");
+					$("div.leftpanelinner>ul>li#organization>ul>li#vendor").addClass(
+							"active");
+			
+					$("#imageloader").css("display", "none");
+					$("#complete").css("display", "block");
+			
+					$scope.saveData = function() {
+			
+						var vendorname = $scope.vendorname;
+						var orgname = $scope.orgname;
+						var country = $scope.countryid;
+						var stateid = document.getElementById("stateid").value
+						var cityid = $scope.cityid;
+						var phone1=$scope.phone1;
+						var phone2=$scope.phone2;
+						var email1=$scope.email1;
+						var email2=$scope.email2;
+						var designation=$scope.designation;
+						var filter = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;		
+
+						
+						if (vendorname == '' || vendorname == undefined) {
+			
+							$('#vname').show();
+							$('#vname').delay(1500).fadeOut('slow');
+			
+						} else if (orgname == '' || orgname == undefined) {
+							$('#oname').show();
+							$('#oname').delay(1500).fadeOut('slow');
+			
+						} else if (country == '' || country == undefined) {
+							$('#cname').show();
+							$('#cname').delay(1500).fadeOut('slow');
+			
+						} else if (stateid == '' || stateid == undefined) {
+							$('#sname').show();
+							$('#sname').delay(1500).fadeOut('slow');
+			
+						}else if (cityid == '' || cityid == undefined) {
+							$('#cityname').show();
+							$('#cityname').delay(1500).fadeOut('slow');
+			
+						}else if (phone1 == '' || phone1 == undefined) {
+							$('#phone11').show();
+							$('#phone11').delay(1500).fadeOut('slow');
+			
+						}else if (email1 == '' || email1 == undefined) {
+							$('#email11').show();
+							$('#email11').delay(1500).fadeOut('slow');
+			
+						}else if(!filter.test(email1)){	
+        					$('#validemail11').show();
+						    $('#validemail11').delay(1500).fadeOut('slow');
+						}
+						else if(email2!='' && !filter.test(email2) ){	
+				
+        					$('#validemail11').show();
+							$('#validemail11').delay(1500).fadeOut('slow');
+						}				
+						else if (designation == '' || designation == undefined) {
+							$('#desig').show();
+							$('#desig').delay(1500).fadeOut('slow');
+			
+						} 
+			
+						else {
+			
+							var responsePromise = $http
+									.post("updatevendor.org.htm?vendorname="
+											+ vendorname + "&oname="
+											+ orgname + "&country=" + country
+											+ "&stateid=" + stateid + "&cityid="+cityid+"&phone1="
+											+ phone1 +"&phone2=" + phone2 +"&email1="
+											+ email1 +"&email2="+ email2 +"&designation="+designation+"&isactive="
+											+ $scope.isactive + "&vendorid="+$scope.vendorid+"&address="+$scope.address);
+											
+									responsePromise
+									.success(function(data, status, headers, config) {
+										$('#alertSuc').show();
+										$('#alertSuc').delay(1500).fadeOut('slow');
+										window.location.href = "vendor.org.htm";
+			
+									});
+						}
+					};
+					$scope.callState = function(id) {
+						var responsePromise = $http
+								.get("statelist.ajaxresponse.htm?countryid=" + id);
+						responsePromise.success(function(data, status, headers, config) {
+							document.getElementById("statelist").innerHTML = data;
+			
+						});
+					};
+			
+			
+				}
+				
+</script>
+
+
+
+
+		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+		<!--[if lt IE 9]>
+  <script src="js/html5shiv.js"></script>
+  <script src="js/respond.min.js"></script>
+  <![endif]-->
+	</head>
+
+
+<body class="<c:out value="${sessionScope.bodyClass}"></c:out>">
+
+
+		<section>
+
+		<%@include file="/WEB-INF/jsp/leftpanel.jsp"%>
+
+		<div class="mainpanel">
+			<%@include file="/WEB-INF/jsp/header.jsp"%>
+
+			<div class="pageheader">
+				<h2>
+					<c:out value="${sessionScope.editvendore_header}"/>
+				</h2>
+				<div class="breadcrumb-wrapper">
+					<span class="label">You are here:</span>
+					<ol class="breadcrumb">
+						<li>
+							<a href="dashboard.login.htm">Assentisk</a>
+						</li>
+						<li class="active">
+							<c:out value="${sessionScope.editvendore_header}"/>
+						</li>
+					</ol>
+				</div>
+			</div>
+
+			<div class="contentpanel">
+
+				<div class="row">
+					<div class="col-md-12">
+						<div class="panel panel-default">
+
+							<div class="panel-body" ng-app="vendorapp"
+								ng-controller="addVendorController">
+								<form ng-submit="saveData()">
+
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													<c:out value="${sessionScope.Vendors_name}"/><font color="red">*</font>
+												</label>
+												<input type="hidden" name="vendorid" class="form-control"
+													ng-model="vendorid" ng-init='vendorid = "<c:out value="${vendorId}"/>"' maxlength="250">
+												
+												<input type="text" name="vendorname" class="form-control"
+													ng-model="vendorname" ng-init='vendorname = "<c:out value="${VendorName}"/>"' >
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+									
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													<c:out value="${sessionScope.Vendor_organizationName}"/><font color="red">*</font>
+												</label>
+												<input type="text" id="orgname" name="orgname" class="form-control"	ng-model="orgname"
+												ng-init='orgname = "<c:out value="${orgName}"/>"'>
+												 
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													<c:out value="${sessionScope.Vendor_Address}"/>
+												</label>
+												
+ 											<input type="text" name="address" class="form-control" ng-model="address" ng-init='address = "<c:out value="${address}"/>"' id="address" maxlength="250">
+											</div>
+										</div>
+										</div>
+									
+										<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													<c:out value="${sessionScope.Vendor_Country}"/><font color="red">*</font>
+												</label>
+												<select class="form-control" ng-model="countryid" id="countryid"
+													 ng-change="callState(countryid)" ng-init='countryid = "<c:out value="${country}"/>"'>
+													<option value="">
+														-- Select Country --
+													</option>
+													<c:forEach var="list" items="${countryList}">
+														<option value="<c:out value="${list.CountryID}"/>">
+															<c:out value="${list.CountryName}" />
+														</option>
+													</c:forEach>
+												</select>
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													<c:out value="${sessionScope.Vendor_State}"/><font color="red">*</font>
+												</label>
+												<span id="statelist"> <select class="form-control" id="stateid"
+														ng-model="stateid"  ng-init='stateid = "<c:out value="${state}"/>"' onchange="callCity(this.value)">
+														
+														<c:forEach var="list" items="${stateList}">
+														<option value="<c:out value="${list.StateID}"/>">
+															<c:out value="${list.StateName}" />
+														</option>
+													</c:forEach>
+														
+
+													</select> </span>
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													<c:out value="${sessionScope.Vendor_City}"/><font color="red">*</font>
+												</label>
+												<input type="text" name="phone1" class="form-control" ng-model="cityid"
+ 											ng-init='cityid = "<c:out value="${city}"/>"' id="cityid">
+												
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+									
+									
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													<c:out value="${sessionScope.Vendore_phone1}"/><font color="red">*</font>
+												</label>
+												
+ 											<input type="text" name="phone1" class="form-control" ng-model="phone1"
+ 											ng-init='phone1 = "<c:out value="${phone1}"/>"' id="phone1">
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+									
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													<c:out value="${sessionScope.Vendore_phone2}"/>
+												</label>
+												
+ 											<input type="text" name="phone2" class="form-control" ng-model="phone2"
+ 											ng-init='phone2 = "<c:out value="${phone2}"/>"'  id="phone2">
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													<c:out value="${sessionScope.Vendore_email1}"/><font color="red">*</font>
+												</label>
+												
+ 											<input type="text" name="email1" class="form-control" ng-model="email1" 
+ 											ng-init='email1 = "<c:out value="${email1}"/>"'  id="email1">
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+									
+								  <div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													<c:out value="${sessionScope.Vendore_email2}"/>
+												</label>
+												
+ 											<input type="text" name="email2" class="form-control" ng-model="email2" 
+ 											ng-init='email2 = "<c:out value="${email2}"/>"' id="email2">
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+									
+									 <div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													<c:out value="${sessionScope.Vendore_Designation}"/><font color="red">*</font>
+												</label>
+												
+ 											<input type="text" name="designation" class="form-control" ng-model="designation" 
+ 												ng-init='designation = "<c:out value="${designation}"/>"' id="designation">
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+									
+
+									<div class="row" style="display:none">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													<c:out value="${sessionScope.IsActive}"/>
+												</label>
+												<input type="checkbox" name="isactive" ng-model="isactive"
+													ng-init='isactive = "<c:out value="${IsActive}"/>"' ng-checked="<c:out value="${IsActive}"/>">
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+									</br>
+									<div class="panel-footer">
+										<button class="btn btn-primary" type="submit">
+											<c:out value="${sessionScope.submit}"/>
+										</button>
+										<a href="vendor.org.htm"><button
+												class="btn btn-primary" type="button">
+												<c:out value="${sessionScope.cancel}"/>
+											</button> </a>
+										<button type="reset" class="btn btn-default"
+											ng-click="reset()">
+											<c:out value="${sessionScope.reset}"/>
+										</button>
+
+
+									</div>
+								</form>
+							</div>
+						</div>
+
+					</div>
+
+
+
+
+
+				</div>
+				<!-- contentpanel -->
+
+			</div>
+			<!-- mainpanel -->
+
+		</div>
+
+		</section>
+
+
+		<script src="js/jquery-1.11.1.min.js"></script>
+		<script src="js/jquery-migrate-1.2.1.min.js"></script>
+		<script src="js/jquery-ui-1.10.3.min.js"></script>
+		<script src="js/bootstrap.min.js"></script>
+		<script src="js/modernizr.min.js"></script>
+		<script src="js/jquery.custom.min.js"></script>
+		<script src="js/toggles.min.js"></script>
+		<script src="js/jquery.cookies.js"></script>
+		<script src="js/left-menu.js"></script>
+
+
+
+ <div id="vname" class="error2">
+         <span > <c:out value="${sessionScope.Vendore_Name_Alert}"/></span>
+ </div>
+ <div id="oname" class="error2">
+         <span ><c:out value="${sessionScope.Vendore_Organization_Alert}"/> </span>
+ </div>
+ 
+ <div  id="cname" class="error2">
+<<<<<<< .mine
+         <span > Select Country Name</span>
+=======
+         <span > <c:out value="${sessionScope.Vendore_Country_Alert}"/></span>
+>>>>>>> .r118
+ </div>
+  <div  id="sname" class="error2">
+<<<<<<< .mine
+         <span > Select State Name</span>
+=======
+         <span > <c:out value="${sessionScope.Vendore_State_Alert}"/></span>
+>>>>>>> .r118
+ </div>
+ <div  id="cityname" class="error2">
+         <span > <c:out value="${sessionScope.Vendore_City_Alert}"/></span>
+ </div>
+  <div  id="phone11" class="error2">
+         <span > <c:out value="${sessionScope.Vendore_Phone_Alert}"/></span>
+ </div>
+ <div  id="email11" class="error2">
+         <span > <c:out value="${sessionScope.vendore_emailFill_alert}"/></span>
+ </div>
+  <div  id="validemail11" class="error2">
+         <span ><c:out value="${sessionScope.Vendore_Email_Alert}"/></span>
+ </div>
+ <div  id="desig" class="error2">
+         <span > <c:out value="${sessionScope.Vendore_Designation_Alert}"/></span>
+ </div>
+ <div  id="alertSuc" class="success">
+         <span > <c:out value="${sessionScope.Vendore_Successfully_Alert}"/></span>
+ </div>
+
+	</body>
+</html>

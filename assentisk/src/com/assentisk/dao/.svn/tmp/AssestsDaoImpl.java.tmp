@@ -1,0 +1,327 @@
+package com.assentisk.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.jdbc.core.JdbcTemplate;
+
+import com.assentisk.bean.AssetsBean;
+import com.assentisk.bean.CategoriesBean;
+import com.assentisk.bean.LocationsBean;
+import com.assentisk.bean.MonthSectionBean;
+import com.assentisk.bean.SchedulerBean;
+import com.assentisk.bean.TimeBean;
+import com.assentisk.bean.VendorBean;
+import com.assentisk.bean.WeekdayBean;
+import com.assentisk.bean.YearSectionBean;
+import com.assentisk.util.DBUtill;
+
+public class AssestsDaoImpl implements AssestsDao{
+
+	DBUtill dbUtil = new DBUtill();
+	
+	JdbcTemplate jdbcTemplate = new JdbcTemplate();
+
+	public JdbcTemplate getJdbcTemplate() {
+		return jdbcTemplate;
+	}
+
+	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+		this.jdbcTemplate = jdbcTemplate;
+	}
+	
+	public void addCategory(String categoryName, Integer isActive) {
+		
+		String query = "insert into assentisk_categories (cname, IsActive) values ('"+categoryName+"','"+isActive+"')";
+		jdbcTemplate.execute(query);
+		
+	}
+
+	public void deleteCategory(Integer categoryID) {
+		
+		String query = "delete from assentisk_categories where ID='"+categoryID+"'";
+		jdbcTemplate.execute(query);
+		
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<CategoriesBean> getCategoryList() {
+		
+		String query = "select *from assentisk_categories order by ID";
+		List<CategoriesBean> categoryList = jdbcTemplate.queryForList(query);		
+		return categoryList;
+	}
+
+	public void updateCategory(Integer categoryID, String categoryName, Integer isActive) {
+		
+		String query = "update assentisk_categories set cname='"+categoryName+"', IsActive='"+isActive+"' where ID='"+categoryID+"'";
+		jdbcTemplate.execute(query);
+		
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<CategoriesBean> getCategoryDetailsById(Integer categoryid) {
+		
+		String query = "select *from assentisk_categories where ID='"+categoryid+"'";
+		List<CategoriesBean> categoryList = jdbcTemplate.queryForList(query);	
+		return categoryList;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<AssetsBean> getAssetsList() {
+		
+		String query = "select ac.ID,ac.vendorId, ac.aname,acat.cname,acl.Name,aapp.ApplicationName ,ab.BusinessProcessName from assentisk_assets ac join assentisk_categories acat on ac.category = acat.ID join assentisk_company_locations acl on acl.LocationID = ac.location join assentisk_applications aapp on aapp.ApplicationID = ac.application join assentisk_businessprocess ab on ab.BusinessProcessID = ac.BP order by ID";
+		List<AssetsBean> assetsList = jdbcTemplate.queryForList(query);
+
+		return assetsList;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<VendorBean> getVendorList() {
+		
+		String query = "select *from assentisk_vendor order by id";
+		List<VendorBean> vendorList = jdbcTemplate.queryForList(query);
+		return vendorList;
+	}
+
+	public void saveAsset(String assetName, Integer categoryID,
+			Integer locationID, Integer applicationID,
+			Integer businessprocessID, Integer employeeID, String createdDate,
+			Integer createdBy, String modifiedDate, Integer modifiedBy,
+			String vendorID, String type,String initvalue, String quantity) {
+		
+		String query = "insert into assentisk_assets (aname, category, location, application, BP, employee, CreatedDate, CreatedBy, MoidifiedDate, ModifiedBy, vendorId, type,Initial_Values, quantity) values ('"+assetName+"','"+categoryID+"','"+locationID+"','"+applicationID+"','"+businessprocessID+"','"+employeeID+"','"+createdDate+"','"+createdBy+"','"+modifiedDate+"','"+modifiedBy+"','"+vendorID+"','"+type+"','"+initvalue+"','"+quantity+"')";
+		jdbcTemplate.execute(query);
+		
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<AssetsBean> getAssetDetailsById(Integer assetID) {
+		
+		String query = "select *from assentisk_assets where ID = '"+assetID+"'";
+		List<AssetsBean> getRow = jdbcTemplate.queryForList(query);
+		return getRow;
+	}
+
+	public void updateAsset(String assetName, Integer categoryID,
+			Integer locationID, Integer applicationID,
+			Integer businessprocessID, Integer employeeID, String modifiedDate,
+			Integer modifiedBy, String vendorID, String assestID,String type,String initvalue, String quantity) {
+		
+		String query = "update assentisk_assets set aname='"+assetName+"', category='"+categoryID+"', location='"+locationID+"', application='"+applicationID+"', BP='"+businessprocessID+"', employee='"+employeeID+"', MoidifiedDate='"+modifiedDate+"', ModifiedBy='"+modifiedBy+"',vendorId='"+vendorID+"', type='"+type+"', Initial_Values='"+initvalue+"', quantity='"+quantity+"' where ID='"+assestID+"'";
+		jdbcTemplate.execute(query);
+	}
+
+	public void deleteAsset(Integer assetID) {
+		
+		String query = "delete from assentisk_assets where ID='"+assetID+"'";
+		jdbcTemplate.execute(query);
+		
+	}
+
+	public void saveAmcAsset(String amcName, Integer vendorID, String fromDate, String toDate, Integer assetID, String responsibleHead,String schedulerdata) {
+		
+		String query = "insert into assentisk_amc_assets (AMC_CName, VendorID, FromDate, ToDate, assetID, responsibleHead,scheduler) values('"+amcName+"','"+vendorID+"','"+fromDate+"','"+toDate+"','"+assetID+"','"+responsibleHead+"','"+schedulerdata+"')";
+		jdbcTemplate.execute(query);
+		
+	}
+
+	@SuppressWarnings("unchecked")
+	public int getAmcAssetID() {
+		
+		int amcID = 0;
+		String query = "select *from assentisk_amc_assets limit 1";
+		List<AssetsBean> getRow = jdbcTemplate.queryForList(query);
+		if(getRow.size()>0)
+		{
+			Map m = (Map)getRow.get(0);
+			amcID = Integer.parseInt(m.get("ID").toString());
+		}
+		return amcID;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<AssetsBean> getAmcDetailsByAsset(Integer assetsID) {
+		
+		String query = "select *from assentisk_amc_assets where assetID='"+assetsID+"'";
+		List<AssetsBean> getDetails = jdbcTemplate.queryForList(query);
+		return getDetails;
+	}
+
+	public void updateAmcAsset(String amcName, Integer vendorID,
+			String fromDate, String toDate, Integer assetID, Integer id, String responsibleHead,String schedulerdata) {
+	
+		String query = "update assentisk_amc_assets set AMC_CName='"+amcName+"', VendorID='"+vendorID+"', FromDate='"+fromDate+"', ToDate='"+toDate+"', assetID='"+assetID+"', responsibleHead='"+responsibleHead+"',scheduler='"+schedulerdata+"' where ID='"+id+"'";
+	System.out.println("query---"+query);
+		jdbcTemplate.execute(query);
+		
+	}
+	@SuppressWarnings("unchecked")
+	public String getVendorIdByName(String vendorName) {
+		String id = "";
+		
+		String query="select group_Concat(id,'') as id from assentisk_vendor where VendorName IN ('"+vendorName+"')";
+		List<VendorBean> getRow = jdbcTemplate.queryForList(query);
+		if(getRow.size()>0)
+		{
+			Map m = (Map)getRow.get(0);
+			id = m.get("id").toString();
+			
+		}
+		return id;
+	}
+	@SuppressWarnings("unchecked")
+	public List<VendorBean> getVendorDetailsById(String vendors){
+		List list = jdbcTemplate
+		.queryForList("select VendorName from assentisk_vendor where id IN ("+vendors+") ");
+        return list;
+	}
+	
+	public void saveScheduler(String assetid,String startTime,String endTime,String duration,String recurPattern,
+			String recurOccurence,String weekid,String dateStart,String endDate,String endoccurence,String endRangePat,
+			String userId,String status,String schedulerID,String dailyRadio,String dailyrecur,String monthlyRadio,String daymonthlyrecur,
+			String monthlyrecurmon,String monthsection,String monthWeeksection,String daymonthlyyearrecur,String yearmonthlyRadio,
+			String yearsection,String ONyearrecur,String yearmonthsection,String yearmonthWeeksection){
+		
+		String query="";
+		List list = jdbcTemplate.queryForList("select * from assentisk_scheduler where assetID='"+assetid+"'");
+		
+		if(list.size()>0){
+			query = "update assentisk_scheduler set  startTimeID='"+startTime+"', endTimeID='"+endTime+"', duration='"+duration+"', recurPattern='"+recurPattern+"'," +
+			"recurOccurence='"+recurOccurence+"',weekid='"+weekid+"',dateStart='"+dateStart+"',endDate='"+endDate+"'," +
+					"endRangePat='"+endRangePat+"',endoccurence='"+endoccurence+"',assignedBy='"+userId+"',status='"+status+"'," +
+					" dailyRadio='"+dailyRadio+"',dailyRecur='"+dailyrecur+"',monthRadio='"+monthlyRadio+"'" +
+					",monthdayRecur='"+daymonthlyrecur+"',monthRecur='"+monthlyrecurmon+"',monthSection='"+monthsection+"',monthWeekend='"+monthWeeksection+"'" +
+				     ",yearlyRecur='"+daymonthlyyearrecur+"',yearlyMonthSection='"+yearmonthsection+"'," +
+				     " yearlyMonthWeek='"+yearmonthWeeksection+"',yearlySection='"+yearsection+"',yearlyMonthRecur='"+ONyearrecur+"'" +
+				     ",yearlyRadio='"+yearmonthlyRadio+"' where assetID='"+assetid+"'";
+		
+			
+
+		}
+		else
+		{
+			query = "insert into assentisk_scheduler (assetID, startTimeID, endTimeID, duration, recurPattern," +
+			"recurOccurence,weekid,dateStart,endDate,endRangePat,endoccurence,assignedBy,status,dailyRadio," +
+			"dailyRecur,monthRadio,monthdayRecur,monthRecur,monthSection,monthWeekend,yearlyRecur,yearlyMonthSection," +
+			"yearlyMonthWeek,yearlySection,yearlyMonthRecur,yearlyRadio) values('"+assetid+"'," +
+					"'"+startTime+"','"+endTime+"','"+duration+"','"+recurPattern+"'," +
+						"'"+recurOccurence+"','"+weekid+"','"+dateStart+"','"+endDate+"','"+endRangePat+"'," +
+						"'"+endoccurence+"','"+userId+"','"+status+"','"+dailyRadio+"','"+dailyrecur+"'," +
+						"'"+monthlyRadio+"','"+daymonthlyrecur+"','"+monthlyrecurmon+"','"+monthsection+"'," +
+						"'"+monthWeeksection+"','"+daymonthlyyearrecur+"','"+yearmonthsection+"'," +
+						"'"+yearmonthWeeksection+"','"+yearsection+"','"+ONyearrecur+"','"+yearmonthlyRadio+"')";
+			
+		}
+		System.out.println("query---"+query);
+		jdbcTemplate.execute(query);
+	}
+	@SuppressWarnings("unchecked")
+	public List getTimeList(){
+		List list = jdbcTemplate
+		.queryForList("select * from assentisk_time order by id");
+        return list;
+	}
+	@SuppressWarnings("unchecked")
+	public List<SchedulerBean> getSchedulerList(String assetId){
+		List list = jdbcTemplate
+		.queryForList("select * from assentisk_scheduler where assetID='"+assetId+"'");
+        return list;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<MonthSectionBean> getMonthSectionList()
+	{
+		List list = jdbcTemplate
+		.queryForList("select * from assentisk_monthsection order by id");
+        return list;
+	}
+	
+	
+	
+	@SuppressWarnings("unchecked")
+	public List<WeekdayBean> getWeekdayList()
+	{
+		List list = jdbcTemplate
+		.queryForList("select * from assentisk_weekday order by id");
+        return list;
+	}
+	
+	
+	
+	@SuppressWarnings("unchecked")
+	public List<YearSectionBean> getYearSectionList()
+	{
+		List list = jdbcTemplate
+		.queryForList("select * from assentisk_yearsection order by id");
+        return list;
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	public List<TimeBean> endTimeList(String id)
+	{
+		List list = jdbcTemplate.queryForList("select * from assentisk_time where id> '"+id+"' order by id");
+        return list;
+	}
+	
+	public String gettime(String id){
+		List list = jdbcTemplate.queryForList("select * from assentisk_time where id= '"+id+"'");
+		String time="";
+		if(list.size()>0){
+			Map m=(Map)list.get(0);
+			time=m.get("time").toString();
+		}
+        return (String) time;
+	}
+	
+	public List<WeekdayBean> getday(String weekId){
+		List list = jdbcTemplate.queryForList("select group_concat(mname,'') as mname from assentisk_weekday where id in ("+weekId+")");
+		return list;
+	}
+	
+	public String getMonthSection(String monthsection){
+		List list = jdbcTemplate.queryForList("select name from assentisk_monthsection where id ="+monthsection+"");
+		String month="";
+		if(list.size()>0){
+			Map m=(Map)list.get(0);
+			month=m.get("name").toString();
+			
+		}
+		return month;
+	}
+	
+	public String getWeeksection(String Weeksection){
+		List list = jdbcTemplate.queryForList("select mname from assentisk_weekday where id ="+Weeksection+"");
+		String mname="";
+		if(list.size()>0){
+			Map m=(Map)list.get(0);
+			mname=m.get("mname").toString();
+			
+		}
+		return mname;
+	}
+	
+	public String getYearSection(String yearSection){
+		List list = jdbcTemplate.queryForList("select ymonth from assentisk_yearsection where id ="+yearSection+"");
+		String ymonth="";
+		if(list.size()>0){
+			Map m=(Map)list.get(0);
+			ymonth=m.get("ymonth").toString();
+			
+		}
+		return ymonth;
+	}
+	
+	public String getTimedata(String startTime){
+		List list = jdbcTemplate.queryForList("select concat(time,'',AM_PM)as timedata from assentisk_time where id ="+startTime+"");
+		String timedata="";
+		if(list.size()>0){
+			Map m=(Map)list.get(0);
+			timedata=m.get("timedata").toString();
+			
+		}
+		return timedata;
+	}
+	
+}

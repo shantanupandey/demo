@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/assentisk/!svn/ver/471/assentisk/web/WEB-INF/jsp/policy
+END
+approval.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/assentisk/!svn/ver/471/assentisk/web/WEB-INF/jsp/policy/approval.jsp
+END
+circular.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/assentisk/!svn/ver/471/assentisk/web/WEB-INF/jsp/policy/circular.jsp
+END
+editpolicy.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/assentisk/!svn/ver/471/assentisk/web/WEB-INF/jsp/policy/editpolicy.jsp
+END
+policies.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/assentisk/!svn/ver/471/assentisk/web/WEB-INF/jsp/policy/policies.jsp
+END
+addpolicy.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/assentisk/!svn/ver/471/assentisk/web/WEB-INF/jsp/policy/addpolicy.jsp
+END

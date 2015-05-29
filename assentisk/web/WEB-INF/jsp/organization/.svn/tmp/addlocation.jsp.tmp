@@ -1,0 +1,542 @@
+<%@ taglib uri="/WEB-INF/tld/c-1_0.tld" prefix="c"%>
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<link rel="shortcut icon" href="images/favicon.png" type="image/png">
+
+		<title>Assentisk</title>
+
+		<link href="css/custom.css" rel="stylesheet">
+		<script src="js/angular.min.js"></script>
+
+		<script>
+	var locationapp = angular.module('locationapp', []);
+
+	locationapp
+			.config( [
+					'$httpProvider',
+					function($httpProvider) {
+						$httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
+					} ]);
+
+	function addLocationController($scope, $http) {
+
+		$("div.leftpanelinner>ul>li#organization").addClass(
+				"nav-parent nav-active");
+		$("div.leftpanelinner>ul>li#organization>ul").css("display", "block");
+		$("div.leftpanelinner>ul>li#organization>ul>li#locations").addClass(
+				"active");
+
+		$("#imageloader").css("display", "none");
+		$("#complete").css("display", "block");
+
+		$scope.saveData = function() {
+				
+					
+			var stateid = document.getElementById("stateid").value
+			var cityid = document.getElementById("cityid").value
+	
+			var locationname=$scope.locationname;
+			var company=$scope.companyid;
+			var countryid=$scope.countryid;
+			
+			var cityidVal = $scope.cityid;
+			
+			var contactno=$scope.contactno;
+			
+			var email1=$scope.email1;
+			
+			var email2=$scope.email2;
+		
+			
+			 if(locationname=='' || locationname==undefined){
+						$('#divLocNameAlert').show();
+			     		$('#divLocNameAlert').delay(1500).fadeOut('slow');	
+									
+			   }
+			  
+			   else if(company=='' || company==undefined){
+						$('#divCompnayAlert').show();
+			     		$('#divCompnayAlert').delay(1500).fadeOut('slow');	
+									
+			   }else if(countryid=='' || countryid==undefined){
+						$('#divCountryAlert').show();
+			     		$('#divCountryAlert').delay(1500).fadeOut('slow');	
+									
+			   }else if(stateid=='' || stateid=='undefined'){
+						$('#divStateAlert').show();
+			     		$('#divStateAlert').delay(1500).fadeOut('slow');	
+									
+			   }else if(cityid=='' || cityid=='undefined'){
+						$('#divCityAlert').show();
+			     		$('#divCityAlert').delay(1500).fadeOut('slow');	
+									
+			   }else if(contactno=='' || contactno==undefined){
+						$('#divContactAlert').show();
+			     		$('#divContactAlert').delay(1500).fadeOut('slow');	
+									
+			   }else if(email1=='' || email1==undefined){
+						$('#divemail1Alert').show();
+			     		$('#divemail1Alert').delay(1500).fadeOut('slow');	
+									
+			   }else if (!validateEmail(email1)) {
+				        $('#divEmailErrorAlert').show();
+				        $('#divEmailErrorAlert').delay(1500).fadeOut('slow');
+			   }
+			  
+			   else if(email2!='' && !validateEmail(email2))
+			   {
+			     $('#divEmail2ErrorAlert').show();
+				 $('#divEmail2ErrorAlert').delay(1500).fadeOut('slow');
+			   }
+			  
+			else{			
+			var responsePromise = $http.post("savelocation.org.htm?locationname="
+					+ $scope.locationname + "&companyid=" + $scope.companyid + "&countryid="+$scope.countryid+"&stateid="+stateid+"&cityid="+cityid+"&street="+$scope.street
+					+"&address="+$scope.address+"&contactno="+$scope.contactno+"&zipcode="+$scope.zipcode+"&phone1="+$scope.phone1+"&phone2="+$scope.phone2
+					+ "&email1="+$scope.email1+"&email2="+$scope.email2+"&fax1="+$scope.fax1+"&fax2="+$scope.fax2+"&url="+$scope.url+"&isactive="+$scope.isactive);
+			responsePromise.success(function(data, status, headers, config) {
+					$('#submitSucess').show();
+					$('#submitSucess').delay(1500).fadeOut('slow');
+				window.location.href = "locations.org.htm";
+			});
+			}
+		};
+		
+		$scope.callState = function(id) { 				    		 	    		 			 		  
+ 					var responsePromise = $http.get("statelist.ajaxresponse.htm?countryid="+id);
+                	responsePromise.success(function(data, status, headers, config) {                	
+                		document.getElementById("statelist").innerHTML = data;
+                	
+                	});
+    		};
+    		    	
+	}
+	
+	function callCity(stateid)
+	{	
+		var countryid = document.getElementById("countryid").value;		
+		$.get("cityList.ajaxresponse.htm?countryid="+countryid+"&stateid="+stateid,function(data,status){
+  			document.getElementById("cityList").innerHTML = data;
+ 		});
+	}
+	
+	function validateEmail(sEmail) {
+	var filter = /^[\w\-\.\+]+\@[a-zA-Z0-9\.\-]+\.[a-zA-z0-9]{2,4}$/;
+	if (filter.test(sEmail)) {
+	return true;
+	}
+	else {
+	return false;
+	}
+	}
+</script>
+
+
+		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+		<!--[if lt IE 9]>
+  <script src="js/html5shiv.js"></script>
+  <script src="js/respond.min.js"></script>
+  <![endif]-->
+	</head>
+
+
+<body class="<c:out value="${sessionScope.bodyClass}"></c:out>">
+
+
+		<section>
+
+		<%@include file="/WEB-INF/jsp/leftpanel.jsp"%>
+
+		<div class="mainpanel">
+			<%@include file="/WEB-INF/jsp/header.jsp"%>
+
+			<div class="pageheader">
+				<h2>
+					Add Location
+				</h2>
+				<div class="breadcrumb-wrapper">
+					<span class="label">You are here:</span>
+					<ol class="breadcrumb">
+						<li>
+							<a href="dashboard.login.htm">Assentisk</a>
+						</li>
+						<li class="active">
+							Add Location
+						</li>
+					</ol>
+				</div>
+			</div>
+
+			<div class="contentpanel">
+
+				<div class="row">
+					<div class="col-md-12">
+						<div class="panel panel-default">
+
+							<div class="panel-body" ng-app="locationapp"
+								ng-controller="addLocationController">
+								<form ng-submit="saveData()">
+
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													Location Name<font color="red">*</font>
+												</label>
+												<input type="text" name="locationname" class="form-control"
+													ng-model="locationname" >
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+
+
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													Company<font color="red">*</font>
+												</label>
+												<select class="form-control" ng-model="companyid"
+													>
+													<option value="">
+														-- Select Company --
+													</option>
+													<c:forEach var="companyList" items="${companyList}">
+														<option value="<c:out value="${companyList.CompanyID}"/>">
+															<c:out value="${companyList.CompanyName}" />
+														</option>
+													</c:forEach>
+												</select>
+
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													Country<font color="red">*</font>
+												</label>
+												<select class="form-control" ng-model="countryid" id="countryid"
+													 ng-change="callState(countryid)">
+													<option value="">
+														-- Select Country --
+													</option>
+													<c:forEach var="list" items="${countryList}">
+														<option value="<c:out value="${list.CountryID}"/>">
+															<c:out value="${list.CountryName}" />
+														</option>
+													</c:forEach>
+												</select>
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													State<font color="red">*</font>
+												</label>
+												<span id="statelist"> <select class="form-control" id="stateid"
+														ng-model="stateid" >
+														<option value="">
+															-- Select State --
+														</option>
+
+													</select> </span>
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													City<font color="red">*</font>
+												</label>
+												<span id="cityList">
+												<select class="form-control" ng-model="cityid" id="cityid"
+													>
+													<option value="">
+														-- Select State --
+													</option>
+
+												</select>
+												</span>
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													Street
+												</label>
+												<input type="text" name="street" class="form-control"
+													ng-model="street" ng-init='street = ""'>
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													Address
+												</label>
+												<input type="text" name="address" class="form-control"
+													ng-model="address" ng-init='address = ""'>
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													Contact No.<font color="red">*</font>
+												</label>
+												<input type="text" name="contactno" class="form-control"
+													ng-model="contactno">
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													Zip Code
+												</label>
+												<input type="text" name="zipcode" class="form-control"
+													ng-model="zipcode" ng-init='zipcode = ""'>
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													Phone1
+												</label>
+												<input type="text" name="phone1" class="form-control"
+													ng-model="phone1" ng-init='phone1 = ""'>
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													Phone2
+												</label>
+												<input type="text" name="phone2" class="form-control"
+													ng-model="phone2" ng-init='phone2 = ""'>
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													Email1<font color="red">*</font>
+												</label>
+												<input type="text" name="email1" class="form-control"
+													ng-model="email1">
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													Email2
+												</label>
+												<input type="text" name="email2" class="form-control"
+													ng-model="email2" ng-init='email2 = ""'>
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+
+
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													Fax1
+												</label>
+												<input type="text" name="fax1" class="form-control"
+													ng-model="fax1" ng-init='fax1 = ""'>
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													Fax2
+												</label>
+												<input type="text" name="fax2" class="form-control"
+													ng-model="fax2" ng-init='fax2 = ""'>
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													Url
+												</label>
+												<input type="text" name="url" class="form-control"
+													ng-model="url" ng-init='url = ""'>
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+
+
+									<div class="row" style="display:none">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													IsActive
+												</label>
+													 <input type="checkbox" name="isactive" ng-model="isactive" ng-init="isactive=true">
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+									</br>
+									<div class="panel-footer">
+										<button class="btn btn-primary" type="submit">
+											Submit
+										</button>
+										<a href="locations.org.htm"><button
+												class="btn btn-primary" type="button">
+												Cancel
+											</button> </a>
+										<button type="reset" class="btn btn-default"
+											ng-click="reset()">
+											Reset
+										</button>
+
+
+									</div>
+								</form>
+							</div>
+						</div>
+
+					</div>
+
+
+
+
+
+				</div>
+				<!-- contentpanel -->
+
+			</div>
+			<!-- mainpanel -->
+
+		</div>
+
+		</section>
+
+
+		<script src="js/jquery-1.11.1.min.js"></script>
+		<script src="js/jquery-migrate-1.2.1.min.js"></script>
+		<script src="js/jquery-ui-1.10.3.min.js"></script>
+		<script src="js/bootstrap.min.js"></script>
+		<script src="js/modernizr.min.js"></script>
+		<script src="js/jquery.custom.min.js"></script>
+		<script src="js/toggles.min.js"></script>
+		<script src="js/jquery.cookies.js"></script>
+		<script src="js/left-menu.js"></script>
+
+ <div id="submitSucess" class="success">
+         <span > Submit Successfully </span>
+ </div>
+<div  id="divLocNameAlert" class="error2">
+         <span >  Enter Location Name</span>
+ </div>
+ <div  id="divCompnayAlert" class="error2">
+         <span >  Select Company</span>
+ </div>
+ <div  id="divCountryAlert" class="error2">
+         <span >  Select Country</span>
+ </div>
+ <div  id="divStateAlert" class="error2">
+         <span >  Select State</span>
+ </div>
+  <div  id="divCityAlert" class="error2">
+         <span >  Select City</span>
+ </div>
+
+  
+ <div  id="divContactAlert" class="error2">
+         <span > Enter Contact No</span>
+ </div>
+ 
+ 
+  <div  id="divemail1Alert" class="error2">
+         <span > Enter Email1</span>
+ </div>
+ 
+ <div  id="divEmailErrorAlert" class="error2">
+         <span > Enter Correct Email1</span>
+ </div>
+ 
+ <div  id="divEmail2ErrorAlert" class="error2">
+         <span > Enter Correct Email2</span>
+ </div>
+
+
+	</body>
+</html>

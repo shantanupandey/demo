@@ -1,0 +1,1348 @@
+<%@ taglib uri="/WEB-INF/tld/c-1_0.tld" prefix="c"%>
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<link rel="shortcut icon" href="images/favicon.png" type="image/png">
+
+		<title>Assentisk</title>
+
+		<link href="css/custom.css" rel="stylesheet">
+		<script src="js/angular.min.js"></script>
+
+	    <link rel="stylesheet" href="css/jquery-ui.css">
+ 		<script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
+ 		<script src="js/jquery-ui.js"></script>
+ 		<style>
+#description {
+	width: 400px;
+}
+
+.description_text {
+	border: 1px solid lightgrey;
+	color: black;
+	margin-bottom: 10px;
+	margin-top: 8px;
+	padding-bottom: 2px;
+	padding-right: 2px;
+	padding-top: 2px;
+	width: 504px !important;
+	border-radius: 3px;
+	box-shadow: none;
+	font-size: 13px;
+	height: auto;
+	padding: 10px;
+}
+.description_text_loc{
+	border: 1px solid lightgrey;
+	color: black;
+	margin-bottom: 10px;
+	margin-top: 8px;
+	padding-bottom: 2px;
+	padding-right: 2px;
+	padding-top: 2px;
+	width: 504px !important;
+	border-radius: 3px;
+	box-shadow: none;
+	font-size: 13px;
+	height: auto;
+	padding: 10px;
+}
+.description_text_group{
+	border: 1px solid lightgrey;
+	color: black;
+	margin-bottom: 10px;
+	margin-top: 8px;
+	padding-bottom: 2px;
+	padding-right: 2px;
+	padding-top: 2px;
+	width: 504px !important;
+	border-radius: 3px;
+	box-shadow: none;
+	font-size: 13px;
+	height: auto;
+	padding: 10px;
+}
+.description_text_dep{
+	border: 1px solid lightgrey;
+	color: black;
+	margin-bottom: 10px;
+	margin-top: 8px;
+	padding-bottom: 2px;
+	padding-right: 2px;
+	padding-top: 2px;
+	width: 504px !important;
+	border-radius: 3px;
+	box-shadow: none;
+	font-size: 13px;
+	height: auto;
+	padding: 10px;
+}
+.append_data {
+	white-space: pre-wrap; /* CSS3 */
+	white-space: -moz-pre-wrap; /* Firefox */
+	white-space: -pre-wrap; /* Opera <7 */
+	white-space: -o-pre-wrap; /* Opera 7 */
+	word-wrap: break-word; /* IE */
+}
+.append_data_loc {
+	white-space: pre-wrap; /* CSS3 */
+	white-space: -moz-pre-wrap; /* Firefox */
+	white-space: -pre-wrap; /* Opera <7 */
+	white-space: -o-pre-wrap; /* Opera 7 */
+	word-wrap: break-word; /* IE */
+}
+.aclass {
+	color: #428bca;
+	float: right;
+	padding-right: 2px;
+	text-decoration: none;
+	font-size:12px;
+}
+
+.add_more {
+	font-size: 25px;
+}
+.add_more_loc {
+	font-size: 25px;
+}
+.imgplus {
+	-moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    border-color: lightgrey lightgrey lightgrey -moz-use-text-color;
+    border-image: none;
+    border-radius: 2px;
+    border-style: solid solid solid none;
+    border-width: 1px 1px 1px medium;
+    height: 40px;
+    margin-top: 28px;
+    padding: 4px;
+    width: 27px;
+}
+</style>
+	    <script>
+							
+							var employeeapp = angular.module('employeeapp', []);
+						
+							employeeapp
+									.config( [
+											'$httpProvider',
+											function($httpProvider) {
+												$httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
+											} ]);
+						
+							function addEmployeeController($scope, $http) {
+						
+								$("div.leftpanelinner>ul>li#organization").addClass(
+										"nav-parent nav-active");
+								$("div.leftpanelinner>ul>li#organization>ul").css("display", "block");
+								$("div.leftpanelinner>ul>li#organization>ul>li#employee").addClass(
+										"active");
+						
+								$("#imageloader").css("display", "none");
+								$("#complete").css("display", "block");
+						
+								$scope.saveData = function() {
+						
+									var stateid = document.getElementById("stateid").value
+								
+									var cityid = $scope.cityid;	
+							
+							
+									
+									var divisiondata = "";
+										var myDivisions = document.getElementsByClassName("description_text");
+										for ( var i = 0; i < myDivisions.length; i++) {
+											divDat = myDivisions[i].innerHTML.replace(
+													'<a href="javascript:void(0);" class="aclass">X</a>',
+													"");
+											if (i == myDivisions.length - 1) {
+												divisiondata = divisiondata + divDat;
+											} else {
+												divisiondata = divisiondata + divDat + "','";
+											}
+							
+										}
+										
+										  var locationdata="";
+							              var locDat="";
+							              var myLocations = document.getElementsByClassName("description_text_loc");
+											for(var i = 0; i < myLocations.length; i++)
+											{
+															
+															locDat = myLocations[i].innerHTML.replace(
+																	'<a href="javascript:void(0);" class="aclass">X</a>',
+																	"");
+											
+															if (i == myLocations.length - 1) {
+																locationdata = locationdata + locDat;
+															} else {
+																locationdata = locationdata + locDat + "','";
+															}
+										}
+									
+									
+										 var groupdata="";
+							              var gpDat="";
+							              var myGroups = document.getElementsByClassName("description_text_group");
+											for(var i = 0; i < myGroups.length; i++)
+											{
+															
+															gpDat = myGroups[i].innerHTML.replace(
+																	'<a href="javascript:void(0);" class="aclass">X</a>',
+																	"");
+											
+															if (i == myGroups.length - 1) {
+																groupdata = groupdata + gpDat;
+															} else {
+																groupdata = groupdata + gpDat + "','";
+															}
+										}
+									
+									 var deptdata="";
+							              var deptDat="";
+							              var myDepts = document.getElementsByClassName("description_text_dep");
+											for(var i = 0; i < myDepts.length; i++)
+											{
+															
+															deptDat = myDepts[i].innerHTML.replace(
+																	'<a href="javascript:void(0);" class="aclass">X</a>',
+																	"");
+											
+															if (i == myDepts.length - 1) {
+																deptdata = deptdata + deptDat;
+															} else {
+																deptdata = deptdata + deptDat + "','";
+															}
+										}
+									
+									
+									var ename=$scope.ename;									
+									
+									var country=$scope.countryid;
+									var phone= $scope.phone1;
+									var email=$scope.email1;
+									var uname=$scope.username;
+									var pass=$scope.password;
+									var reporting=$scope.reportingid;
+									var email2=$scope.email2;
+									var filter = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;						
+									if (ename == '' || ename == undefined) {
+														$('#empAlert').show();
+														$('#empAlert').delay(1500).fadeOut('slow');
+										
+													}
+													else if(deptdata == ''  || deptdata == undefined ){
+														$('#depAlert').show();
+														$('#depAlert').delay(1500).fadeOut('slow');
+													
+													}
+													else if(locationdata == ''  || locationdata == undefined ){
+														$('#lAlert').show();
+														$('#lAlert').delay(1500).fadeOut('slow');
+													
+													}
+													else if(divisiondata == ''  || divisiondata == undefined ){
+														$('#divAlert').show();
+														$('#divAlert').delay(1500).fadeOut('slow');
+													
+													}
+													else if(country == ''  || country == undefined ){
+														$('#counAlert').show();
+														$('#counAlert').delay(1500).fadeOut('slow');
+													
+													}
+													else if(stateid == ''  || stateid == undefined ){
+														$('#stAlert').show();
+														$('#stAlert').delay(1500).fadeOut('slow');
+													
+													}
+													else if(cityid == ''  || cityid == undefined ){
+														$('#cityAlert').show();
+														$('#cityAlert').delay(1500).fadeOut('slow');
+													
+													}
+													else if(phone == ''  || phone == undefined ){
+														
+														$('#phoneAlert').show();
+														$('#phoneAlert').delay(1500).fadeOut('slow');
+													
+													}
+													
+													else if(email == ''  || email == undefined ){
+														$('#emailAlert').show();
+														$('#emailAlert').delay(1500).fadeOut('slow');
+													
+													}
+													else if(!filter.test(email)){	
+        												$('#validEmailAlert').show();
+														$('#validEmailAlert').delay(1500).fadeOut('slow');
+													}
+													else if(email2!='' && !filter.test(email2) ){	
+        												$('#validEmailAlert').show();
+														$('#validEmailAlert').delay(1500).fadeOut('slow');
+													}
+													else if(uname == ''  || uname == undefined ){
+														$('#unameAlert').show();
+														$('#unameAlert').delay(1500).fadeOut('slow');
+													
+													}
+													else if(pass == ''  || pass == undefined ){
+														$('#passAlert').show();
+														$('#passAlert').delay(1500).fadeOut('slow');
+													
+													}
+													else if(groupdata == ''  || groupdata == undefined ){
+														$('#grpAlert').show();
+														$('#grpAlert').delay(1500).fadeOut('slow');
+													
+													}
+													else if(reporting == ''  || reporting == undefined ){
+														$('#repAlert').show();
+														$('#repAlert').delay(1500).fadeOut('slow');
+													
+													}
+													else if (!validatePhone(phone)) {
+													        $('#divPhoneErrorAlert').show();
+													        $('#divPhoneErrorAlert').delay(1500).fadeOut('slow');
+												   } 
+										
+													else {
+						
+									
+									var responsePromise = $http.post("saveEmployee.org.htm?ename="
+											+ $scope.ename + "&address=" + $scope.address
+											+ "&countryid=" + $scope.countryid + "&stateid=" + stateid
+											+ "&cityid=" + cityid + "&zip=" + $scope.zip + "&phone1="
+											+ $scope.phone1 + "&phone2=" + $scope.phone2 + "&email1="
+											+ $scope.email1 + "&email2=" + $scope.email2
+											+ "&locations=" + locationdata + "&divisions=" + divisiondata
+											+ "&isactive=" + $scope.isactive + "&username="
+											+ $scope.username + "&password=" + $scope.password
+											+ "&group=" + groupdata + "&reporting=" + $scope.reportingid
+											+ "&companyid=" + $scope.companyid + "&departmentid="
+											+ deptdata);
+									responsePromise.success(function(data, status, headers, config) {
+									
+									    $('#submitSucess').show();
+										$('#submitSucess').delay(1500).fadeOut('slow');
+										window.location.href = "employees.org.htm";
+									});
+									}
+								};
+						
+								$scope.callState = function(id) {
+									var responsePromise = $http
+											.get("statelist.ajaxresponse.htm?countryid=" + id);
+									responsePromise.success(function(data, status, headers, config) {
+										document.getElementById("statelist").innerHTML = data;
+						
+									});
+								};
+						
+							}
+						
+							function callCity(stateid) {
+								var countryid = document.getElementById("countryid").value;
+								$.get("cityList.ajaxresponse.htm?countryid=" + countryid + "&stateid="
+										+ stateid, function(data, status) {
+									document.getElementById("cityList").innerHTML = data;
+								});
+							}
+							
+							function validatePhone(phone) {
+                            var filter = /^((\+[1-9]{1,4}[ \-]*)|(\([0-9]{2,3}\)[ \-]*)|([0-9]{2,4})[ \-]*)*?[0-9]{3,4}?[ \-]*[0-9]{3,4}?$/;
+							if (filter.test(phone)) {
+							return true;
+							}
+							else {
+							return false;
+							}
+							}
+</script>
+
+<script type="text/javascript">
+    $(function() {      
+        $("#location").autocomplete({
+            source: function (request, response) {
+                $.getJSON("locationList.ajaxresponse.htm", {
+                   term: request.term
+                }, response);
+            }
+        });
+        
+    }); 
+
+
+    $(function() {      
+        $("#test").autocomplete({
+            source: function (request, response) {
+                $.getJSON("divisionList.ajaxresponse.htm", {
+                    term: request.term
+                }, response);
+            }
+        });
+    });
+    
+    
+   
+   $(function() {      
+        $("#groupval").autocomplete({
+            source: function (request, response) {
+                $.getJSON("groupList.ajaxresponse.htm", {
+                    term: request.term
+                }, response);
+            }
+        });
+    });
+    
+    $(function() {      
+        $("#departments").autocomplete({
+            source: function (request, response) {
+                $.getJSON("departmentList.ajaxresponse.htm", {
+                    term: request.term
+                }, response);
+            }
+        });
+    });
+    
+        
+</script>
+<script type="text/javascript">
+var getdivision="";
+$(document).ready(function(){ 
+
+				$('.add_more').click(function()
+                     {
+                      	 var division = $('#test').val();
+                      	 var oldtestdiv= $('#oldtestdiv').val();
+                         var divisiondata="";
+                         var divDat="";
+                         var myDivisions = document.getElementsByClassName("description_text");
+                         document.getElementById("test").value='';		
+                         if(division!='')
+								{
+									if(oldtestdiv.indexOf(division) >= 0)
+									{
+											for(var i = 0; i < myDivisions.length; i++)
+											{
+												divDat=myDivisions[i].innerHTML.replace('<a href="javascript:void(0);" class="aclass">X</a>', "");
+												divisiondata = divisiondata + divDat + ",";	
+											}											
+											if (divisiondata.indexOf(division) >= 0)
+											{
+												$('#alreadyAdd').show();
+												$('#alreadyAdd').delay(1500).fadeOut('slow');
+											}
+											else
+											{
+											     $(".append_data").append('<div class="description_text">'+division+' <a href="javascript:void(0);" class="aclass">X</a></div>');
+											}
+									
+									}
+									else
+									{
+									
+											$('#wrongAddDiv').show();
+											$('#wrongAddDiv').delay(1500).fadeOut('slow');		
+									}
+		
+			                        		
+								}
+								else
+								{
+									$('#wrongDivs').show();
+									$('#wrongDivs').delay(1500).fadeOut('slow');		
+								}
+                     });
+
+				$('.append_data').on('click','.description_text a',function(){
+					$(this).closest('.description_text').remove();
+
+				});
+				
+				
+				
+				
+				$('.add_more_loc').click(function()
+                     {
+                      	 var location = $('#location').val();
+                      	 var oldtestloc= $('#oldtestloc').val();
+                         var locationdata="";
+                         var locDat="";
+                         var myLocations = document.getElementsByClassName("description_text_loc");
+                         document.getElementById("location").value='';		
+                         if(location!='')
+								{
+									if(oldtestloc.indexOf(location) >= 0)
+									{
+											for(var i = 0; i < myLocations.length; i++)
+											{
+												locDat=myLocations[i].innerHTML.replace('<a href="javascript:void(0);" class="aclass">X</a>', "");
+												locationdata = locationdata + locDat + ",";	
+											}											
+											if (locationdata.indexOf(location) >= 0)
+											{
+												$('#alreadyAdd').show();
+												$('#alreadyAdd').delay(1500).fadeOut('slow');
+											}
+											else
+											{
+											     $(".append_data_loc").append('<div class="description_text_loc">'+location+' <a href="javascript:void(0);" class="aclass">X</a></div>');
+											}
+									
+									}
+									else
+									{
+									
+											$('#wrongAddLoc').show();
+											$('#wrongAddLoc').delay(1500).fadeOut('slow');		
+									}
+		
+			                        		
+								}
+								else
+								{
+									$('#wrongLocs').show();
+									$('#wrongLocs').delay(1500).fadeOut('slow');		
+								}
+                     });
+
+				$('.append_data_loc').on('click','.description_text_loc a',function(){
+					$(this).closest('.description_text_loc').remove();
+
+				});
+				
+				
+				$('.add_more_group').click(function()
+                     {
+                      	 var groupval = $('#groupval').val();
+                      	 var oldtestgroup= $('#oldtestgroup').val();
+                         var groupdata="";
+                         var gpDat="";
+                         var myGroups = document.getElementsByClassName("description_text_group");
+                         document.getElementById("groupval").value='';		
+                         if(groupval!='')
+								{
+									if(oldtestgroup.indexOf(groupval) >= 0)
+									{
+											for(var i = 0; i < myGroups.length; i++)
+											{
+												gpDat=myGroups[i].innerHTML.replace('<a href="javascript:void(0);" class="aclass">X</a>', "");
+												groupdata = groupdata + gpDat + ",";	
+											}											
+											if (groupdata.indexOf(groupval) >= 0)
+											{
+												$('#alreadyAdd').show();
+												$('#alreadyAdd').delay(1500).fadeOut('slow');
+											}
+											else
+											{
+											     $(".append_data_group").append('<div class="description_text_group">'+groupval+' <a href="javascript:void(0);" class="aclass">X</a></div>');
+											}
+									
+									}
+									else
+									{
+									
+											$('#wrongAddGroup').show();
+											$('#wrongAddGroup').delay(1500).fadeOut('slow');		
+									}
+		
+			                        		
+								}
+								else
+								{
+									$('#wrongGroups').show();
+									$('#wrongGroups').delay(1500).fadeOut('slow');		
+								}
+                     });
+
+				$('.append_data_group').on('click','.description_text_group a',function(){
+					$(this).closest('.description_text_group').remove();
+
+				});
+				
+				$('.add_more_dep').click(function()
+                     {
+                      	 var department = $('#departments').val();
+                      	 var oldtestdep= $('#oldtestdep').val();
+                         var deptdata="";
+                         var deptDat="";
+                         var myDept = document.getElementsByClassName("description_text_dep");
+                         document.getElementById("departments").value='';		
+                         if(department!='')
+								{
+									if(oldtestdep.indexOf(department) >= 0)
+									{
+											for(var i = 0; i < myDept.length; i++)
+											{
+												deptDat=myDept[i].innerHTML.replace('<a href="javascript:void(0);" class="aclass">X</a>', "");
+												deptdata = deptdata + deptDat + ",";	
+											}											
+											if (deptdata.indexOf(department) >= 0)
+											{
+												$('#alreadyAdd').show();
+												$('#alreadyAdd').delay(1500).fadeOut('slow');
+											}
+											else
+											{
+											     $(".append_data_dep").append('<div class="description_text_dep">'+department+' <a href="javascript:void(0);" class="aclass">X</a></div>');
+											}
+									
+									}
+									else
+									{
+									
+											$('#wrongAddDept').show();
+											$('#wrongAddDept').delay(1500).fadeOut('slow');		
+									}
+		
+			                        		
+								}
+								else
+								{
+									$('#wrongdepts').show();
+									$('#wrongdepts').delay(1500).fadeOut('slow');		
+								}
+                     });
+
+				$('.append_data_dep').on('click','.description_text_dep a',function(){
+					$(this).closest('.description_text_dep').remove();
+
+				});
+				
+				
+				
+});
+
+</script>
+
+<script type="text/javascript">
+
+
+function checkUserName()
+{
+	var username = document.getElementById("username").value;	
+	if(username!='')
+	{
+	$.get("checkusername.org.htm?username=" + username, function(data, status) {
+	
+									if(data == 'exist')
+									{
+										document.getElementById("username").value = "";
+										$('#checkNameAlert').show();
+									    $('#checkNameAlert').delay(1500).fadeOut('slow');
+									}
+								});
+								}
+}	
+</script>
+	</head>
+
+
+<body class="<c:out value="${sessionScope.bodyClass}"></c:out>">
+
+
+		<section>
+
+		<%@include file="/WEB-INF/jsp/leftpanel.jsp"%>
+
+		<div class="mainpanel">
+			<%@include file="/WEB-INF/jsp/header.jsp"%>
+
+			<div class="pageheader">
+				<h2>
+					<c:out value="${sessionScope.addEmploye}"/>
+				</h2>
+				<div class="breadcrumb-wrapper">
+					<span class="label"><c:out value="${sessionScope.DashBoard_YouAreHere}"/>:</span>
+					<ol class="breadcrumb">
+						<li>
+							<a href="dashboard.login.htm">Assentisk</a>
+						</li>
+						<li class="active">
+							<c:out value="${sessionScope.addEmploye}"/>
+						</li>
+					</ol>
+				</div>
+			</div>
+
+			<div class="contentpanel">
+
+				<div class="row">
+					<div class="col-md-12">
+						<div class="panel panel-default">
+
+							<div class="panel-body" ng-app="employeeapp"
+								ng-controller="addEmployeeController">
+								<form ng-submit="saveData()">
+									
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													<c:out value="${sessionScope.employeName}"/><font color="red">*</font>
+												</label>
+												<input type="text" name="ename" class="form-control"
+													ng-model="ename" maxlength="250" >
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									
+									
+									<div class="row" style="display: none;">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													<c:out value="${sessionScope.Employe_Company}"/><font color="red">*</font>
+												</label>
+												<select class="form-control" ng-model="companyid">
+													<option value="">
+														-- Select Company --
+													</option>
+													<c:forEach var="list" items="${companyList}">
+														<option value="<c:out value="${list.CompanyID}"/>">
+															<c:out value="${list.CompanyName}" />
+														</option>
+													</c:forEach>
+												</select>
+											</div>
+										</div>									
+									</div>
+									
+									
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+<<<<<<< .mine
+												<table>
+													<tbody>
+														<tr>
+															<td>
+																<label class="control-label">
+																	Department
+																	<font color="red">*</font>
+																</label>
+																<input type="text" id="departments" style="width: 478px;" name="departments"
+																	class="form-control" ng-model="departments">
+																	
+																<input type="hidden" id="testdep" name="testdep">
+																<input type="hidden" id="oldtestdep" name="oldtestdep"
+																	value="<c:out value="${getDepartments}"/>">
+															</td>
+															<td style="width: 31px; border-top-width: 14px;">
+															<div
+																	style=""
+																	class="imgplus">
+																	<a href="javascript:void(0);" class="add_more_dep"><img
+																			alt="" src="images/plus.jpg" style="width: 16px;">
+																	</a>
+																</div>
+															</td>
+														</tr>
+													</tbody>
+												</table>
+=======
+												<label class="control-label">
+													<c:out value="${sessionScope.Employe_Department}"/><font color="red">*</font>
+												</label>
+												<select class="form-control" ng-model="departmentid">
+													<option value="">
+														-- Select Department -- 
+													</option>
+													<c:forEach var="list" items="${departmentList}">
+														<option value="<c:out value="${list.DepartmentID}"/>">
+															<c:out value="${list.DeptName}" />
+														</option>
+													</c:forEach>
+												</select>
+>>>>>>> .r118
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									
+									<table border="0" width="500" cellspacing="0">
+										   <tbody class="append_data_dep"></tbody>									    
+										</table> 
+									
+									
+									
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+<<<<<<< .mine
+												<table>
+													<tbody>
+														<tr>
+															<td>
+																<label class="control-label">
+																	Location
+																	<font color="red">*</font>
+																</label>
+																<input type="text" id="location" style="width: 478px;" name="location"
+																	class="form-control" ng-model="location">
+																	
+																<input type="hidden" id="testloc" name="testloc">
+																<input type="hidden" id="oldtestloc" name="oldtestloc"
+																	value="<c:out value="${getLocations}"/>">
+															</td>
+															<td style="width: 31px; border-top-width: 14px;">
+															<div
+																	style=""
+																	class="imgplus">
+																	<a href="javascript:void(0);" class="add_more_loc"><img
+																			alt="" src="images/plus.jpg" style="width: 16px;">
+																	</a>
+																</div>
+															</td>
+														</tr>
+													</tbody>
+												</table>
+=======
+												<label class="control-label">
+													<c:out value="${sessionScope.employeLocations}"/><font color="red">*</font>
+												</label>
+												<input type="text" id="location" name="locations" class="form-control" ng-model="locations" >
+												<a href="#"  onclick="addLoc()"><font color="green"><b><c:out value="${sessionScope.Employe_add}"/></b></font></a>
+												<select  name="addLocation" id="addLocation"  class="form-control" multiple="multiple">
+
+												</select>
+												 <a href="#"  onclick="deleteLoc()"><font color="red"><b><c:out value="${sessionScope.Employe_delete}"/></b></font></a>
+											
+											
+>>>>>>> .r118
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									
+									<table border="0" width="500" cellspacing="0">
+										   <tbody class="append_data_loc"></tbody>									    
+										</table> 
+									
+									
+									<!-- row -->
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+<<<<<<< .mine
+												<table>
+													<tbody>
+														<tr>
+															<td>
+																<label class="control-label">
+																	Division
+																	<font color="red">*</font>
+																</label>
+=======
+												<label class="control-label">
+													<c:out value="${sessionScope.Employe_divisions}"/><font color="red">*</font>
+												</label>
+												<input type="text" id="test" name="divisions" class="form-control"	ng-model="divisions">
+												<a href="#"  onclick="addDivision()"><font color="green"><b><c:out value="${sessionScope.Employe_add}"/></b></font></a>
+												<select  name="addDivision" id="addDivision"  class="form-control" multiple="multiple">
+>>>>>>> .r118
+
+<<<<<<< .mine
+																<input type="hidden" id="testdiv" name="testdiv">
+																<input type="hidden" id="oldtestdiv" name="oldtestdiv"
+																	value="<c:out value="${getDivisions}"/>">
+
+																<input type="text" style="width: 478px;" id="test" name="test"
+																	class="form-control" ng-model="test">
+															</td>
+															<td style="width: 31px; border-top-width: 14px;">
+																<div
+																	style=""
+																	class="imgplus">
+																	<a href="javascript:void(0);" class="add_more"><img
+																			alt="" src="images/plus.jpg" style="width: 16px;">
+																	</a>
+																</div>
+															</td>
+															
+														</tr>
+													</tbody>
+												</table>
+
+=======
+												</select>
+												 <a href="#"  onclick="deleteDivision()"><font color="red"><b><c:out value="${sessionScope.Employe_delete}"/></b></font></a>
+												
+>>>>>>> .r118
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+										<table border="0" width="500" cellspacing="0">
+										   <tbody class="append_data"></tbody>									    
+										</table> 
+									
+																
+									
+									<!-- row -->
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													<c:out value="${sessionScope.addEditEmployeAddress}"/>
+												</label>
+												<textarea rows="4" cols="10" class="form-control" ng-model="address" maxlength="250" ng-init="address=''"></textarea>
+												
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+									
+								
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													<c:out value="${sessionScope.addEditEmployeCountry}"/><font color="red">*</font>
+												</label>
+												<select class="form-control" ng-model="countryid" id="countryid"
+													 ng-change="callState(countryid)">
+													<option value="">
+														-- Select Country --
+													</option>
+													<c:forEach var="list" items="${countryList}">
+														<option value="<c:out value="${list.CountryID}"/>">
+															<c:out value="${list.CountryName}" />
+														</option>
+													</c:forEach>
+												</select>
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+														<c:out value="${sessionScope.addEditEmployeState}"/><font color="red">*</font>
+												</label>
+												<span id="statelist"> <select class="form-control" id="stateid"
+														ng-model="stateid" >
+														<option value="">
+															-- Select State --
+														</option>
+
+													</select> </span>
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													<c:out value="${sessionScope.addEditEmployeCity}"/><font color="red">*</font>
+												</label>
+												<input type="text" name="cityid" class="form-control"
+													ng-model="cityid" maxlength="20" ng-init="cityid=''">
+												
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+									
+									
+										<!-- row -->
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													<c:out value="${sessionScope.addEditEmployeZip}"/>
+												</label>
+												<input type="text" name="zip" class="form-control"
+													ng-model="zip" maxlength="20" ng-init="zip=''">
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+									
+									
+									
+									
+											<!-- row -->
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													<c:out value="${sessionScope.addEditEmployePhone1}"/><font color="red">*</font>
+												</label>
+												<input type="text" name="phone1" class="form-control"
+													ng-model="phone1" maxlength="15">
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+									
+											
+											<!-- row -->
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													<c:out value="${sessionScope.addEditEmployePhone2}"/>
+												</label>
+												<input type="text" name="phone2" class="form-control"
+													ng-model="phone2" maxlength="15" ng-init="phone2=''">
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+									
+										
+											<!-- row -->
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													<c:out value="${sessionScope.addEditEmployeEmail1}"/><font color="red">*</font>
+												</label>
+												<input type="text" name="email1" class="form-control"
+													ng-model="email1" maxlength="100">
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+									
+										<!-- row -->
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													<c:out value="${sessionScope.addEditEmployeEmail2}"/>
+												</label>
+												<input type="text" name="email2" class="form-control"
+													ng-model="email2" maxlength="100" ng-init="email2=''">
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+									
+									
+									
+									
+									
+
+
+									<div class="row" style="padding-top: 10px;display:none;">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													<c:out value="${sessionScope.IsActive}"/>
+												</label>
+												 <input type="checkbox" name="isactive" ng-model="isactive" ng-init="isactive=true">
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									
+									<!-- row -->
+								<hr> 
+										<!-- row -->
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													<c:out value="${sessionScope.addEditEmployeIsUsername}"/><font color="red">*</font>
+												</label>
+												<input type="text" name="username" id="username" class="form-control"	ng-model="username"  ng-init='username =" "' maxlength="250" onblur="checkUserName();">
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+									
+										<!-- row -->
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													<c:out value="${sessionScope.addEditEmployeIsPassword}"/><font color="red">*</font>
+												</label>
+												<input type="password" name="password" class="form-control"	ng-model="password" maxlength="250">
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+									
+									
+									
+									
+										<!-- row -->
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+<<<<<<< .mine
+												<table>
+													<tbody>
+														<tr>
+															<td>
+																<label class="control-label">
+																	Group
+																	<font color="red">*</font>
+																</label>
+
+																<input type="hidden" id="testgroup" name="testgroup">
+																<input type="hidden" id="oldtestgroup" name="oldtestgroup"
+																	value="<c:out value="${getGroups}"/>">
+
+																<input type="text" style="width: 478px;" id="groupval" name="groupval"
+																	class="form-control" ng-model="groupval">
+															</td>
+															<td style="width: 31px; border-top-width: 14px;">
+																<div
+																	style=""
+																	class="imgplus">
+																	<a href="javascript:void(0);" class="add_more_group"><img
+																			alt="" src="images/plus.jpg" style="width: 16px;">
+																	</a>
+																</div>
+															</td>
+															
+														</tr>
+													</tbody>
+												</table>
+
+=======
+												<label class="control-label">
+													<c:out value="${sessionScope.addEditEmployeIsGroup}"/><font color="red">*</font>
+												</label>
+												<div style="border: 1px solid lightgrey; padding-left: 50px;">
+													<c:forEach var="list" items="${groupList}">
+														<label>
+															<c:out value="${list.Gname}" />
+														</label>
+														<input type="checkbox" name="roleid"
+															id="test<c:out value="${list.GroupID}" />"
+															value="<c:out value="${list.GroupID}" />">
+														</br>
+													</c:forEach>
+												</div>
+>>>>>>> .r118
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+										<table border="0" width="500" cellspacing="0">
+										   <tbody class="append_data_group"></tbody>									    
+										</table> 
+									
+										
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													<c:out value="${sessionScope.addEditEmployeReportingTo}"/><font color="red">*</font>
+												</label>
+												<select class="form-control" ng-model="reportingid" id="reportingid">
+													<option value="">
+														-- Select User --
+													</option>
+													<c:forEach var="list" items="${employeeList}" >
+														<option value="<c:out value="${list.EmployeeID}"/>">
+															<c:out value="${list.EmpName}" />
+														</option>
+													</c:forEach>
+												</select>
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div></br>
+	
+									<!-- row -->
+									<div class="panel-footer">
+										<button class="btn btn-primary" type="submit">
+											<c:out value="${sessionScope.submit}"/>
+										</button>
+										<a href="employees.org.htm"><button
+												class="btn btn-primary" type="button">
+												<c:out value="${sessionScope.cancel}"/>
+											</button> </a>
+										<button type="reset" class="btn btn-default"
+											ng-click="reset()">
+											<c:out value="${sessionScope.reset}"/>
+										</button>
+
+										
+									</div>
+									
+									
+									
+									
+									
+									
+									
+									
+									
+									
+									
+									
+								</form>
+							</div>
+						</div>
+
+					</div>
+
+
+
+
+
+				</div>
+				<!-- contentpanel -->
+
+			</div>
+			<!-- mainpanel -->
+
+		</div>
+
+		</section>
+
+
+		<script src="js/jquery-1.11.1.min.js"></script>
+		<script src="js/jquery-migrate-1.2.1.min.js"></script>
+		<script src="js/jquery-ui-1.10.3.min.js"></script>
+		<script src="js/bootstrap.min.js"></script>
+		<script src="js/modernizr.min.js"></script>
+		<script src="js/jquery.custom.min.js"></script>
+		<script src="js/toggles.min.js"></script>
+		<script src="js/jquery.cookies.js"></script>
+		<script src="js/left-menu.js"></script>
+
+					
+					<div id="submitSucess" class="success">
+						<span> <c:out value="${sessionScope.SubmitAlert}"/> </span>
+					</div>
+					<div id="empAlert" class="error2">
+						<span> <c:out value="${sessionScope.Employe_Name_Alert}"/> </span>
+					</div>
+					
+					<div id="depAlert" class="error2">
+<<<<<<< .mine
+						<span> Add Department  </span>
+=======
+						<span> <c:out value="${sessionScope.Employe_department_Alert}"/></span>
+>>>>>>> .r118
+					</div>
+					<div id="lAlert" class="error2">
+<<<<<<< .mine
+						<span> Add Location  </span>
+=======
+						<span> <c:out value="${sessionScope.Employe_location_Alert}"/> </span>
+>>>>>>> .r118
+					</div>
+					<div id="divAlert" class="error2">
+<<<<<<< .mine
+						<span> Add Division  </span>
+=======
+						<span> <c:out value="${sessionScope.Employe_Divisions_Alert}"/> </span>
+>>>>>>> .r118
+					</div>
+					<div id="counAlert" class="error2">
+						<span>  <c:out value="${sessionScope.Employe_Country_Alert}"/></span>
+					</div>
+					<div id="stAlert" class="error2">
+						<span> <c:out value="${sessionScope.Employe_State_alert}"/> </span>
+					</div>
+					<div id="cityAlert" class="error2">
+<<<<<<< .mine
+						<span> Enter City Name </span>
+=======
+						<span> <c:out value="${sessionScope.Employe_City_Alert}"/> </span>
+>>>>>>> .r118
+					</div>
+					<div id="phoneAlert" class="error2">
+						<span>  <c:out value="${sessionScope.Employe_Phone_Alert}"/> </span>
+					</div>
+					<div id="emailAlert" class="error2">
+						<span> <c:out value="${sessionScope.Employe_email_Alert}"/>  </span>
+					</div>
+					<div id="unameAlert" class="error2">
+						<span> <c:out value="${sessionScope.Employe_username_Alert}"/></span>
+					</div>
+					<div id="passAlert" class="error2">
+						<span> <c:out value="${sessionScope.Employe_password_Alert}"/></span>
+					</div>
+					<div id="grpAlert" class="error2">
+<<<<<<< .mine
+						<span> Add Group</span>
+=======
+						<span> <c:out value="${sessionScope.Employe_group_Alert}"/></span>
+>>>>>>> .r118
+					</div>
+					<div id="repAlert" class="error2">
+						<span> <c:out value="${sessionScope.Employe_reporting_Alert}"/></span>
+					</div>
+					<div id="validEmailAlert" class="error2">
+						<span> <c:out value="${sessionScope.Employe_validEmail_alert}"/></span>
+					</div>
+<<<<<<< .mine
+					 
+					 <div id="wrongLocs" class="error2">
+					         <span > Select Location  </span>
+					 </div>
+					 <div id="wrongGroups" class="error2">
+					         <span > Select Group </span>
+					 </div>
+					 <div id="wrongAddDiv" class="error2">
+					         <span > Add Valid Division </span>
+					 </div>
+					 <div id="wrongAddGroup" class="error2">
+					         <span > Add Valid Group </span>
+					 </div>
+					  <div id="wrongAddLoc" class="error2">
+					         <span > Add Valid Locations </span>
+					 </div>
+					  <div  id="checkNameAlert" class="error2">
+					         <span > User Name already exists </span>
+					 </div>
+					 <div id="divPhoneErrorAlert" class="error2">
+						<span> Phone is required in valid format</span>
+					</div>
+=======
+				  <div  id="checkNameAlert" class="error2">
+				         <span > <c:out value="${sessionScope.Employe_User_Alert}"/> </span>
+				 </div>
+				 <div id="divPhoneErrorAlert" class="error2">
+										<span> <c:out value="${sessionScope.Employe_PhoneValid_Alert}"/></span>
+									</div>
+>>>>>>> .r118
+					<div id="alreadyAdd" class="error2">
+         				<span > Already Added</span>
+ 					</div>
+ 					 <div id="wrongdepts" class="error2">
+					         <span > Select Department </span>
+					 </div>
+					 <div id="wrongAddDept" class="error2">
+					         <span > Add Valid Department </span>
+					 </div>
+
+	</body>
+</html>

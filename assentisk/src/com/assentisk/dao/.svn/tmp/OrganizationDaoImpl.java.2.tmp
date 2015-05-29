@@ -1,0 +1,842 @@
+package com.assentisk.dao;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import net.sf.cglib.core.EmitUtils;
+
+import org.springframework.jdbc.core.JdbcTemplate;
+
+import com.assentisk.bean.ApplicationsBean;
+import com.assentisk.bean.BusinessProcessesBean;
+import com.assentisk.bean.CityBean;
+import com.assentisk.bean.CompanyBean;
+import com.assentisk.bean.DepartmentBean;
+import com.assentisk.bean.EmployeeBean;
+import com.assentisk.bean.LanguageKeysBean;
+import com.assentisk.bean.LegalEntitiesBean;
+import com.assentisk.bean.LocationsBean;
+import com.assentisk.bean.StateBean;
+import com.assentisk.bean.UserRecordBean;
+import com.assentisk.bean.VendorBean;
+import com.assentisk.util.DBUtill;
+
+public class OrganizationDaoImpl implements OrganizationDao{
+
+	DBUtill dbUtil = new DBUtill();
+	
+	JdbcTemplate jdbcTemplate = new JdbcTemplate();
+
+	public JdbcTemplate getJdbcTemplate() {
+		return jdbcTemplate;
+	}
+
+	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+		this.jdbcTemplate = jdbcTemplate;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<CompanyBean> getCompanyList() {
+		List<CompanyBean> list = jdbcTemplate
+				.queryForList("select * from assentisk_company where IsActive='1' order by CompanyID");
+		return list;
+	}
+
+	public void savecompany(String cname, String no, Integer isactive) {
+
+		Date now = new Date();
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String currentDate = format.format(now);
+		String query = "insert into assentisk_company(NoOfEmployees,CompanyName,CreatedDate,CreatedBy,ModifiedDate,ModifiedBy,IsActive) values('"
+				+ no
+				+ "','"
+				+ cname
+				+ "','"
+				+ currentDate
+				+ "',1,'"
+				+ currentDate + "',1,'" + isactive + "')";
+		jdbcTemplate.execute(query);
+
+	}
+
+	@SuppressWarnings("unchecked")
+	public List getcompany(String id) {
+		List list = jdbcTemplate
+				.queryForList("select *from assentisk_company where CompanyID='"
+						+ id + "'");
+		
+		return list;
+	}
+
+	public void updatecompany(String cid, String cname, String no,
+			Integer isactive) {
+		Date now = new Date();
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String currentDate = format.format(now);
+		String query = "update assentisk_company set NoOfEmployees='" + no
+				+ "',CompanyName='" + cname + "',IsActive='" + isactive
+				+ "',ModifiedDate='" + currentDate
+				+ "',ModifiedBy='1' where CompanyID='" + cid + "'";
+
+		jdbcTemplate.execute(query);
+
+	}
+	
+	public void deletecompany(String cid) {
+
+		String query = "delete from assentisk_company where CompanyID='" + cid
+				+ "'";
+		jdbcTemplate.execute(query);
+
+	}
+
+
+      @SuppressWarnings("unchecked")
+  	public List<DepartmentBean> getDepartmentList() {
+  	
+  		//String query = "select asd.DepartmentID,asd.CompanyID,asd.BranchID,asd.DeptName,asd.DeptDesc,asd.CreatedDate,asd.CreatedBy,asd.ModifiedDate,asd.ModifiedBy,asd.IsActive, ac.CompanyName, acb.BranchName from assentisk_company_department asd join assentisk_company ac on asd.CompanyID = ac.CompanyID join assentisk_company_branch acb on asd.BranchID = acb.BranchID order by asd.DepartmentID";
+    	String query = "select asd.DepartmentID,asd.CompanyID,asd.BranchID,asd.DeptName,asd.DeptDesc,asd.CreatedDate,asd.CreatedBy,asd.ModifiedDate,asd.ModifiedBy,asd.IsActive,acb.BranchName from assentisk_company_department asd join assentisk_company_branch acb on asd.BranchID = acb.BranchID order by asd.DepartmentID";
+  		List<DepartmentBean> dptList = jdbcTemplate.queryForList(query);
+  		return dptList;
+  	}
+
+	public void savedepartment(Integer companyID, Integer branceID,
+			String departmentName, String departmentDesc, String createdDate,
+			Integer createdBy, String modifiedDate, Integer modifiedBy,
+			Integer isActive) {
+		
+		String query = "insert into assentisk_company_department(CompanyID,BranchID,DeptName,DeptDesc,CreatedDate,CreatedBy,ModifiedDate,ModifiedBy,IsActive)values('"+companyID+"','"+branceID+"','"+departmentName+"','"+departmentDesc+"','"+createdDate+"','"+createdBy+"','"+modifiedDate+"','"+modifiedBy+"','"+isActive+"')";
+		jdbcTemplate.execute(query);
+		
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<DepartmentBean> getDepartmentById(Integer departmentID) {
+		
+		String query = "select *from assentisk_company_department where DepartmentID = '"+departmentID+"'";
+		List<DepartmentBean> departmentList = jdbcTemplate.queryForList(query);
+		return departmentList;
+	}
+
+	public void updatedDepartment(Integer departmentID,Integer companyID, Integer branchID,
+			String departmentName, String departmentDesc, String modifiedDate,
+			Integer modifiedBy, Integer isActive) {
+		
+		String query = "update assentisk_company_department set CompanyID = '"+companyID+"', BranchID = '"+branchID+"', DeptName = '"+departmentName+"', DeptDesc = '"+departmentDesc+"', ModifiedDate = '"+modifiedDate+"', ModifiedBy = '"+modifiedBy+"', IsActive = '"+isActive+"' where DepartmentID = '"+departmentID+"'";
+		jdbcTemplate.execute(query);
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<LegalEntitiesBean> getLegalEntitiesList() {
+		
+		String query = "select al.LegalEntityID, al.LegalEntityName, al.LegalEntityDescription, al.CompanyID, al.DepartmentID, al.BranchID,al.CompanyPeriodID, al.CreatedDate, al.CreatedBy, al.MoidifiedDate, al.ModifiedBy, al.IsActive, acd.DeptName,acb.Name from assentisk_divisions al join assentisk_company_department acd on al.DepartmentID = acd.DepartmentID join assentisk_company_locations acb on al.BranchID = acb.LocationID order by al.LegalEntityID";
+		List<LegalEntitiesBean> legalEntitiesList = jdbcTemplate.queryForList(query);
+		return legalEntitiesList;
+	}
+
+	public void saveLegalEntity(String legalEntityName,
+			String legalEntityDescription,
+			Integer departmentID, Integer branchID, Integer companyPeriodID,
+			String createdDate, Integer createdBy, String modifiedDate,
+			Integer modifiedBy, Integer isActive, Integer employeeid) {
+		
+		String query = "insert into assentisk_divisions(LegalEntityName, LegalEntityDescription,DepartmentID,BranchID,CompanyPeriodID,CreatedDate,CreatedBy,MoidifiedDate,ModifiedBy,IsActive, EmployeeID)values('"+legalEntityName+"','"+legalEntityDescription+"','"+departmentID+"','"+branchID+"','"+companyPeriodID+"','"+createdDate+"','"+createdBy+"','"+modifiedDate+"','"+modifiedBy+"','"+isActive+"','"+employeeid+"')";
+		System.out.println("add: " + query);
+		jdbcTemplate.execute(query);
+		
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<LegalEntitiesBean> getLegalEntityById(Integer legalEntityID) {
+		
+		String query = "select ad.LegalEntityID,ad.LegalEntityName,ad.LegalEntityDescription,ad.CompanyID,ad.DepartmentID,ad.BranchID,ad.CompanyPeriodID,ad.EmployeeID, ae.EmpName from assentisk_divisions ad join assentisk_employees ae on ae.EmployeeID= ad.EmployeeID where ad.LegalEntityID = '"+legalEntityID+"'";
+		List<LegalEntitiesBean> legalEntityList = jdbcTemplate.queryForList(query);
+		return legalEntityList;
+	}
+
+	public void updatedLegalEntity(Integer legalEntityID,
+			String legalEntityName, String legalEntityDescription,
+			Integer departmentID, Integer branchID,
+			Integer companyPeriodID, String modifiedDate, Integer modifiedBy,
+			Integer isActive, Integer employeeID) {
+		
+		String query = "update assentisk_divisions set LegalEntityName = '"+legalEntityName+"',LegalEntityDescription='"+legalEntityDescription+"',DepartmentID='"+departmentID+"', BranchID = '"+branchID+"',  MoidifiedDate = '"+modifiedDate+"', ModifiedBy = '"+modifiedBy+"', IsActive = '"+isActive+"', EmployeeID='"+employeeID+"' where LegalEntityID = '"+legalEntityID+"'";
+		jdbcTemplate.execute(query);
+		
+	}
+
+	public void deleteLegalEntity(Integer legalEntityID) {
+		
+		String query = "delete from assentisk_divisions where LegalEntityID = '"+legalEntityID+"'";
+		jdbcTemplate.execute(query);
+	}
+
+	public void deleteDepartment(Integer departmentID) {
+
+		String query = "delete from assentisk_company_department where DepartmentID = '"+departmentID+"'";
+		jdbcTemplate.execute(query);
+	}
+
+	
+
+	@SuppressWarnings("unchecked")
+	public List<CompanyBean> getCmpList() {
+		List<CompanyBean> list = jdbcTemplate
+				.queryForList("select * from assentisk_company where IsActive='1' order by CompanyID");
+		return list;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<CompanyBean> getDepList() {
+		List<CompanyBean> list = jdbcTemplate
+				.queryForList("select * from assentisk_company_department order by DepartmentID");
+		return list;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<CompanyBean> getBranchList() {
+		List<CompanyBean> list = jdbcTemplate
+				.queryForList("select * from assentisk_company_locations order by LocationID");
+		return list;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<LocationsBean> getLocationsList() {
+		
+		String query = "select acl.LocationID, acl.CompanyID, acl.Name, acl.Street, acl.Address, acl.CityID, acl.CountryID, acl.StateID,acl.Contactno,acl.ZipCode, acl.Phone1, acl.Phone2, acl.Email1, acl.Email2, acl.Fax1, acl.Fax2, acl.Url,acl.IsActive,ac.CompanyName, acn.CountryName, ass.StateName from assentisk_company_locations acl join assentisk_company ac on acl.CompanyID = ac.CompanyID join assentisk_country acn on acn.CountryID = acl.CountryID join assentisk_state ass on ass.StateID = acl.StateID";
+		List<LocationsBean> locationsList = jdbcTemplate.queryForList(query);
+		return locationsList;
+	}
+
+	public void saveLocation(String locationname,Integer countryid,
+			Integer stateid, String cityid, String street, String address,
+			String contactno, String zipcode, String phone1, String phone2,
+			String email1, String email2, String fax1, String fax2, String url,
+			String createdate, Integer createby, String modifieddate, Integer modifyby,
+			Integer isactive) {
+	
+		String query = "insert into assentisk_company_locations(CountryID, StateID, CityID, Name, Street, Address, Contactno, ZipCode, Phone1, Phone2, Email1, Email2, Fax1, Fax2, Url, CreatedDate, CreatedBy, ModifiedDate, ModifiedBy, IsActive) values('"+countryid+"','"+stateid+"','"+cityid+"','"+locationname+"','"+street+"','"+address+"','"+contactno+"','"+zipcode+"','"+phone1+"','"+phone2+"','"+email1+"','"+email2+"','"+fax1+"','"+fax2+"','"+url+"','"+createdate+"','"+createby+"','"+modifieddate+"','"+modifyby+"','"+isactive+"')";
+		jdbcTemplate.execute(query);
+		
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<LocationsBean> getLocationById(Integer locationid) {
+		
+		String query = "select *from assentisk_company_locations where LocationID = '"+locationid+"'";
+		List<LocationsBean> getRow = jdbcTemplate.queryForList(query); 
+		return getRow;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<StateBean> getStateByCountryID(Integer countryid) {
+
+		String query = "select *from assentisk_state where CountryID = '"
+				+ countryid + "'";
+		List<StateBean> stateList = jdbcTemplate.queryForList(query);
+		return stateList;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<CityBean> getCityByStateCountryID(Integer stateid,
+			Integer countryid) {
+
+		String query = "select *from assentisk_city where StateID = '"
+				+ stateid + "' and CountryID = '" + countryid + "'";		
+		List<CityBean> cityList = jdbcTemplate.queryForList(query);
+		return cityList;
+	}
+
+	public void updateLocation(Integer locationid, String locationname,
+			Integer countryid, Integer stateid,
+			String cityid, String street, String address, String contactno,
+			String zipcode, String phone1, String phone2, String email1,
+			String email2, String fax1, String fax2, String url,
+			String modifieddate, Integer modifyby, Integer isactive) {
+		
+		String query = "update assentisk_company_locations set Name='"+locationname+"', Street='"+street+"', Address='"+address+"', CityID='"+cityid+"', CountryID='"+countryid+"', StateID='"+stateid+"', Contactno='"+contactno+"', ZipCode='"+zipcode+"', Phone1='"+phone1+"', Phone2='"+phone2+"', Email1='"+email1+"', Email2='"+email2+"', Fax1='"+fax1+"', Fax2='"+fax2+"', Url='"+url+"', ModifiedDate='"+modifieddate+"', ModifiedBy='"+modifyby+"', IsActive='"+isactive+"' where LocationID='"+locationid+"'";
+		jdbcTemplate.execute(query);
+		
+	}
+
+	public void deleteLocationById(Integer locationid) {
+	
+		String query = "delete from assentisk_company_locations where LocationID = '"+locationid+"'";
+		jdbcTemplate.execute(query);
+		
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<ApplicationsBean> getApplicationsList() {
+		StringBuilder sb = new StringBuilder();
+		String query = "select aa.ApplicationID, aa.ApplicationName,aa.LocationID,aa.DivisionID,aa.EmployeeID,aa.RequestDate,aa.CreatedDate,aa.CreatedBy, aa.ModifiedDate,aa.ModifiedBy, aa.IsActive, acl.Name , ad.LegalEntityName,ae.EmpName from assentisk_applications aa join assentisk_company_locations acl on acl.LocationID = aa.LocationID join assentisk_divisions ad on ad.LegalEntityID = aa.DivisionID join assentisk_employees ae on ae.EmployeeID = aa.EmployeeID";
+		List<ApplicationsBean> applicationsList = jdbcTemplate.queryForList(query);
+		if(applicationsList.size()>0){
+			for(int i=0;i<applicationsList.size();i++){
+				Map mp=(Map)applicationsList.get(i);
+				List<LocationsBean> list = jdbcTemplate.queryForList("select GROUP_CONCAT(`Name`)as Locations from assentisk_company_locations where LocationID IN ("+mp.get("LocationID").toString()+")");
+				Map getLoc=(Map)list.get(0);
+				String Locations=getLoc.get("Locations").toString();
+				((Map) applicationsList.get(i)).put("LocationsData",Locations);
+				
+				List<LegalEntitiesBean> listDivisions = jdbcTemplate.queryForList("select GROUP_CONCAT(`LegalEntityName`)as Divisions from assentisk_divisions where LegalEntityID IN ("+mp.get("DivisionID").toString()+")");
+				Map getDiv=(Map)listDivisions.get(0);
+				String Divisions=getDiv.get("Divisions").toString();
+				((Map) applicationsList.get(i)).put("DivisionsData",Divisions);
+			}
+			
+			
+		}
+		return applicationsList;
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	public List getSelectBranchList(String id) {
+		List<CompanyBean> list = jdbcTemplate
+				.queryForList("select * from assentisk_company_locations where CompanyID='"+id+"' and IsActive='1' order by LocationID");
+		System.out.println("select * from assentisk_company_locations where CompanyID='"+id+"' and IsActive='1' order by LocationID");
+		return list;
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	public List getSelectDeptList(String branchid,String companyid) {
+		List<CompanyBean> list = jdbcTemplate
+				.queryForList("select * from assentisk_company_department where CompanyID='"+companyid+"'  and BranchID ='"+branchid+"'  and IsActive='1' order by DepartmentID");
+		return list;
+	}
+
+	public void saveApplication(String applicationname, String locationid,
+			String divisionid, Integer employeeid, String requestdate,
+			String createdate, Integer createdby, String modifieddate,
+			Integer modifyby, Integer isactive) {
+		
+		String query = "insert into assentisk_applications(ApplicationName, LocationID, DivisionID, EmployeeID, RequestDate, CreatedDate, CreatedBy, ModifiedDate, ModifiedBy, IsActive) values('"+applicationname+"','"+locationid+"','"+divisionid+"','"+employeeid+"','"+requestdate+"','"+createdate+"','"+createdby+"','"+modifieddate+"','"+modifyby+"','"+isactive+"')";
+		jdbcTemplate.execute(query);
+		
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<ApplicationsBean> getApplicationDetailById(Integer applicationid) {
+		
+		String query = "select aa.ApplicationID,aa.ApplicationName,aa.LocationID, aa.DivisionID,aa.EmployeeID,aa.RequestDate,aa.IsActive,acl.Name,ad.LegalEntityName,ae.EmpName from assentisk_applications aa join assentisk_company_locations acl on acl.LocationID= aa.LocationID join assentisk_divisions ad on ad.LegalEntityID = aa.DivisionID join assentisk_employees ae on ae.EmployeeID = aa.EmployeeID where aa.ApplicationID = '"+applicationid+"'";
+		List <ApplicationsBean> applicationList = jdbcTemplate.queryForList(query);
+		return applicationList;
+	}
+
+	public void updateApplication(Integer applicationid,
+			String applicationname, String locationid, String divisionid,
+			Integer employeeid, String modifieddate, Integer modifyby,
+			Integer isactive) {
+		
+		String query = "update assentisk_applications set ApplicationName='"+applicationname+"', LocationID='"+locationid+"', DivisionID='"+divisionid+"', EmployeeID='"+employeeid+"', ModifiedDate='"+modifieddate+"', ModifiedBy='"+modifyby+"', IsActive='"+isactive+"' where ApplicationID='"+applicationid+"'";
+		jdbcTemplate.execute(query);
+		
+	}
+
+	public void deleteApplicationById(Integer applicationid) {
+		
+		String query = "delete from assentisk_applications where ApplicationID = '"+applicationid+"' ";
+		jdbcTemplate.execute(query);
+		
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<BusinessProcessesBean> getBusinessProcessesList() {
+
+		String query = "select aa.BusinessProcessID, aa.LocationID,aa.DivisionID,aa.BusinessProcessName,aa.LocationID,aa.DivisionID,aa.EmployeeID,aa.RequestDate,aa.CreatedDate,aa.CreatedBy, aa.ModifiedDate,aa.ModifiedBy, aa.IsActive, acl.Name , ad.LegalEntityName,ae.EmpName from assentisk_businessprocess aa join assentisk_company_locations acl on acl.LocationID = aa.LocationID join assentisk_divisions ad on ad.LegalEntityID = aa.DivisionID left outer join assentisk_employees ae on ae.EmployeeID = aa.EmployeeID";
+		List<BusinessProcessesBean> getBusinessProcessesList = jdbcTemplate.queryForList(query); 
+		if(getBusinessProcessesList.size()>0){
+			for(int i=0;i<getBusinessProcessesList.size();i++){
+				Map mp=(Map)getBusinessProcessesList.get(i);
+				List<LocationsBean> list = jdbcTemplate.queryForList("select GROUP_CONCAT(`Name`)as Locations from assentisk_company_locations where LocationID IN ("+mp.get("LocationID").toString()+")");
+				Map getLoc=(Map)list.get(0);
+				String Locations=getLoc.get("Locations").toString();
+				((Map) getBusinessProcessesList.get(i)).put("LocationsData",Locations);
+				
+				List<LegalEntitiesBean> listDivisions = jdbcTemplate.queryForList("select GROUP_CONCAT(`LegalEntityName`)as Divisions from assentisk_divisions where LegalEntityID IN ("+mp.get("DivisionID").toString()+")");
+				Map getDiv=(Map)listDivisions.get(0);
+				String Divisions=getDiv.get("Divisions").toString();
+				((Map) getBusinessProcessesList.get(i)).put("DivisionsData",Divisions);
+			}
+			
+			
+		}
+		
+		
+		return getBusinessProcessesList;
+	}
+
+	public void saveBusinessProcess(String businessprocessname,
+			String locationid, String divisionid, Integer employeeid,
+			String requestdate, String createdate, Integer createdby,
+			String modifieddate, Integer modifyby, Integer isactive) {
+		
+		String query = "insert into assentisk_businessprocess(BusinessProcessName, LocationID, DivisionID, EmployeeID, RequestDate, CreatedDate, CreatedBy, ModifiedDate, ModifiedBy, IsActive) values('"+businessprocessname+"','"+locationid+"','"+divisionid+"','"+employeeid+"','"+requestdate+"','"+createdate+"','"+createdby+"','"+modifieddate+"','"+modifyby+"','"+isactive+"')";
+		jdbcTemplate.execute(query);
+		
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<BusinessProcessesBean> getBusinessProcessDetailById(Integer businessprocessid) {
+		
+		String query = "select  ab.BusinessProcessID, ab.BusinessProcessName, ab.RequestDate, ab.LocationID, ab.DivisionID, ab.EmployeeID,ab.IsActive,ifnull(ae.EmpName,'0') as EmpName from assentisk_businessprocess  ab left outer join assentisk_employees ae on ae.EmployeeID = ab.EmployeeID where ab.BusinessProcessID = '"+businessprocessid+"'";
+		List <BusinessProcessesBean> businessprocessList = jdbcTemplate.queryForList(query);
+		return businessprocessList;
+	}
+
+	public void updateBusinessProcess(Integer businessprocessid,
+			String businessprocessname, String locationid, String divisionid,
+			Integer employeeid, String modifieddate, Integer modifyby,
+			Integer isactive) {
+	
+		String query = "update assentisk_businessprocess set BusinessProcessName='"+businessprocessname+"', LocationID='"+locationid+"', DivisionID='"+divisionid+"', EmployeeID='"+employeeid+"', ModifiedDate='"+modifieddate+"', ModifiedBy='"+modifyby+"', IsActive='"+isactive+"' where BusinessProcessID='"+businessprocessid+"'";
+		jdbcTemplate.execute(query);
+		
+	}
+
+	public void deleteBusinessProcessById(Integer businessprocessid) {
+		
+		String query = "delete from assentisk_businessprocess where BusinessProcessID = '"+businessprocessid+"' ";
+		jdbcTemplate.execute(query);
+		
+	}
+
+	@SuppressWarnings("unchecked")
+	public int getEmployeeIdByName(String empname) {
+		
+		int employeeid = 0;
+		String query = "select EmployeeID from assentisk_employees where EmpName = '"+empname+"'";
+		List<EmployeeBean> getRow = jdbcTemplate.queryForList(query);
+		if(getRow.size()>0)
+		{
+			Map m = (Map)getRow.get(0);
+			employeeid = Integer.parseInt(m.get("EmployeeID").toString());
+		}
+		return employeeid;
+	}
+
+	@SuppressWarnings("unchecked")
+	public String getDivisionIdByName(String divisionName) {
+		System.out.println("inside divisions--------------");
+		String divisionid = "";
+		String query = "select group_Concat(LegalEntityID,'')as LegalEntityID  from assentisk_divisions where LegalEntityName IN ('"+divisionName+"')";
+		System.out.println("query---"+query);
+		List<LegalEntitiesBean> getRow = jdbcTemplate.queryForList(query);
+		if(getRow.size()>0)
+		{
+			Map m = (Map)getRow.get(0);
+			divisionid = m.get("LegalEntityID").toString();
+		}
+		return divisionid;
+	}
+
+	@SuppressWarnings("unchecked")
+	public String getLocationIdByName(String locationName) {
+		String locationid = "";
+		
+		String query="select group_Concat(LocationID,'') as LocationID from assentisk_company_locations where Name IN ('"+locationName+"')";
+		List<LocationsBean> getRow = jdbcTemplate.queryForList(query);
+		System.out.println("query----"+query);
+		if(getRow.size()>0)
+		{
+			Map m = (Map)getRow.get(0);
+			locationid = m.get("LocationID").toString();
+			System.out.println("locationid: " + locationid);
+		}
+		return locationid;
+	}
+	
+	public void userAuditTrail(String tableName, String rowID, String action,
+			String changeDate, Integer changeBy, String ipAddress) {
+	
+		String query = "insert into assentisk_audittrail (TableName, RowID, Action, ChangedDate, ChangedBy, IPAddress) values ('"+tableName+"','"+rowID+"','"+action+"','"+changeDate+"','"+changeBy+"','"+ipAddress+"')";
+		jdbcTemplate.execute(query);
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<EmployeeBean> getEmployeeList() {
+		List<EmployeeBean> emplist = jdbcTemplate
+				.queryForList("select ae.divisions,ae.EmployeeID ,ae.LocationID,ae.UserRecordID,ae.EmpName,ae.Email,(select EmpName from assentisk_employees where "+
+								"EmployeeID =ae.ReportingTo) as Reporting,(select `Name` from assentisk_company_locations where  "+
+										"LocationID =ae.LocationID) as locations,(select EmpUsername from  assentisk_userrecord where UserRecordID=ae.UserRecordID )as username "+
+											",(select EmpPassword from  assentisk_userrecord where UserRecordID=ae.UserRecordID )as pword,ae.IsActive "+
+												"from assentisk_employees as ae where  ae.IsDeleted='1' order by ae.EmployeeID");
+		
+		if(emplist.size()>0){
+			for(int i=0;i<emplist.size();i++){
+				Map mp=(Map)emplist.get(i);
+				List<LocationsBean> list = jdbcTemplate.queryForList("select GROUP_CONCAT(`Name`)as Locations from assentisk_company_locations where LocationID IN ("+mp.get("LocationID").toString()+")");
+				Map getLoc=(Map)list.get(0);
+				String Locations=getLoc.get("Locations").toString();
+				((Map) emplist.get(i)).put("LocationsData",Locations);
+				
+				List<LegalEntitiesBean> listDivisions = jdbcTemplate.queryForList("select GROUP_CONCAT(`LegalEntityName`)as Divisions from assentisk_divisions where LegalEntityID IN ("+mp.get("divisions").toString()+")");
+				Map getDiv=(Map)listDivisions.get(0);
+				String Divisions=getDiv.get("Divisions").toString();
+				((Map) emplist.get(i)).put("DivisionsData",Divisions);
+			}
+			
+			
+		}
+		
+		
+		return emplist;
+	}
+
+	public void saveEmployee(Integer userRecordID,Integer departmentID, String locationID, String empName, String email, Integer ReportingTo, String roleID,String requestDate, String createdDate,Integer createdBy, String modifiedDate,Integer modifiedBy, Integer isActive,String address,String city,Integer state,Integer country,String zip,String photo, String phone1, String phone2, String divisions, String email2) {
+		
+		String query = "insert into assentisk_employees (UserRecordID,DepartmentID, LocationID, EmpName, Email, ReportingTo, RoleID, RequestDate, CreatedDate, CreatedBy, ModifiedDate, ModifiedBy, IsActive, address, city, state, country, zip, photo, phone1, phone2, divisions, email2)" +
+				"values('"+userRecordID+"','"+departmentID+"','"+locationID+"','"+empName+"','"+email+"','"+ReportingTo+"','"+roleID+"','"+requestDate+"','"+createdDate+"','"+createdBy+"','"+modifiedDate+"','"+modifiedBy+"','"+isActive+"','"+address+"','"+city+"','"+state+"','"+country+"','"+zip+"','"+photo+"','"+phone1+"','"+phone2+"','"+divisions+"','"+email2+"')";
+		jdbcTemplate.execute(query);
+		
+	}
+
+	public void saveUserRecord(String employeeName, String username,
+			String password, String emailID, String createdDate,
+			String modificationDate) {
+		
+		String query = "insert into assentisk_userrecord (EmpName, EmpUsername, EmpPassword, Email_ID, CreatedDate, ModifiedDate)" +
+				"values ('"+employeeName+"','"+username+"','"+password+"','"+emailID+"','"+createdDate+"','"+modificationDate+"')";
+		
+		jdbcTemplate.execute(query);
+		
+	}
+	@SuppressWarnings("unchecked")
+	public List<CompanyBean> getCompanyDetails() {
+		List<CompanyBean> list = jdbcTemplate.queryForList("select ac.CompanyID, ac.NoOfEmployees, ac.CompanyName, ac.CreatedDate, ac.CreatedBy, ac.ModifiedDate, ac.ModifiedBy,ac.IsActive,ac.CompanyLogo, ac.HeadOffice_Address,ac.HeadOffice_Country, ac.HeadOffice_City,ac.HeadOffice_State, ac.HeadOffice_Zip,ac.PrimaryEmail, ac.SecondaryEmail, ac.Mobile, ac.Phone,ac.Fax, ac.currency, ac.Primary_Contact_Name,ac. Primary_Contact_Number,ac.Legal_Contact_Name,ac.Legal_Contact_Number, ac.Legal_Contact_Email,ac.Accounts_Contact_Name, ac.Accounts_Contact_Number,acoun.CountryName,ast.StateName,ac.Accounts_Contact_Email from assentisk_company ac join assentisk_country acoun on acoun.CountryID = ac.HeadOffice_Country join assentisk_state ast on ast.StateID = ac.HeadOffice_State order by ac.CompanyID");
+		
+        return list;
+	}
+
+	
+	public List getCurrency() {
+		List list = jdbcTemplate
+		.queryForList("select * from assentisk_currencies");
+        return list;
+	}
+
+	public void updatedCompany(int companyID, String companyname,
+			String headOffice, String country, String city, String state,
+			String zip, String primaryContactName, String primaryContactNumber,
+			String primaryEmail, String legalContactName,
+			String legalContactNumber, String legalContactEmail,
+			String accountsContactName, String accountsContactNumber,
+			String accountsContactEmail, int status, String currentTime,
+			String currency) {
+		
+		String query = "update assentisk_company set CompanyName = '"+companyname+"', " +
+        "ModifiedDate = '"+currentTime+"', IsActive = '"+status+"', HeadOffice_Address = '"+headOffice+"', HeadOffice_Country = '"+country+"'," +
+		" HeadOffice_City = '"+city+"', HeadOffice_State = '"+state+"', HeadOffice_Zip = '"+zip+"', Primary_Contact_Name = '"+primaryContactName+"', Primary_Contact_Number = '"+primaryContactNumber+"', PrimaryEmail = '"+primaryEmail+"', currency = '"+currency+"', Legal_Contact_Name = '"+legalContactName+"'," +
+	    " Legal_Contact_Number = '"+legalContactNumber+"', Legal_Contact_Email = '"+legalContactEmail+"', Accounts_Contact_Name = '"+accountsContactName+"', Accounts_Contact_Number = '"+accountsContactNumber+"', Accounts_Contact_Number = '"+accountsContactNumber+"', Accounts_Contact_Email = '"+accountsContactEmail+"' where CompanyID = '"+companyID+"'";		
+		System.out.println(query);
+        jdbcTemplate.execute(query);
+		
+	}
+
+	@SuppressWarnings("unchecked")
+	public int getUserRecordID()
+	{
+		int userrecordid = 0;
+		String query = "select UserRecordID from assentisk_userrecord  order by UserRecordID desc  limit 1";
+		List<UserRecordBean> getRow = jdbcTemplate.queryForList(query);
+		if(getRow.size()>0)
+		{
+			Map m = (Map)getRow.get(0);
+			userrecordid = Integer.parseInt(m.get("UserRecordID").toString());
+		}
+		return userrecordid;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<EmployeeBean> getEmployeeRecordById(Integer employeeid) {
+		
+		String query = "select *from assentisk_employees ae join assentisk_userrecord au on au.UserRecordID = ae.UserRecordID where ae.UserRecordID='"+employeeid+"'";		
+		List<EmployeeBean> employeeRecord = jdbcTemplate.queryForList(query);
+		return employeeRecord;
+	}
+
+	public void udpateUserRecord(Integer employeeid, String employeeName,
+			String username, String password, String emailID,
+			String modificationDate) {
+		
+		String query = "update assentisk_userrecord set EmpName='"+employeeName+"', EmpUsername='"+username+"', EmpPassword='"+password+"', Email_ID='"+emailID+"',  ModifiedDate='"+modificationDate+"' where UserRecordID='"+employeeid+"'";		
+		jdbcTemplate.execute(query);
+	}
+
+	public void updateEmployee(Integer employeeid, Integer userRecordID,
+			Integer departmentID, String locationID,
+			String empName, String email, Integer ReportingTo, String roleID,			
+			String modifiedDate, Integer modifiedBy, Integer isActive,
+			String address, String city, Integer state, Integer country,
+			String zip, String photo, String phone1, String phone2,
+			String divisions, String email2) {
+<<<<<<< .mine
+		String query = "update assentisk_employees set DepartmentID='"+departmentID+"', LocationID='"+locationID+"', EmpName='"+empName+"',  Email='"+email+"', ReportingTo='"+ReportingTo+"',  RoleID='"+roleID+"', ModifiedDate='"+modifiedDate+"', ModifiedBy='"+modifiedBy+"', IsActive='"+isActive+"' ,address='"+address+"', city='"+city+"',state='"+state+"', country='"+country+"', zip='"+zip+"', phone1='"+phone1+"', phone2='"+phone2+"', divisions='"+divisions+"', email2='"+email2+"' where UserRecordID='"+userRecordID+"'";
+=======
+		String query = "update assentisk_employees set CompanyID='"+companyID+"', DepartmentID='"+departmentID+"', LocationID='"+locationID+"', EmpName='"+empName+"',  Email='"+email+"', ReportingTo='"+ReportingTo+"',  RoleID='"+roleID+"', ModifiedDate='"+modifiedDate+"', ModifiedBy='"+modifiedBy+"', IsActive='"+isActive+"' ,address='"+address+"', city='"+city+"',state='"+state+"', country='"+country+"', zip='"+zip+"', phone1='"+phone1+"', phone2='"+phone2+"', divisions='"+divisions+"', email2='"+email2+"' where UserRecordID='"+userRecordID+"'";
+>>>>>>> .r102
+		jdbcTemplate.execute(query);
+	}
+
+	@SuppressWarnings("unchecked")
+	public String getDivisionNameById(Integer divisionid) {
+		
+		String divisionName = "";
+		String query = "select LegalEntityName from assentisk_divisions where LegalEntityID = '"+divisionid+"'";
+		List<LegalEntitiesBean> getRow = jdbcTemplate.queryForList(query);
+		if(getRow.size()>0)
+		{
+			Map m = (Map)getRow.get(0);
+			divisionName = m.get("LegalEntityName").toString();
+		}
+		return divisionName;
+		
+	}
+
+	@SuppressWarnings("unchecked")
+	public String getLocationNameById(Integer locationid) {
+		
+		String locationName = "";
+		String query = "select Name from assentisk_company_locations where LocationID = '"+locationid+"'";		
+		List<LocationsBean> getRow = jdbcTemplate.queryForList(query);
+		if(getRow.size()>0)
+		{
+			Map m = (Map)getRow.get(0);
+			locationName = m.get("Name").toString();
+		}
+		
+		return locationName;
+	}
+
+	
+	public List getLicense() {
+		List list = jdbcTemplate
+		.queryForList("select * from assentisk_license order by LicenseID desc  limit 1");
+        return list;
+	}
+	
+	public List<LocationsBean> getLocationById(String ID)
+	{
+		List list = jdbcTemplate
+		.queryForList("select Name from assentisk_company_locations where LocationID IN ("+ID+") and IsActive='1'");
+        return list;
+	}
+	
+	public List<LegalEntitiesBean> getDivisionById(String ID)
+	{
+		List list = jdbcTemplate
+		.queryForList("select LegalEntityName from assentisk_divisions where LegalEntityID IN ("+ID+") and IsActive='1'");
+        return list;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<EmployeeBean> getEmployeeListByLicense() {
+	
+		
+		
+		List<EmployeeBean> emplist = jdbcTemplate
+		.queryForList("select ae.divisions,ae.EmployeeID ,ae.LocationID,ae.UserRecordID,ae.EmpName,ae.Email,(select EmpName from assentisk_employees where "+
+						"EmployeeID =ae.ReportingTo) as Reporting,(select `Name` from assentisk_company_locations where  "+
+								"LocationID =ae.LocationID) as locations,(select EmpUsername from  assentisk_userrecord where UserRecordID=ae.UserRecordID )as username "+
+									",(select EmpPassword from  assentisk_userrecord where UserRecordID=ae.UserRecordID )as pword,ae.IsActive "+
+										"from assentisk_employees as ae where isLicense = '1' and ae.IsDeleted='1' order by ae.EmployeeID");
+
+if(emplist.size()>0){
+	for(int i=0;i<emplist.size();i++){
+		Map mp=(Map)emplist.get(i);
+		List<LocationsBean> list = jdbcTemplate.queryForList("select GROUP_CONCAT(`Name`)as Locations from assentisk_company_locations where LocationID IN ("+mp.get("LocationID").toString()+")");
+		Map getLoc=(Map)list.get(0);
+		String Locations=getLoc.get("Locations").toString();
+		((Map) emplist.get(i)).put("LocationsData",Locations);
+		
+		List<LegalEntitiesBean> listDivisions = jdbcTemplate.queryForList("select GROUP_CONCAT(`LegalEntityName`)as Divisions from assentisk_divisions where LegalEntityID IN ("+mp.get("divisions").toString()+")");
+		Map getDiv=(Map)listDivisions.get(0);
+		String Divisions=getDiv.get("Divisions").toString();
+		((Map) emplist.get(i)).put("DivisionsData",Divisions);
+	}
+	
+	
+}
+
+
+return emplist;
+	}
+	
+	public List getPassword(String id) {
+		int idVal = Integer.parseInt(id);
+		
+		List list = jdbcTemplate
+		.queryForList("select * from assentisk_userrecord where UserRecordID="+idVal+"");
+        return list;
+	}
+
+	public void updatePassword(String id, String newPassword) {
+		int idVal = Integer.parseInt(id);
+		String query = "update assentisk_userrecord set EmpPassword='"+newPassword+"' where UserRecordID='"+idVal+"'";		
+		jdbcTemplate.execute(query);
+		
+	}
+	
+public void deleteEmployee(int employeeID) {
+		
+		String query = "update assentisk_employees set IsDeleted='0',isLicense='0' where EmployeeID = '"+employeeID+"' ";
+		jdbcTemplate.execute(query);
+		
+	}
+
+@SuppressWarnings("unchecked")
+public List<VendorBean> getVendorList(){
+	String query = "select v.id,v.VendorName,v.orgName,v.address,v.city,(select CountryName from assentisk_country where CountryID=v.country)as country,"+
+					" (select StateName from assentisk_state where StateID=v.state)as state, "+
+						"v.designation,v.IsActive "+
+							" from assentisk_vendor as v order by v.id";
+	List<VendorBean> listRecord = jdbcTemplate.queryForList(query);
+	System.out.println("query--"+query);
+	return listRecord;
+   
+}
+@SuppressWarnings("unchecked")
+public List getCountryList() {
+	List list = jdbcTemplate.queryForList("select *from assentisk_country where IsActive='1' order by CountryID");
+	return list;
+}
+
+public void insertVendorRecord(String designation,String vendorname,String oname,String country,String stateid,String cityid,String phone1,String phone2,String email1,String email2,int status,String address){
+	String query = "insert into assentisk_vendor (VendorName, orgName, country, state, city, phone1, phone2, email1, email2, designation, IsActive,address)" +
+	"values('"+vendorname+"','"+oname+"','"+country+"','"+stateid+"','"+cityid+"','"+phone1+"','"+phone2+"','"+email1+"','"+email2+"','"+designation+"','"+status+"','"+address+"')";
+	jdbcTemplate.execute(query);
+}
+
+
+
+@SuppressWarnings("unchecked")
+public List<VendorBean> getVendorById(String vendorId) {
+	String query = "select *from assentisk_vendor where id='"+vendorId+"'";
+	List<VendorBean> vendorRecord = jdbcTemplate.queryForList(query);
+	return vendorRecord;
+}
+
+public void updateVendorRecord(String designation,String vendorname,String oname,String country,String stateid,String cityid,String phone1,String phone2,String email1,String email2,String vendorid,int status,String address){
+	String query = "update assentisk_vendor set VendorName='"+vendorname+"', orgName='"+oname+"'," +
+			" country='"+country+"', state='"+stateid+"', city='"+cityid+"', phone1='"+phone1+"'," +
+			" phone2='"+phone2+"', email1='"+email1+"', email2='"+email2+"', designation='"+designation+"'," +
+			" IsActive='"+status+"',address='"+address+"' where id='"+vendorid+"'";
+	System.out.println("query---"+query);
+	jdbcTemplate.execute(query);
+}
+
+public void deleteVendor(String vendorID){
+	String query = "delete from  assentisk_vendor  where id = '"+vendorID+"' ";
+	jdbcTemplate.execute(query);
+}
+
+public void saveEnglishConfg(String key, String value) {
+	 String type="varchar";
+	 String query = "insert into spanish_config(CFG_KEY,CFG_TYPE,CFG_VALUE)values('"+key+"','"+type+"','"+value+"')";
+	 jdbcTemplate.execute(query);
+	 
+	}
+
+
+	public List getLaungageKey(String language) {
+	
+	 List list;
+	 if(language.equals("Spanish")){
+	   list = jdbcTemplate
+	  .queryForList("select * from spanish_config");
+	 }else{
+	  System.out.println("else part..");
+	   list = jdbcTemplate
+	  .queryForList("select * from english_config");
+	 }
+	 
+	    return list;
+	}
+	
+
+
+	@SuppressWarnings("unchecked")
+	public List<LanguageKeysBean> getLanguageKeysList(String language) {
+		
+		String query;
+		if(language.equals("Spanish")){
+			 query = "select * from spanish_config";
+		}else{
+			 query = "select * from english_config";	
+		}
+		
+		List<LanguageKeysBean> languageKeysBean = jdbcTemplate.queryForList(query);
+		return languageKeysBean;
+	}
+
+	public void updateLanguageKey(String languagekey, String launguageValue,String language) {
+		
+		String query;
+		
+		if(language.equals("Spanish")){
+			query = "update spanish_config set CFG_VALUE='"+launguageValue+"' where CFG_KEY = '"+languagekey+"' ";
+		}else{
+			query = "update english_config set CFG_VALUE='"+launguageValue+"' where CFG_KEY = '"+languagekey+"' ";
+		}
+		 
+		jdbcTemplate.execute(query);
+		
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<UserRecordBean> checkUserName(String username) {
+		
+		String query = "select *from assentisk_userrecord where EmpUsername='"+username+"'";
+		List<UserRecordBean> getRow = jdbcTemplate.queryForList(query);
+		return getRow;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<LegalEntitiesBean> getDivisionsGroupList(){
+		String query = "select group_concat(LegalEntityName,'') as divisions from assentisk_divisions order by LegalEntityID";
+		List<LegalEntitiesBean> getRow = jdbcTemplate.queryForList(query);
+		return getRow;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<LocationsBean> getLocationsGroupList(){
+		String query = "select group_concat(Name,'') as locations from assentisk_company_locations order by LocationID";
+		List<LocationsBean> getRow = jdbcTemplate.queryForList(query);
+		return getRow;
+	}
+	
+	public String getDivisionGroupById(String ID)
+	{
+		System.out.println("id---"+ID);
+		String LegalEntityName="";
+		List list = jdbcTemplate
+		.queryForList("select  group_concat(LegalEntityName,'') as LegalEntityName   from assentisk_divisions where LegalEntityID IN ("+ID+") ");
+		if(list.size()>0){
+			Map m=(Map)list.get(0);
+			LegalEntityName=m.get("LegalEntityName").toString();
+		}
+		return LegalEntityName;
+	}
+	
+	
+	public String getLocationGroupById(String ID)
+	{
+		System.out.println("id---"+ID);
+		String locName="";
+		List list = jdbcTemplate
+		.queryForList("select  group_concat(Name,'') as locName   from assentisk_company_locations where LocationID IN ("+ID+")");
+		System.out.println("select  group_concat(Name,'') as locName   from assentisk_company_locations where LocationID IN ("+ID+")");
+		if(list.size()>0){
+			Map m=(Map)list.get(0);
+			locName=m.get("locName").toString();
+		}
+		return locName;
+	}
+	
+
+}

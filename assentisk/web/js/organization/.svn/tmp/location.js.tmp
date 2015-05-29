@@ -1,0 +1,418 @@
+var locationapp = angular.module('locationapp', []);
+
+	locationapp
+			.config( [
+					'$httpProvider',
+					function($httpProvider) {
+						$httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
+					} ]);
+
+	function addLocationController($scope, $http) {
+
+		$("div.leftpanelinner>ul>li#organization").addClass(
+				"nav-parent nav-active");
+		$("div.leftpanelinner>ul>li#organization>ul").css("display", "block");
+		$("div.leftpanelinner>ul>li#organization>ul>li#locations").addClass(
+				"active");
+
+		$("#imageloader").css("display", "none");
+		$("#complete").css("display", "block");
+
+		$scope.saveData = function() {
+				
+					
+			var stateid = document.getElementById("stateid").value
+	
+			var locationname=$scope.locationname;			
+			var countryid=$scope.countryid;
+			
+			var cityidVal = $scope.cityid;
+			
+			var contactno=$scope.contactno;
+			
+			var email1=$scope.email1;
+			var zip=$scope.zipcode;
+			var email2=$scope.email2;
+			var phone1=$scope.phone1;
+			var phone2=$scope.phone2;
+			var fax1=$scope.fax1;
+			var fax2=$scope.fax2;
+			   fax1=jQuery.trim(fax1);
+			   document.getElementById("fax1").value=fax1;
+			   fax2=jQuery.trim(fax2);
+			   document.getElementById("fax2").value=fax2;
+			   phone1=jQuery.trim(phone1);
+			   document.getElementById("phone1").value=phone1;
+			   phone2=jQuery.trim(phone2);
+			   document.getElementById("phone2").value=phone2;
+			   locationname=jQuery.trim(locationname);
+			   document.getElementById("locationname").value=locationname;
+			   cityidVal=jQuery.trim(cityidVal);
+			   document.getElementById("cityid").value=cityidVal;
+			   contactno=jQuery.trim(contactno);
+			   document.getElementById("contactno").value=contactno;
+			   var filter=/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi;
+			   var phonefilter=/^[0-9+\(\)#\.\s\/ext-]+$/g;
+			   var phonefilter1=/^[0-9+\(\)#\.\s\/ext-]+$/g;
+			   
+			 if(locationname==''){
+						$('#divLocNameAlert').show();
+			     		$('#divLocNameAlert').delay(1500).fadeOut('slow');	
+			     		 document.getElementById("locationname").focus();	
+									
+			   }
+			 else if(filter.test(locationname) == true){	
+					$('#validlocationName_alert').show();
+	   				 $('#validlocationName_alert').delay(1500).fadeOut('slow');
+	   				 document.getElementById("locationname").focus();	
+	   				 return false;
+            }
+			   else if(countryid==''){
+						$('#divCountryAlert').show();
+			     		$('#divCountryAlert').delay(1500).fadeOut('slow');	
+									
+			   }else if(stateid==''){
+						$('#divStateAlert').show();
+			     		$('#divStateAlert').delay(1500).fadeOut('slow');	
+									
+			   }else if(cityidVal==''){
+						$('#divCityAlert').show();
+			     		$('#divCityAlert').delay(1500).fadeOut('slow');	
+			     		document.getElementById("cityid").focus();	
+									
+			   }
+			   else if(filter.test(cityidVal) == true){	
+					$('#divCityidValidAlert').show();
+	   				 $('#divCityidValidAlert').delay(1500).fadeOut('slow');
+	   				 document.getElementById("cityid").focus();	
+	   				 return false;
+			   }
+			   else if(contactno==''){
+						$('#divContactAlert').show();
+			     		$('#divContactAlert').delay(1500).fadeOut('slow');	
+			     		document.getElementById("contactno").focus();	
+									
+			   }
+			   else if(filter.test(contactno) == true){	
+					$('#Location_validcontactno').show();
+	   				 $('#Location_validcontactno').delay(1500).fadeOut('slow');
+	   				 	document.getElementById("contactno").focus();	
+	   				 return false;
+              }
+			   else if(phonefilter.test(phone1)==true && phone1!=''){	
+					$('#Location_validphone1').show();
+	   				 $('#Location_validphone1').delay(1500).fadeOut('slow');
+	   				 	document.getElementById("phone1").focus();	
+           }
+			   else if(phonefilter1.test(phone2)==true && phone2!=''){	
+					$('#Location_validphone2').show();
+	   				 $('#Location_validphone2').delay(1500).fadeOut('slow');
+	   				 	document.getElementById("phone2").focus();	
+          }
+			   else if(email1==''){
+						$('#divemail1Alert').show();
+			     		$('#divemail1Alert').delay(1500).fadeOut('slow');	
+									
+			   }else if (!validateEmail(email1)) {
+				        $('#divEmailErrorAlert').show();
+				        $('#divEmailErrorAlert').delay(1500).fadeOut('slow');
+			   }
+			  
+			   else if(email2!='' && !validateEmail(email2))
+			   {
+			     $('#divEmail2ErrorAlert').show();
+				 $('#divEmail2ErrorAlert').delay(1500).fadeOut('slow');
+			   }
+			   else if(!phonefilter.test(fax1) && fax1!=''){	
+					$('#Location_validfax1').show();
+	   				 $('#Location_validfax1').delay(1500).fadeOut('slow');
+	   				 	document.getElementById("fax1").focus();	
+			   	}
+			   
+			else if(locationname!=""){
+				
+				$.get("checklocationname.org.htm?locationname=" + locationname, function(data, status) {
+					
+					if(data == 'exist')
+					{
+						$('#checkNameAlert').show();
+					    $('#checkNameAlert').delay(1500).fadeOut('slow');																					    
+					    
+					}
+					else
+					{
+<<<<<<< .mine
+						 var addrs=CKEDITOR.instances.address.getData();
+=======
+						
+						addrs=CKEDITOR.instances.address.getData();
+>>>>>>> .r223
+						var responsePromise = $http.post("savelocation.org.htm?locationname="
+								+ $scope.locationname + "&companyid=" + $scope.companyid + "&countryid="+$scope.countryid+"&stateid="+stateid+"&cityid="+cityidVal+"&street="+$scope.street
+								+"&address="+addrs+"&contactno="+$scope.contactno+"&zipcode="+$scope.zipcode+"&phone1="+$scope.phone1+"&phone2="+$scope.phone2
+								+ "&email1="+$scope.email1+"&email2="+$scope.email2+"&fax1="+$scope.fax1+"&fax2="+$scope.fax2+"&url="+$scope.url+"&isactive="+$scope.isactive);
+						responsePromise.success(function(data, status, headers, config) {
+								$('#submitSucess').show();
+								$('#submitSucess').delay(1500).fadeOut('slow');
+							window.location.href = "locations.org.htm";
+						});
+					}
+
+				});
+				
+			
+			
+			
+			}
+		};
+		
+		$scope.callState = function(id) { 				    		 	    		 			 		  
+ 					var responsePromise = $http.get("statelist.ajaxresponse.htm?countryid="+id);
+                	responsePromise.success(function(data, status, headers, config) {                	
+                		document.getElementById("statelist").innerHTML = data;
+                	
+                	});
+    		};
+    		    	
+	}
+	
+
+	
+	function validateEmail(sEmail) {
+	var filter = /^[\w\-\.\+]+\@[a-zA-Z0-9\.\-]+\.[a-zA-z0-9]{2,4}$/;
+	if (filter.test(sEmail)) {
+	return true;
+	}
+	else {
+	return false;
+	}
+	}
+	
+	function isNumberKey(evt)
+       {
+          var charCode = (evt.which) ? evt.which : evt.keyCode;
+          if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57))
+             return false;
+
+          return true;
+       }
+	
+	
+	function editLocationController($scope, $http) {
+
+		$("div.leftpanelinner>ul>li#organization").addClass(
+				"nav-parent nav-active");
+		$("div.leftpanelinner>ul>li#organization>ul").css("display", "block");
+		$("div.leftpanelinner>ul>li#organization>ul>li#locations").addClass(
+				"active");
+
+		$("#imageloader").css("display", "none");
+		$("#complete").css("display", "block");
+
+		$scope.reset = function() {
+			$scope.locationname = '';
+			$scope.companyid = '';
+			$scope.countryid = '';
+			$scope.stateid = '';
+			$scope.cityid = '';
+			$scope.contactno = '';
+			$scope.email1 = '';
+			$scope.isactive = false;
+		};
+
+		$scope.saveData = function() {
+
+			var stateid = document.getElementById("stateid").value
+			
+			var locationname = $scope.locationname;
+			
+			var countryid = $scope.countryid;
+			var cityidVal = $scope.cityid;
+			var contactno = $scope.contactno;
+			var email1 = $scope.email1;
+			var email2=$scope.email2;
+			var zip=$scope.zipcode;
+			var email2=$scope.email2;
+			var phone1=$scope.phone1;
+			var phone2=$scope.phone2;
+			var fax1=$scope.fax1;
+			var fax2=$scope.fax2;
+			   fax1=jQuery.trim(fax1);
+			   document.getElementById("fax1").value=fax1;
+			   fax2=jQuery.trim(fax2);
+			   document.getElementById("fax2").value=fax2;
+			   phone1=jQuery.trim(phone1);
+			   document.getElementById("phone1").value=phone1;
+			   phone2=jQuery.trim(phone2);
+			   document.getElementById("phone2").value=phone2;
+			   locationname=jQuery.trim(locationname);
+			   document.getElementById("locationname").value=locationname;
+			   cityidVal=jQuery.trim(cityidVal);
+			   document.getElementById("cityid").value=cityidVal;
+			   contactno=jQuery.trim(contactno);
+			   document.getElementById("contactno").value=contactno;
+			   var filter=/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi;
+			   var phonefilter=/^[0-9+\(\)#\.\s\/ext-]+$/g;
+			   var phonefilter1=/^[0-9+\(\)#\.\s\/ext-]+$/g;
+			   
+			 if(locationname==''){
+						$('#divLocNameAlert').show();
+			     		$('#divLocNameAlert').delay(1500).fadeOut('slow');	
+			     		 document.getElementById("locationname").focus();	
+									
+			   }
+			 else if(filter.test(locationname) == true){	
+					$('#validlocationName_alert').show();
+	   				 $('#validlocationName_alert').delay(1500).fadeOut('slow');
+	   				 document.getElementById("locationname").focus();	
+	   				 return false;
+            }
+			   else if(countryid==''){
+						$('#divCountryAlert').show();
+			     		$('#divCountryAlert').delay(1500).fadeOut('slow');	
+									
+			   }else if(stateid==''){
+						$('#divStateAlert').show();
+			     		$('#divStateAlert').delay(1500).fadeOut('slow');	
+									
+			   }else if(cityidVal==''){
+						$('#divCityAlert').show();
+			     		$('#divCityAlert').delay(1500).fadeOut('slow');	
+			     		document.getElementById("cityid").focus();	
+									
+			   }
+			   else if(filter.test(cityidVal) == true){	
+					$('#divCityidValidAlert').show();
+	   				 $('#divCityidValidAlert').delay(1500).fadeOut('slow');
+	   				 document.getElementById("cityid").focus();	
+	   				 return false;
+			   }
+			   else if(contactno==''){
+						$('#divContactAlert').show();
+			     		$('#divContactAlert').delay(1500).fadeOut('slow');	
+			     		document.getElementById("contactno").focus();	
+									
+			   }
+			   else if(filter.test(contactno) == true){	
+					$('#Location_validcontactno').show();
+	   				 $('#Location_validcontactno').delay(1500).fadeOut('slow');
+	   				 	document.getElementById("contactno").focus();	
+	   				 return false;
+              }
+			   else if(phonefilter.test(phone1)==true && phone1!=''){	
+					$('#Location_validphone1').show();
+	   				 $('#Location_validphone1').delay(1500).fadeOut('slow');
+	   				 	document.getElementById("phone1").focus();	
+           }
+			   else if(phonefilter1.test(phone2)==true && phone2!=''){	
+					$('#Location_validphone2').show();
+	   				 $('#Location_validphone2').delay(1500).fadeOut('slow');
+	   				 	document.getElementById("phone2").focus();	
+          }
+			   else if(email1==''){
+						$('#divemail1Alert').show();
+			     		$('#divemail1Alert').delay(1500).fadeOut('slow');	
+									
+			   }else if (!validateEmail(email1)) {
+				        $('#divEmailErrorAlert').show();
+				        $('#divEmailErrorAlert').delay(1500).fadeOut('slow');
+			   }
+			  
+			   else if(email2!='' && !validateEmail(email2))
+			   {
+			     $('#divEmail2ErrorAlert').show();
+				 $('#divEmail2ErrorAlert').delay(1500).fadeOut('slow');
+			   }
+			   else if(!phonefilter.test(fax1) && fax1!=''){	
+					$('#Location_validfax1').show();
+	   				 $('#Location_validfax1').delay(1500).fadeOut('slow');
+	   				 	document.getElementById("fax1").focus();	
+			   	}
+			   
+				else if(locationname!=""){
+					
+					if($scope.locationnamecheck == locationname)
+					{
+						 var addrs=CKEDITOR.instances.address.getData();
+						var responsePromise = $http
+						.post("updatelocation.org.htm?locationname="
+								+ $scope.locationname + "&companyid="
+								+ $scope.companyid + "&countryid="
+								+ $scope.countryid + "&stateid=" + stateid
+								+ "&cityid=" + cityidVal + "&street="
+								+ $scope.street + "&address=" + addrs
+								+ "&contactno=" + $scope.contactno
+								+ "&zipcode=" + $scope.zipcode + "&phone1="
+								+ $scope.phone1 + "&phone2=" + $scope.phone2
+								+ "&email1=" + $scope.email1 + "&email2="
+								+ $scope.email2 + "&fax1=" + $scope.fax1
+								+ "&fax2=" + $scope.fax2 + "&url=" + $scope.url
+								+ "&isactive=" + $scope.isactive
+								+ "&locationid=" + $scope.locationid);
+				responsePromise
+						.success(function(data, status, headers, config) {
+							$('#submitSucess').show();
+							$('#submitSucess').delay(1500).fadeOut('slow');
+							window.location.href = "locations.org.htm";
+						});
+					}
+					else
+					{
+					
+					$.get("checklocationname.org.htm?locationname=" + locationname, function(data, status) {
+						
+						if(data == 'exist')
+						{
+							$('#checkNameAlert').show();
+						    $('#checkNameAlert').delay(1500).fadeOut('slow');																					    
+						    
+						}
+						else {
+<<<<<<< .mine
+							 var addrs=CKEDITOR.instances.address.getData();
+=======
+							addrs=CKEDITOR.instances.address.getData();
+>>>>>>> .r223
+							var responsePromise = $http
+									.post("updatelocation.org.htm?locationname="
+											+ $scope.locationname + "&companyid="
+											+ $scope.companyid + "&countryid="
+											+ $scope.countryid + "&stateid=" + stateid
+											+ "&cityid=" + cityidVal + "&street="
+											+ $scope.street + "&address=" + addrs
+											+ "&contactno=" + $scope.contactno
+											+ "&zipcode=" + $scope.zipcode + "&phone1="
+											+ $scope.phone1 + "&phone2=" + $scope.phone2
+											+ "&email1=" + $scope.email1 + "&email2="
+											+ $scope.email2 + "&fax1=" + $scope.fax1
+											+ "&fax2=" + $scope.fax2 + "&url=" + $scope.url
+											+ "&isactive=" + $scope.isactive
+											+ "&locationid=" + $scope.locationid);
+							responsePromise
+									.success(function(data, status, headers, config) {
+										$('#submitSucess').show();
+										$('#submitSucess').delay(1500).fadeOut('slow');
+										window.location.href = "locations.org.htm";
+									});
+						}
+
+					});
+					
+					
+					}
+				
+				
+				}
+			
+		};
+
+		$scope.callState = function(id) {
+			var responsePromise = $http
+					.get("statelist.ajaxresponse.htm?countryid=" + id);
+			responsePromise.success(function(data, status, headers, config) {
+				document.getElementById("statelist").innerHTML = data;
+
+			});
+		};
+
+	}

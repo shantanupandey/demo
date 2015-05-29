@@ -1,0 +1,905 @@
+package com.assentisk.controller;
+
+import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindException;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.SimpleFormController;
+
+import com.assentisk.bean.ApplicationsBean;
+import com.assentisk.bean.AssetsBean;
+import com.assentisk.bean.BusinessProcessesBean;
+import com.assentisk.bean.CategoriesBean;
+import com.assentisk.bean.EmployeeBean;
+import com.assentisk.bean.LocationsBean;
+import com.assentisk.bean.MonthSectionBean;
+import com.assentisk.bean.SchedulerBean;
+import com.assentisk.bean.TimeBean;
+import com.assentisk.bean.VendorBean;
+import com.assentisk.bean.WeekdayBean;
+import com.assentisk.bean.YearSectionBean;
+import com.assentisk.dao.AssestsDao;
+import com.assentisk.dao.MasterDao;
+import com.assentisk.dao.OrganizationDao;
+import com.assentisk.util.Files;
+import com.assentisk.util.FilesService;
+import com.assentisk.util.UrlUtill;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.sun.faces.config.beans.ApplicationBean;
+
+public class AssestsController extends SimpleFormController {
+
+	protected AssestsDao assestsDao;
+	protected OrganizationDao organizationDao;
+	protected MasterDao masterDao;
+	protected FilesService filesService;
+
+	ModelAndView modelAndView = null;
+	ModelMap map;
+	PrintWriter out;
+
+	public AssestsDao getAssestsDao() {
+		return assestsDao;
+	}
+
+	public void setAssestsDao(AssestsDao assestsDao) {
+		this.assestsDao = assestsDao;
+	}
+
+	public OrganizationDao getOrganizationDao() {
+		return organizationDao;
+	}
+
+	public void setOrganizationDao(OrganizationDao organizationDao) {
+		this.organizationDao = organizationDao;
+	}
+
+	public MasterDao getMasterDao() {
+		return masterDao;
+	}
+
+	public void setMasterDao(MasterDao masterDao) {
+		this.masterDao = masterDao;
+	}
+
+	
+	public FilesService getFilesService() {
+		return filesService;
+	}
+
+	public void setFilesService(FilesService filesService) {
+		this.filesService = filesService;
+	}
+
+	protected ModelAndView showForm(HttpServletRequest req,
+			HttpServletResponse res, BindException ex) throws Exception {
+
+		String url = UrlUtill.UrlName(req.getRequestURI());
+
+		if (url.equals("categories")) {
+
+			return new ModelAndView("assests/categories");
+		}
+
+		else if (url.equals("categoryList")) {
+
+			return categoryList(req, res);
+		}
+
+		else if (url.equals("addcategory")) {
+
+			return new ModelAndView("assests/addcategory");
+		} else if (url.equals("editcategory")) {
+
+			return editCategory(req, res);
+		} else if (url.equals("deletecategory")) {
+
+			return deleteCategory(req, res);
+		} else if (url.equals("assetsList")) {
+
+			return assetsList(req, res);
+		} else if (url.equals("assets")) {
+
+			return new ModelAndView("assests/assets");
+		} else if (url.equals("addasset")) {
+
+			return addAsset(req, res);
+		}
+		else if (url.equals("editasset")) {
+
+			return editAsset(req, res);
+		}
+		else if (url.equals("deleteasset")) {
+
+			return deleteAsset(req, res);
+		}
+		else if (url.equals("schedule")) {
+
+			return schedule(req, res);
+		}
+		else if(url.equals("addScheduler")){
+			return addScheduler(req,res);
+		}
+		else if(url.equals("callEndTime")){
+			return callEndTime(req,res);
+		}
+		else if(url.equals("callDiffernce")){
+			return callDiffernce(req,res);
+		}
+		return modelAndView;
+	}
+
+	protected ModelAndView onSubmit(HttpServletRequest req,
+			HttpServletResponse res, Object cmd, BindException errors)
+			throws Exception {
+
+		String url = UrlUtill.UrlName(req.getRequestURI());
+			System.out.println("url---"+url);
+		if (url.equals("savecategory")) {
+
+			return saveCategory(req, res);
+		} else if (url.equals("updatecategory")) {
+
+			return updateCategory(req, res);
+		} else if (url.equals("saveasset")) {
+
+			return saveAsset(req, res);
+		}
+		else if (url.equals("updateasset")) {
+
+			return updateAsset(req, res);
+		}
+		else if (url.equals("saveschedule")) {
+
+			return saveSchedule(req, res);
+		}
+		
+		
+		return null;
+	}
+
+	public ModelAndView categoryList(HttpServletRequest req,
+			HttpServletResponse res) {
+
+		try {
+			out = res.getWriter();
+			List<CategoriesBean> getCategoryList = assestsDao.getCategoryList();
+			PersonJsonObject personJsonObject = new PersonJsonObject();
+			personJsonObject.setCategoriesBeans(getCategoryList);
+
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			String json2 = gson.toJson(personJsonObject);
+			out.print(json2);
+
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+		return null;
+	}
+
+	public ModelAndView saveCategory(HttpServletRequest req,
+			HttpServletResponse res) {
+
+		try {
+			
+			InetAddress ip = InetAddress.getLocalHost();
+			String userId = (String) req.getSession().getAttribute(
+					"UserRecordID");
+
+			java.util.Date dt = new java.util.Date();
+			java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(
+					"yyyy-MM-dd HH:mm:ss");
+			
+			String currentTime = sdf.format(dt);
+			
+			int status = 0;
+			String categoryname = req.getParameter("categoryname");
+			String isactive = req.getParameter("isactive");
+			if (isactive.equals("true")) {
+				status = 1;
+			}
+			assestsDao.addCategory(categoryname, status);
+			masterDao.userAuditTrail("assentisk_categories", "1", "1", currentTime,
+					Integer.parseInt(userId), ip.getHostAddress());
+			
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	public ModelAndView editCategory(HttpServletRequest req,
+			HttpServletResponse res) {
+
+		try {
+			map = new ModelMap();
+			String categoryID = req.getParameter("categoryid");
+			List<CategoriesBean> categoryList = assestsDao
+					.getCategoryDetailsById(Integer.parseInt(categoryID));
+			if (categoryList.size() > 0) {
+				Map m = (Map) categoryList.get(0);
+				map.addObject("ID", m.get("ID"));
+				map.addObject("cname", m.get("cname"));
+				map.addObject("IsActive", m.get("IsActive"));
+			}
+
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+		return new ModelAndView("assests/editcategory", map);
+	}
+
+	public ModelAndView updateCategory(HttpServletRequest req,
+			HttpServletResponse res) {
+
+		try {
+			
+			InetAddress ip = InetAddress.getLocalHost();
+			String userId = (String) req.getSession().getAttribute(
+					"UserRecordID");
+
+			java.util.Date dt = new java.util.Date();
+			java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(
+					"yyyy-MM-dd HH:mm:ss");
+			
+			String currentTime = sdf.format(dt);
+			
+			int status = 0;
+			String categoryid = req.getParameter("categoryid");
+			String categoryname = req.getParameter("categoryname");
+			String isactive = req.getParameter("isactive");
+			if (isactive.equals("true")) {
+				status = 1;
+			}
+			assestsDao.updateCategory(Integer.parseInt(categoryid),
+					categoryname, status);
+			masterDao.userAuditTrail("assentisk_categories", "1", "1", currentTime,
+					Integer.parseInt(userId), ip.getHostAddress());
+			
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+		return null;
+	}
+
+	public ModelAndView deleteCategory(HttpServletRequest req,
+			HttpServletResponse res) {
+
+		try {
+			
+			InetAddress ip = InetAddress.getLocalHost();
+			String userId = (String) req.getSession().getAttribute(
+					"UserRecordID");
+
+			java.util.Date dt = new java.util.Date();
+			java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(
+					"yyyy-MM-dd HH:mm:ss");
+			
+			String currentTime = sdf.format(dt);
+			
+			String categoryid = req.getParameter("id");
+			assestsDao.deleteCategory(Integer.parseInt(categoryid));
+			masterDao.userAuditTrail("assentisk_categories", "1", "1", currentTime,
+					Integer.parseInt(userId), ip.getHostAddress());
+			
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+		return null;
+	}
+
+	public ModelAndView assetsList(HttpServletRequest req,
+			HttpServletResponse res) {
+
+		try {
+			out = res.getWriter();
+			List<AssetsBean> assetsList = assestsDao.getAssetsList();
+			PersonJsonObject personJsonObject = new PersonJsonObject();
+			personJsonObject.setAssetsBeans(assetsList);
+
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			String json2 = gson.toJson(personJsonObject);
+			out.print(json2);
+
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+		return null;
+	}
+
+	public ModelAndView addAsset(HttpServletRequest req, HttpServletResponse res) {
+
+		try {
+			map = new ModelMap();
+			List<CategoriesBean> categoryList = assestsDao.getCategoryList();
+			List<LocationsBean> locationList = organizationDao
+					.getLocationsList();
+			List<ApplicationsBean> applicationList = organizationDao
+					.getApplicationsList();
+			List<BusinessProcessesBean> businessProcessList = organizationDao
+					.getBusinessProcessesList();
+			List<EmployeeBean> employeeList = organizationDao.getEmployeeList();
+			List<VendorBean> vendorList = assestsDao.getVendorList();
+
+			map.addObject("categoryList", categoryList);
+			map.addObject("locationList", locationList);
+			map.addObject("applicationList", applicationList);
+			map.addObject("businessProcessList", businessProcessList);
+			map.addObject("employeeList", employeeList);
+			map.addObject("vendorList", vendorList);
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+		return new ModelAndView("assests/addasset", map);
+	}
+
+	public ModelAndView saveAsset(HttpServletRequest req,
+			HttpServletResponse res) {
+
+		try {
+			InetAddress ip = InetAddress.getLocalHost();
+			String userId = (String) req.getSession().getAttribute(
+					"UserRecordID");
+
+			java.util.Date dt = new java.util.Date();
+			java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(
+					"yyyy-MM-dd HH:mm:ss");
+			String currentTime = sdf.format(dt);
+
+			String assetname = req.getParameter("assetname");
+			System.out.println("---assetname---"+assetname);
+			String categoryID = req.getParameter("category");
+			String locationID = req.getParameter("location");
+			String applicationID = req.getParameter("application");
+			String businessprocessID = req.getParameter("businessprocess");
+			String employeeID = req.getParameter("employee");
+			String vendors=req.getParameter("vendors");
+			
+			assestsDao.saveAsset(assetname, Integer.parseInt(categoryID),
+					Integer.parseInt(locationID), Integer
+							.parseInt(applicationID), Integer
+							.parseInt(businessprocessID), Integer
+							.parseInt(employeeID), currentTime, Integer
+							.parseInt(userId), currentTime, Integer
+							.parseInt(userId),  assestsDao.getVendorIdByName(vendors));
+			masterDao.userAuditTrail("assentisk_assets", "1", "1", currentTime,
+					Integer.parseInt(userId), ip.getHostAddress());
+
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+		return null;
+	}
+	public ModelAndView editAsset(HttpServletRequest req, HttpServletResponse res) {
+
+		try {
+			map = new ModelMap();
+			
+			String assetID = req.getParameter("assetid");
+			List<CategoriesBean> categoryList = assestsDao.getCategoryList();
+			List<LocationsBean> locationList = organizationDao
+					.getLocationsList();
+			List<ApplicationsBean> applicationList = organizationDao
+					.getApplicationsList();
+			List<BusinessProcessesBean> businessProcessList = organizationDao
+					.getBusinessProcessesList();
+			List<EmployeeBean> employeeList = organizationDao.getEmployeeList();
+			List<VendorBean> vendorList = assestsDao.getVendorList();
+
+			List<AssetsBean> assetDetails = assestsDao.getAssetDetailsById(Integer.parseInt(assetID));
+			if(assetDetails.size()>0)
+			{
+				Map m = (Map)assetDetails.get(0);
+				map.addObject("ID", m.get("ID"));
+				map.addObject("aname", m.get("aname"));
+				map.addObject("category", m.get("category"));
+				map.addObject("location", m.get("location"));
+				map.addObject("application", m.get("application"));
+				map.addObject("BP", m.get("BP"));
+				map.addObject("employee", m.get("employee"));
+				List<VendorBean> vendorDetails = assestsDao.getVendorDetailsById(m.get("vendorId").toString());
+				if (vendorDetails.size() > 0) {
+					System.out.println("evndor details-----");
+					map.addObject("vendorDetails", vendorDetails);
+				}
+				
+			}
+			
+			map.addObject("categoryList", categoryList);
+			map.addObject("locationList", locationList);
+			map.addObject("applicationList", applicationList);
+			map.addObject("businessProcessList", businessProcessList);
+			map.addObject("employeeList", employeeList);
+			map.addObject("vendorList", vendorList);
+			
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+		return new ModelAndView("assests/editasset", map);
+	}
+	
+	public ModelAndView updateAsset(HttpServletRequest req,
+			HttpServletResponse res) {
+
+		try {
+			InetAddress ip = InetAddress.getLocalHost();
+			String userId = (String) req.getSession().getAttribute(
+					"UserRecordID");
+
+			java.util.Date dt = new java.util.Date();
+			java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(
+					"yyyy-MM-dd HH:mm:ss");
+			String currentTime = sdf.format(dt);
+
+			String assetID = req.getParameter("assetID");
+			String assetName = req.getParameter("assetname");
+			String categoryID = req.getParameter("category");
+			String locationID = req.getParameter("location");
+			String applicationID = req.getParameter("application");
+			String businessprocessID = req.getParameter("businessprocess");
+			String employeeID = req.getParameter("employee");
+			String vendors=req.getParameter("vendors");
+
+			assestsDao.updateAsset(assetName,  Integer.parseInt(categoryID),  Integer.parseInt(locationID),  Integer.parseInt(applicationID),  Integer.parseInt(businessprocessID),  Integer.parseInt(employeeID), currentTime, Integer.parseInt(userId), assestsDao.getVendorIdByName(vendors), assetID);
+			masterDao.userAuditTrail("assentisk_assets", "1", "1", currentTime,
+					Integer.parseInt(userId), ip.getHostAddress());
+
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+		return null;
+	}
+	
+	public ModelAndView deleteAsset(HttpServletRequest req,
+			HttpServletResponse res) {
+
+		try {
+			InetAddress ip = InetAddress.getLocalHost();
+			String userId = (String) req.getSession().getAttribute(
+					"UserRecordID");
+			
+			java.util.Date dt = new java.util.Date();
+			java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(
+					"yyyy-MM-dd HH:mm:ss");
+			String currentTime = sdf.format(dt);
+			
+			String assetID = req.getParameter("id");
+			assestsDao.deleteAsset(Integer.parseInt(assetID));
+			
+			masterDao.userAuditTrail("assentisk_assets", "1", "1", currentTime,
+					Integer.parseInt(userId), ip.getHostAddress());
+			
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+		return null;
+	}
+	public ModelAndView schedule(HttpServletRequest req,
+			HttpServletResponse res) {
+	
+		try
+		{
+			String id = req.getParameter("id");					
+			map = new ModelMap();
+			
+			List<AssetsBean> assetDetail = assestsDao.getAmcDetailsByAsset(Integer.parseInt(id));
+			List<VendorBean> vendorList = assestsDao.getVendorList();
+			List<TimeBean> timeList = assestsDao.getTimeList();
+			List<AssetsBean> assetList = assestsDao.getAssetsList();
+			List<MonthSectionBean> monthsectionList = assestsDao.getMonthSectionList();
+			List<WeekdayBean> weekdayList = assestsDao.getWeekdayList();
+			List<YearSectionBean> yearsectionList=assestsDao.getYearSectionList();
+			
+			if(assetDetail.size()>0)
+			{
+				Map m = (Map)assetDetail.get(0);
+				map.addObject("ID", m.get("ID"));
+				map.addObject("AMC_CName", m.get("AMC_CName"));
+				map.addObject("VendorID", m.get("VendorID"));
+				map.addObject("FromDate", m.get("FromDate"));
+				map.addObject("ToDate", m.get("ToDate"));
+				map.addObject("assetID", m.get("assetID"));
+				map.addObject("responsibleHead", m.get("responsibleHead"));
+			}
+			
+			List<SchedulerBean> schedulerList = assestsDao.getSchedulerList(id);
+			if(schedulerList.size()>0){
+				Map mp = (Map)schedulerList.get(0);
+				map.addObject("getScheduler",true);
+				map.addObject("startTimeID", mp.get("startTimeID"));
+				map.addObject("endTimeID", mp.get("endTimeID"));
+				map.addObject("duration", mp.get("duration"));
+				map.addObject("recurPattern", mp.get("recurPattern"));
+				map.addObject("recurOccurence", mp.get("recurOccurence"));
+				map.addObject("weekid", mp.get("weekid"));
+				String weekid=mp.get("weekid").toString();
+				String []week=weekid.split(",");
+				String sun="0",mon="0",tues="0",wed="0",thrus="0",fri="0",sat="0";
+				for(int i=0;i<week.length;i++){
+					if(week[i].equals("1")){
+						sun="1";
+					}
+					if(week[i].equals("2")){
+						mon="2";
+					}
+					if(week[i].equals("3")){
+						tues="3";
+					}
+					if(week[i].equals("4")){
+						wed="4";
+					}
+					if(week[i].equals("5")){
+						thrus="5";
+					}
+					if(week[i].equals("6")){
+						fri="6";
+					}
+					if(week[i].equals("7")){
+						sat="7";
+					}
+				}
+			
+	
+				map.addObject("sun",sun);
+				map.addObject("mon",mon);
+				map.addObject("tues",tues);
+				map.addObject("wed",wed);
+				map.addObject("thrus",thrus);
+				map.addObject("fri",fri);
+				map.addObject("sat",sat);
+				map.addObject("dateStart", mp.get("dateStart"));
+				map.addObject("endDate", mp.get("endDate"));
+				map.addObject("endRangePat", mp.get("endRangePat"));
+				map.addObject("endoccurence", mp.get("endoccurence"));
+				map.addObject("schedulerID", mp.get("id"));				
+				map.addObject("dailyRadio", mp.get("dailyRadio"));
+				map.addObject("dailyRecur", mp.get("dailyRecur"));
+				map.addObject("monthRadio", mp.get("monthRadio"));
+				map.addObject("monthdayRecur", mp.get("monthdayRecur"));
+				map.addObject("monthRecur", mp.get("monthRecur"));
+				map.addObject("monthSection", mp.get("monthSection"));
+				map.addObject("monthWeekend", mp.get("monthWeekend"));
+				map.addObject("yearlyRecur", mp.get("yearlyRecur"));
+				map.addObject("yearlyMonthSection", mp.get("yearlyMonthSection"));
+				map.addObject("yearlyMonthWeek", mp.get("yearlyMonthWeek"));
+				map.addObject("yearlySection", mp.get("yearlySection"));
+				map.addObject("yearlyMonthRecur", mp.get("yearlyMonthRecur"));
+				map.addObject("yearlyRadio", mp.get("yearlyRadio"));
+				
+				String recurPattern=mp.get("recurPattern").toString();
+				String schdulerderdata="";
+				String dailyRadio=mp.get("dailyRadio").toString();
+				String monthlyRadio=mp.get("monthRadio").toString();
+				String daymonthlyrecur=mp.get("monthdayRecur").toString();
+				String monthlyrecurmon= mp.get("monthRecur").toString();
+				String monthsection=mp.get("monthSection").toString();
+				String monthWeeksection=mp.get("monthWeekend").toString();
+				String yearmonthlyRadio= mp.get("yearlyRadio").toString();
+				String yearsection=mp.get("yearlySection").toString();
+				String ONyearrecur=mp.get("yearlyRecur").toString();
+				
+				String startTime=mp.get("startTimeID").toString();
+				String endTime= mp.get("endTimeID").toString();
+				String yearmonthsection=mp.get("yearlyMonthSection").toString();
+				String yearmonthWeeksection=mp.get("yearlyMonthWeek").toString();
+				String dateStart=mp.get("dateStart").toString();
+				String endoccurence=mp.get("endoccurence").toString();
+				if(recurPattern.equals("1")){
+					schdulerderdata +="Occurs  ";
+					if(dailyRadio.equals("1")){
+						schdulerderdata+= " every day ";
+					}
+					else if(dailyRadio.equals("2")){
+							schdulerderdata+=" every weekday ";
+						}
+					}
+				else if(recurPattern.equals("2")){
+					schdulerderdata +="Occurs every ";
+					if(weekid!=""){
+						List weekday=assestsDao.getday(weekid);
+						if(weekday.size()>0){
+							Map m=(Map)weekday.get(0);
+							schdulerderdata +="  "+m.get("mname").toString();
+						}
+					}
+					
+				}
+				else if(recurPattern.equals("3")){
+					schdulerderdata +="Occurs ";
+					if(monthlyRadio.equals("1")){
+						schdulerderdata+=" Day "+daymonthlyrecur +" of every "+monthlyrecurmon+" month(s)";
+					}
+					else if(monthlyRadio.equals("2")){
+						schdulerderdata+=" the "+assestsDao.getMonthSection(monthsection)+" "+ assestsDao.getWeeksection(monthWeeksection)+" of every "+monthlyrecurmon+" month(s)";
+					}
+				}
+				else if(recurPattern.equals("4")){
+					schdulerderdata +="Occurs ";
+					if(yearmonthlyRadio.equals("1")){
+						schdulerderdata+=" every  "+assestsDao.getYearSection(yearsection) +"  "+ONyearrecur;
+					}
+					else if(yearmonthlyRadio.equals("2")){
+						schdulerderdata+=" the "+assestsDao.getMonthSection(yearmonthsection) +"  "+ assestsDao.getWeeksection(yearmonthWeeksection)+" of "+assestsDao.getYearSection(yearsection) +" month(s)";
+					}
+				}
+				schdulerderdata+=" effective "+dateStart+" for "+endoccurence+" times from "+assestsDao.getTimedata(startTime) +" to "+assestsDao.getTimedata(endTime);
+				map.addObject("schdulerderdata", schdulerderdata);
+			}
+			else
+			{
+				map.addObject("getScheduler",false);
+				map.addObject("dailyRecur", "0");
+				map.addObject("recurOccurence", "0");
+				map.addObject("endoccurence","0");
+				map.addObject("monthdayRecur", "0");
+				map.addObject("monthRecur","0");
+				map.addObject("yearlyRecur", "0");
+				map.addObject("yearlyMonthRecur", "0");
+			}
+			List<EmployeeBean> employeeList = organizationDao.getEmployeeList();
+			
+			map.addObject("employeeList", employeeList);
+			map.addObject("vendorList", vendorList);
+			map.addObject("timeList",timeList);
+			map.addObject("monthsectionList", monthsectionList);
+			map.addObject("weekdayList",weekdayList);
+			map.addObject("yearsectionList", yearsectionList);
+			
+			
+			
+			
+			
+		}
+		catch(Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		return new ModelAndView("assests/schedule", map);
+	}
+	public ModelAndView saveSchedule(HttpServletRequest req,
+			HttpServletResponse res) {
+	
+		try
+		{
+			System.out.println("save schedule-----");
+			InetAddress ip = InetAddress.getLocalHost();
+			String userId = (String) req.getSession().getAttribute(
+					"UserRecordID");
+			
+			java.util.Date dt = new java.util.Date();
+			java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(
+					"yyyy-MM-dd HH:mm:ss");
+			String currentTime = sdf.format(dt);
+			
+			
+			String assetid = req.getParameter("assetid");
+			String id = req.getParameter("id");
+			String amcname = req.getParameter("amcname");
+			String vendor = req.getParameter("vendor");
+			String fromdate = req.getParameter("fromdate");
+			String todate = req.getParameter("todate");
+			
+			String employee = req.getParameter("employeedata");
+			
+			MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) req;
+			MultipartFile multipartFile = multipartRequest.getFile("doc");
+			Files file = new Files();
+			file.setFile(multipartFile.getBytes());
+			
+
+			
+			if(id.equals(""))
+			{
+				assestsDao.saveAmcAsset(amcname, Integer.parseInt(vendor),fromdate, todate, Integer.parseInt(assetid),employee);
+				int rowID = assestsDao.getAmcAssetID();
+				filesService.save(file, "update assentisk_amc_assets set DocUpload=? where ID="+rowID+"");
+			}
+			else
+			{
+				assestsDao.updateAmcAsset(amcname, Integer.parseInt(vendor), fromdate, todate, Integer.parseInt(assetid), Integer.parseInt(id),employee);
+				filesService.save(file, "update assentisk_amc_assets set DocUpload=? where ID="+id+"");
+			}
+
+			
+			masterDao.userAuditTrail("assentisk_amc_assets", "1", "Edit", currentTime,Integer.parseInt(userId), ip.getHostAddress());
+			
+		}
+		catch(Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		return new ModelAndView("assests/assets");
+	}
+	
+	
+	public ModelAndView addScheduler(HttpServletRequest req,
+			HttpServletResponse res) {
+
+		try {
+			PrintWriter out= res.getWriter();
+			System.out.println("addScheduler---");
+			InetAddress ip = InetAddress.getLocalHost();
+			String userId = (String) req.getSession().getAttribute(
+					"UserRecordID");
+
+			java.util.Date dt = new java.util.Date();
+			java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(
+					"yyyy-MM-dd HH:mm:ss");
+			
+			String currentTime = sdf.format(dt);
+			
+		
+			String assetid = req.getParameter("assetid");
+		
+			String startTime = req.getParameter("startTime");
+			
+			String endTime = req.getParameter("endTime");
+		
+			String duration = req.getParameter("duration");
+			
+			String recurPattern = req.getParameter("oRadio");
+			
+			String recurOccurence = req.getParameter("recur");
+			
+			String weekid = req.getParameter("weekid");
+		
+			String dateStart = req.getParameter("dateStart");
+			
+			String endDate = req.getParameter("endDate");
+			
+			String endoccurence = req.getParameter("endoccurence");
+			
+			String endRangePat = req.getParameter("endRadio");
+			
+			String schedulerID=req.getParameter("schedulerID");
+			
+			String status="Created";
+			
+			String schdulerderdata="";
+			
+			String dailyRadio=req.getParameter("dailyRadio");
+			String dailyrecur=req.getParameter("dailyrecur");
+			String monthlyRadio=req.getParameter("monthlyRadio");
+			String daymonthlyrecur=req.getParameter("daymonthlyrecur");
+			String monthlyrecurmon=req.getParameter("monthlyrecurmon");
+			String monthsection=req.getParameter("monthsection");
+			String monthWeeksection=req.getParameter("monthWeeksection");
+			String daymonthlyyearrecur=req.getParameter("daymonthlyyearrecur");
+			String yearmonthlyRadio=req.getParameter("yearmonthlyRadio");
+			String yearsection=req.getParameter("yearsection");
+			String ONyearrecur=req.getParameter("ONyearrecur");
+			String yearmonthsection=req.getParameter("yearmonthsection");
+			String yearmonthWeeksection=req.getParameter("yearmonthWeeksection");
+			
+			assestsDao.saveScheduler(assetid,startTime,endTime,duration,recurPattern,
+					recurOccurence,weekid,dateStart,endDate,endoccurence,endRangePat,
+					userId,status,schedulerID,dailyRadio,dailyrecur,monthlyRadio,daymonthlyrecur,monthlyrecurmon,
+					monthsection,monthWeeksection,daymonthlyyearrecur,yearmonthlyRadio,yearsection,
+					ONyearrecur,yearmonthsection,yearmonthWeeksection);
+			masterDao.userAuditTrail("assentisk_scheduler", "1", "1", currentTime,
+					Integer.parseInt(userId), ip.getHostAddress());
+			if(recurPattern.equals("1")){
+				schdulerderdata +="Occurs  ";
+				if(dailyRadio.equals("1")){
+					schdulerderdata+= " every day ";
+				}
+				else if(dailyRadio.equals("2")){
+						schdulerderdata+=" every weekday ";
+					}
+				}
+			else if(recurPattern.equals("2")){
+				schdulerderdata +="Occurs every ";
+				if(weekid!=""){
+					List weekday=assestsDao.getday(weekid);
+					if(weekday.size()>0){
+						Map m=(Map)weekday.get(0);
+						schdulerderdata +="  "+m.get("mname").toString();
+					}
+				}
+				
+			}
+			else if(recurPattern.equals("3")){
+				schdulerderdata +="Occurs ";
+				if(monthlyRadio.equals("1")){
+					schdulerderdata+=" Day "+daymonthlyrecur +" of every "+monthlyrecurmon+" month(s)";
+				}
+				else if(monthlyRadio.equals("2")){
+					schdulerderdata+=" the "+assestsDao.getMonthSection(monthsection)+" "+ assestsDao.getWeeksection(monthWeeksection)+" of every "+monthlyrecurmon+" month(s)";
+				}
+			}
+			else if(recurPattern.equals("4")){
+				schdulerderdata +="Occurs ";
+				if(yearmonthlyRadio.equals("1")){
+					schdulerderdata+=" every  "+assestsDao.getYearSection(yearsection) +"  "+ONyearrecur;
+				}
+				else if(yearmonthlyRadio.equals("2")){
+					schdulerderdata+=" the "+assestsDao.getMonthSection(yearmonthsection) +"  "+ assestsDao.getWeeksection(yearmonthWeeksection)+" of "+assestsDao.getYearSection(yearsection) +" month(s)";
+				}
+			}
+			schdulerderdata+=" effective "+dateStart+" for "+endoccurence+" times from "+assestsDao.getTimedata(startTime) +" to "+assestsDao.getTimedata(endTime);
+			out.print(schdulerderdata);
+			
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+		return null;
+	}
+	
+	
+	public ModelAndView callEndTime(HttpServletRequest req,
+			HttpServletResponse res) {		
+		try
+		{	
+			map = new ModelMap();			
+			String startId=req.getParameter("startId");
+			
+			List<TimeBean> timeList = assestsDao.endTimeList(startId);
+			map.addObject("timeList",timeList);
+			modelAndView = new ModelAndView("ajaxresponse/endTimeList", map);			
+			
+		}
+		catch(Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		return modelAndView;
+	}
+	
+
+	public ModelAndView callDiffernce(HttpServletRequest req,
+			HttpServletResponse res) {		
+		try
+		{	
+			PrintWriter out= res.getWriter();
+			map = new ModelMap();			
+			String startID=req.getParameter("startID");
+			String endID=req.getParameter("endID");
+			
+			String getTimeStart = assestsDao.gettime(startID);	
+			String getTimeEnd = assestsDao.gettime(endID);	
+			
+			String start[]=getTimeStart.split(":");
+			String end[]=getTimeEnd.split(":");
+			
+			//int beforeColon= Integer.parseInt(end[0]) -Integer.parseInt(start[0]) ;
+			//int afterColon=Integer.parseInt(end[1]) - Integer.parseInt(start[1]);
+			
+			int starttotal=Integer.parseInt(start[0]) *60 + Integer.parseInt(start[1]);
+			int endtotal=Integer.parseInt(end[0]) *60 + Integer.parseInt(end[1]);
+			
+			int diff=endtotal-starttotal;
+			int beforeColon = diff / 60;
+			int afterColon = diff % 60;
+			String finalTime;
+		    if(afterColon== 0)
+		    {
+		    	finalTime=beforeColon +":00";
+		    }
+		    else
+		    {
+		    	finalTime=beforeColon +":"+afterColon;
+		    }
+			
+			out.write(finalTime);
+			
+		}
+		catch(Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		return null;
+	}
+
+	
+}

@@ -1,0 +1,621 @@
+<%@ taglib uri="/WEB-INF/tld/c-1_0.tld" prefix="c" %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="images/favicon.png" type="image/png">
+
+  <title>Assentisk</title>
+
+<link href="css/custom.css" rel="stylesheet">
+  <script src="js/angular.min.js"></script>
+  <script type="text/javascript" charset="utf8" src="js/jquery.js"></script>
+  <link href="css/jquery-ui.css" rel="stylesheet">
+  <script src="js/jquery-1.10.2.js"></script>
+  <script src="js/jquery-ui.js"></script>
+  <link href="css/jquery-ui.css" rel="stylesheet">
+  
+     
+  <script>
+ 
+	var companyapp = angular.module('companyapp', []);
+	
+	companyapp.config(['$httpProvider', function ($httpProvider) {    
+	$httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
+	}]);
+	
+	function editCompanyController($scope, $http) {
+	$("div.leftpanelinner>ul>li#organization").addClass("nav-parent nav-active");
+			$("div.leftpanelinner>ul>li#organization>ul").css("display","block");
+			$("div.leftpanelinner>ul>li#organization>ul>li#company").addClass("active");
+
+	  $("#imageloader").css("display", "none");
+      $("#complete").css("display", "block");
+		
+ 		   $scope.saveData = function(){ 	
+ 		   
+ 		    
+            window.location.href = "companyedit.org.htm";
+            
+               		 	    		 			 		   	
+ 					
+    		};
+    		
+    				
+ 		   $scope.savePasswordData = function() {
+ 		 
+			var empPassword = $scope.empPassword;
+			var oldPassword = $scope.oldPassword;
+			var newPassword = $scope.newPassword;
+			var retypePassword =$scope.retypePassword;
+
+		
+				var responsePromise = $http
+						.post("savePassword.org.htm?newPassword="
+								+ $scope.retypePassword);
+				responsePromise
+						.success(function(data, status, headers, config) {
+								$('#divSuccessAlert').show();
+				                $('#divSuccessAlert').delay(1500).fadeOut('slow');
+				                window.location.href = "companyview.org.htm";
+						});
+
+			
+		};
+    
+	}
+	   
+	function changePassword(){
+
+          
+             $( "#dialog-1" ).dialog({
+               autoOpen: false,  
+            });
+              $( "#dialog-1" ).css( "display","block");    
+            $('#dialog-1').dialog({
+                        title: 'Change Password',
+                        draggable: false,
+                        resizable: true,
+                        width: 500,
+                        modal: true,
+                       
+                        buttons:{
+                      
+                            Update: function(){
+                              	savePassword();
+                               
+                                }
+                        }
+                    });
+              
+               $( "#dialog-1" ).dialog( "open");
+	}
+	
+	function savePassword(){
+			var empPassword = document.getElementById("empPassword").value;
+			var oldPassword= document.getElementById("oldPassword").value;
+			var newPassword=document.getElementById("newPassword").value;
+			var retypePassword=document.getElementById("retypePassword").value;
+			
+			if (oldPassword == '' || oldPassword == undefined) {
+				$('#divOldAlert').show();
+				$('#divOldAlert').delay(1500).fadeOut('slow');
+				
+
+			}  else if (newPassword == '' || newPassword == undefined) {
+				$('#divNewAlert').show();
+				$('#divNewAlert').delay(1500).fadeOut('slow');
+				
+
+			}else if (retypePassword == '' || retypePassword == undefined) {
+				$('#divretypeAlert').show();
+				$('#divretypeAlert').delay(1500).fadeOut('slow');
+				
+
+			}else if (newPassword!=retypePassword) {
+				$('#divFalsePwdAlert').show();
+				$('#divFalsePwdAlert').delay(1500).fadeOut('slow');
+				
+
+			}else if (oldPassword!=empPassword) {
+				$('#divErrorPwdAlert').show();
+				$('#divErrorPwdAlert').delay(1500).fadeOut('slow');
+			}
+
+			else {
+			 $.post("savePassword.org.htm",
+  					{
+  							  newPassword : retypePassword
+   							
+ 					 },
+ 					 function(data,status){
+    			   $("#dialog-1").dialog('close');
+  				});
+  				}
+	
+	}
+	
+</script>
+  
+  
+  <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+  <script src="js/html5shiv.js"></script>
+  <script src="js/respond.min.js"></script>
+  <![endif]-->
+</head>
+
+<body  class="<c:out value="${sessionScope.bodyClass}"></c:out>">
+
+
+<section>
+
+<%@include file="leftpanel.jsp" %>
+
+  <div class="mainpanel">
+     <%@include file="header.jsp" %>
+
+    <div class="pageheader">
+      <h2><c:out value="${sessionScope.Company_Header}"/></h2>
+      <div class="breadcrumb-wrapper">
+        <span class="label"><c:out value="${sessionScope.DashBoard_YouAreHere}"/></span>
+        <ol class="breadcrumb">
+         <li><a href="dashboard.login.htm"><c:out value="${sessionScope.DashBoard_Assentisk}"/></a></li>
+          
+        </ol><br>
+      </div>
+    </div>
+    
+    <div class="contentpanel">
+     
+      <div class="row">
+        <div class="col-md-12">
+          <div class="panel panel-default">
+            
+            <div class="panel-body" ng-app="companyapp" ng-controller="editCompanyController">
+            <form ng-submit="saveData()"> 
+               <input type="hidden" name="CompanyID" class="form-control" ng-model="CompanyID" ng-init='CompanyID = "<c:out value="${CompanyID}"/>"'>
+               <div class="row">               
+                <div class="col-sm-6">
+                  <div class="form-group">
+                   <img src="viewimage.org.htm?id=<c:out value="${CompanyID}"/>" align="left"  width="150px;" height="100px;">
+				
+                      <br>
+                  </div>
+                </div><!-- col-sm-6 -->
+               </div>
+               
+            </br>
+              
+               <div class="row">               
+                <div class="col-sm-6">
+                  <div class="form-group">
+				  
+                    <label class="control-label"><c:out value="${sessionScope.Company_Header}"/></label>                    
+                    <input type="hidden" name="companyname" class="form-control" ng-model="companyname" required="required" ng-init='companyname = "<c:out value="${CompanyName}"/>"'>
+                    <label style="padding-left: 75px;"><c:out value="${CompanyName}"/></label>
+                  </div>
+                </div><!-- col-sm-6 -->
+               </div>
+               
+                  <div class="row">
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label class="control-label"><c:out value="${sessionScope.Company_Currency}"/></label>
+                   
+                    <label style="padding-left: 128px;"><c:out value="${Currency}"/></label>
+                  </div>
+                </div><!-- col-sm-6 -->   
+                </div>
+               
+                
+                
+             
+                
+                <div class="row">               
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label><h4><c:out value="${sessionScope.Company_Address}"/></h4></label>                    
+                  </div>
+                </div><!-- col-sm-6 -->
+               </div>
+               
+              
+                             
+                          
+                <div style="background:#E0E0E0;width: 700px;" >
+                
+                 <div class="row">
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label class="control-label"><c:out value="${sessionScope.Company_Headoffice}"/></label>
+                    <label style="padding-left: 132px;"><c:out value="${HeadOffice_Address}"/></label>
+                  </div>
+                </div><!-- col-sm-6 -->   
+                </div>
+                
+                <div class="row">
+                 <div class="col-sm-6">
+                  <div class="form-group">
+                    <label class="control-label"><c:out value="${sessionScope.Company_HeadCountry}"/></label>
+                    <label style="padding-left: 135px;"><c:out value="${CountryName}"/></label>
+                  </div>
+                </div><!-- col-sm-6 -->  
+                </div>
+                
+                                
+                <div class="row">
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label class="control-label"><c:out value="${sessionScope.Company_HeadCity}"/></label>
+                    <label style="padding-left: 163px;"><c:out value="${HeadOffice_City}"/></label>
+                  </div>
+                </div><!-- col-sm-6 -->             
+              </div><!-- row -->
+              
+              <div class="row">
+              <div class="col-sm-6">
+                  <div class="form-group">
+                    <label class="control-label"><c:out value="${sessionScope.Company_HeadState}"/></label>
+                   
+                    <label style="padding-left: 155px;"><c:out value="${StateName}"/></label>
+                  </div>
+                </div><!-- col-sm-6 -->             
+              </div><!-- row -->
+              
+              <div class="row">
+               <div class="col-sm-6">
+                  <div class="form-group">
+                    <label class="control-label"><c:out value="${sessionScope.Company_HeadZip}"/></label>
+                    
+                    <label style="padding-left: 168px;"><c:out value="${HeadOffice_Zip}"/></label>
+                  </div>
+                </div><!-- col-sm-6 -->             
+              </div><!-- row -->
+             </div> 
+             
+             <div class="row">               
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label>&nbsp;</label>                    
+                  </div>
+                </div><!-- col-sm-6 -->
+               </div>
+              
+              <div class="row">               
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label><h4><c:out value="${sessionScope.Company_PrimaryContacts}"/></h4></label>                    
+                  </div>
+                </div><!-- col-sm-6 -->
+               </div>
+             <div style="background:#E0E0E0;width: 700px;" >
+             <div class="row"> 
+             <div class="col-sm-6">
+                  <div class="form-group">
+                    <label class="control-label"><c:out value="${sessionScope.Company_PrimaryName}"/></label>
+                    
+                    <label style="padding-left: 155px;"><c:out value="${Primary_Contact_Name}"/></label>
+                  </div>
+                </div><!-- col-sm-6 -->             
+              </div><!-- row -->
+              
+              <div class="row"> 
+             <div class="col-sm-6">
+                  <div class="form-group">
+                    <label class="control-label"><c:out value="${sessionScope.Company_PrimaryNumber}"/></label>
+                    
+                    <label style="padding-left: 139px;"><c:out value="${Primary_Contact_Number}"/></label>
+                  </div>
+                </div><!-- col-sm-6 -->             
+              </div><!-- row -->
+              
+             <div class="row"> 
+             <div class="col-sm-6">
+                  <div class="form-group">
+                    <label class="control-label"><c:out value="${sessionScope.Company_PrimaryEmail}"/></label>
+                    
+                    <label style="padding-left: 156px;"><c:out value="${PrimaryEmail}"/></label>
+                  </div>
+                </div><!-- col-sm-6 -->             
+              </div><!-- row -->
+              
+              
+              </div>
+              
+              <div class="row">               
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label><h4><c:out value="${sessionScope.Company_LegalContacts}"/></h4></label>                    
+                  </div>
+                </div><!-- col-sm-6 -->
+               </div>
+              
+              <div style="background:#E0E0E0;width: 700px;" >
+             <div class="row"> 
+             <div class="col-sm-6">
+                  <div class="form-group">
+                    <label class="control-label"><c:out value="${sessionScope.Company_LegalName}"/></label>
+                    
+                    <label style="padding-left: 156px;"><c:out value="${Legal_Contact_Name}"/></label>
+                  </div>
+                </div><!-- col-sm-6 -->             
+              </div><!-- row -->
+              
+              <div class="row"> 
+             <div class="col-sm-6">
+                  <div class="form-group">
+                    <label class="control-label"><c:out value="${sessionScope.Company_LegalNumber}"/></label>
+                    
+                    <label style="padding-left: 140px;"><c:out value="${Legal_Contact_Number}"/></label>
+                  </div>
+                </div><!-- col-sm-6 -->             
+              </div><!-- row -->
+              
+             <div class="row"> 
+             <div class="col-sm-6">
+                  <div class="form-group">
+                    <label class="control-label"><c:out value="${sessionScope.Company_LegalEmail}"/></label>
+                    
+                    <label style="padding-left: 157px;"><c:out value="${Legal_Contact_Email}"/></label>
+                  </div>
+                </div><!-- col-sm-6 -->             
+              </div><!-- row -->
+              
+              </div>
+              
+              <div class="row">               
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label><h4><c:out value="${sessionScope.Company_AccountContacts}"/></h4></label>                    
+                  </div>
+                </div><!-- col-sm-6 -->
+               </div>
+              
+               <div style="background:#E0E0E0;width: 700px;" >
+             <div class="row"> 
+             <div class="col-sm-6">
+                  <div class="form-group">
+                    <label class="control-label"><c:out value="${sessionScope.Company_AccountsName}"/></label>
+                    
+                    <label style="padding-left: 157px;"><c:out value="${Accounts_Contact_Name}"/></label>
+                  </div>
+                </div><!-- col-sm-6 -->             
+              </div><!-- row -->
+              
+              <div class="row"> 
+             <div class="col-sm-6">
+                  <div class="form-group">
+                    <label class="control-label"><c:out value="${sessionScope.Company_AccountsContactNumber}"/></label>
+                    
+                    <label style="padding-left: 142px;"><c:out value="${Accounts_Contact_Number}"/></label>
+                  </div>
+                </div><!-- col-sm-6 -->             
+              </div><!-- row -->
+              
+             <div class="row"> 
+             <div class="col-sm-6">
+                  <div class="form-group">
+                    <label class="control-label"><c:out value="${sessionScope.Company_AccountsContactEmail}"/></label>
+                    
+                    <label style="padding-left: 158px;"><c:out value="${Accounts_Contact_Email}"/></label>
+                  </div>
+                </div><!-- col-sm-6 -->             
+              </div><!-- row -->
+              
+              </div>
+              
+               <div class="row">               
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label><h4><c:out value="${sessionScope.company_licenseDetail}"/></h4></label>                    
+                  </div>
+                </div><!-- col-sm-6 -->
+               </div>
+              
+               <div style="background:#E0E0E0;width: 700px;" >
+              <div class="row">               
+                <div class="col-sm-6">
+                  <div class="form-group" style="width: 462px;">
+                    <label class="control-label"><c:out value="${sessionScope.company_lastupdated}"/></label>
+                    <label style="padding-left: 79px;">
+                    <c:forEach var="license" items="${license}" varStatus="status">
+                    	  <c:out value="${license.ModifiedDate}"/>
+                    </c:forEach>
+                   </label>                    
+                  </div>
+                </div><!-- col-sm-6 -->
+               </div>
+               
+                <div class="row">               
+                <div class="col-sm-6">
+                  <div class="form-group" style="width: 462px;">
+                    
+                    <label class="control-label"><c:out value="${sessionScope.company_expiry}"/></label>
+                    <label style="padding-left: 117px;">
+                    <c:forEach var="license" items="${license}" varStatus="status">
+                    	  <c:out value="${license.expiryDate}"/>
+                    </c:forEach>
+                   </label>                    
+                  </div>
+                </div><!-- col-sm-6 -->
+               </div>
+               
+                <div class="row">               
+                <div class="col-sm-6">
+                  <div class="form-group" style="width: 462px;">
+                   
+                    <label class="control-label"><c:out value="${sessionScope.company_availableuser}"/></label>
+                    <label style="padding-left: 90px;">
+                    <c:forEach var="license" items="${license}" varStatus="status">
+                    	  <c:out value="${license.MaxUser}"/>
+                    </c:forEach>
+                   </label>                    
+                  </div>
+                </div><!-- col-sm-6 -->
+               </div>
+              
+              
+               <div class="row">               
+                <div class="col-sm-6">
+                  <div class="form-group" style="width: 462px;">
+                   
+                    <label class="control-label"><c:out value="${sessionScope.company_licenseto}"/></label>
+                    <label style="padding-left: 124px;">
+                    <c:forEach var="license" items="${license}" varStatus="status">
+                    	  <c:out value="${license.licenseTo}"/>
+                    </c:forEach>
+                   </label>                    
+                  </div>
+                </div><!-- col-sm-6 -->
+               </div>
+               
+              </div>
+              
+              
+               
+<!--               <div style="background:#E0E0E0;width: 700px;" >-->
+<!--                <div class="row">-->
+<!--                <div class="col-sm-6">-->
+<!--                  <div class="form-group">-->
+<!--                   <a href="changepassword.org.htm">Change Password</a>-->
+<!--                  </div>-->
+<!--                </div>             -->
+<!--              </div>  -->
+<!--               -->
+             
+             </br>
+            	<div class="panel-footer">
+              
+			  <button type="reset" class="btn btn-primary" ng-click="saveData()"><c:out value="${sessionScope.edit}"/></button>
+                <button type="reset" class="btn btn-primary" onclick="changePassword();"><c:out value="${sessionScope.company_changepwd}"/></button>     
+          </div>
+         
+               </form> 
+              </div>
+             
+             
+              <div class="row">               
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label>&nbsp;</label>                    
+                  </div>
+                </div><!-- col-sm-6 -->
+               </div>
+               
+						
+            
+            
+             	
+            
+            
+            
+            
+         
+            <div class="row">
+                <div class="col-sm-6">
+                  <div class="form-group">
+                   &nbsp;
+                  </div>
+                </div><!-- col-sm-6 -->              
+              </div><!-- row -->
+              
+              
+        </div>
+        
+      </div>
+
+      
+
+      
+
+    </div><!-- contentpanel -->
+
+  </div><!-- mainpanel -->
+
+  </div>
+ <div id="dialog-1" title="Scheduler" style="display: none;">
+  	  			
+			 <div class="row">               
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label class="control-label"><c:out value="${sessionScope.Old_Password}"/></label> <font color="red">*</font>
+                    <input type="password" id="oldPassword" name="oldPassword" class="form-control" ng-model="oldPassword">
+                  </div>
+                </div><!-- col-sm-6 -->
+              </div><!-- row -->
+              
+                <div class="row">               
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label class="control-label"><c:out value="${sessionScope.New_Password}"/></label> <font color="red">*</font>
+                    <input type="password" id="newPassword" name="newPassword" class="form-control"  ng-model="newPassword" >
+                  </div>
+                </div><!-- col-sm-6 -->
+              </div><!-- row -->
+              
+                <div class="row">               
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label class="control-label"><c:out value="${sessionScope.Retype_Password}"/></label> <font color="red">*</font>
+                    <input type="password" id="retypePassword" name="retypePassword" class="form-control" ng-model="retypePassword" >
+                  </div>
+                </div><!-- col-sm-6 -->
+              </div><!-- row -->
+              
+                 
+              
+               <div class="row">               
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    
+                    <input type="hidden" name="empPassword" id="empPassword" class="form-control"
+					ng-model="empPassword"  value="<c:out value="${EmpPassword}"/>"/>
+                  </div>
+                </div><!-- col-sm-6 -->
+              </div>
+              
+              </br>
+          
+		</div>
+
+</section>
+
+
+<script src="js/jquery-1.11.1.min.js"></script>
+<script src="js/jquery-migrate-1.2.1.min.js"></script>
+<script src="js/jquery-ui-1.10.3.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/modernizr.min.js"></script>
+<script src="js/jquery.custom.min.js"></script>
+<script src="js/toggles.min.js"></script>
+<script src="js/jquery.cookies.js"></script>
+<script src="js/left-menu.js"></script>
+<div  id="divOldAlert" class="error2">
+         <span >Enter Old Password</span>
+ </div>
+ <div  id="divNewAlert" class="error2">
+         <span ><c:out value="${sessionScope.newPwd_alert}"/></span>
+ </div>
+ <div  id="divretypeAlert" class="error2">
+         <span > <c:out value="${sessionScope.retypePwd_alert}"/></span>
+ </div>
+ <div  id="divFalsePwdAlert" class="error2">
+         <span ><c:out value="${sessionScope.dontmatch_alrt}"/></span>
+ </div>
+ <div  id="divErrorPwdAlert" class="error2">
+         <span ><c:out value="${sessionScope.oldnoMatch_alrt}"/></span>
+ </div>
+ <div  id="divSuccessAlert" class="success">
+         <span ><c:out value="${sessionScope.passwrd_successfully}"/></span>
+ </div>
+ 
+
+
+
+
+</body>
+</html>

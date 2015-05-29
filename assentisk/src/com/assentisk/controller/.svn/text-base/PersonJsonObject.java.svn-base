@@ -1,0 +1,384 @@
+package com.assentisk.controller;
+
+import java.util.List;
+
+import com.assentisk.bean.*;
+
+
+
+public class PersonJsonObject {
+
+	int iTotalRecords;
+
+	int iTotalDisplayRecords;
+
+	String sEcho;
+
+	String sColumns;
+
+	List<MasterBean> masterBean;
+
+	List<StateBean> stateBean;
+
+	List<CityBean> cityBean;
+
+	List<DepartmentBean> departmentBean;
+
+	List<GroupBean> groupBean;
+
+	List<CompanyBean> companyBean;
+
+	List<LegalEntitiesBean> legalEntitiesBean;
+
+	List<LocationsBean> locationsBeans;
+
+	List<ApplicationsBean> applicationsBeans;
+
+	List<BusinessProcessesBean> businessProcessesBeans;
+
+	List<String> employeeBeans;
+
+	List<String> locationList;
+
+	List<String> divisionList;
+
+	List<EmployeeBean> empBeans;
+
+	List<CategoriesBean> categoriesBeans;
+	
+	List<AssetsBean> assetsBeans;
+
+	List<VendorBean> vendorBeans;
+	
+	List<LanguageKeysBean> languageKeysBean;
+	
+	List<VendorCategoryBean> vendorCategoryBeans;
+	
+	List<AmcAssetBean> amcAssetBeans;
+	
+	List<RiskBean> riskBean;
+	
+	List<taskBean> taskBeans;
+	
+	List<AuditTrail> auditTrail;
+	
+	List<supportBean> supportBeans;
+	
+	List<ticketCategoryBean> ticketCategoryBeans;
+	
+	List<ticketCatBean>  ticketCatBeans;
+	
+	List<AuditPlan> auditPlans;
+	
+	List<AuditPlanMiles> auPlanMiles;
+
+    List<testAuditPlanMiles> testAuditPlanMiles;
+    
+    List<PolicyBean> policyBeans;
+    
+	public List<PolicyBean> getPolicyBeans() {
+		return policyBeans;
+	}
+
+
+
+	public void setPolicyBeans(List<PolicyBean> policyBeans) {
+		this.policyBeans = policyBeans;
+	}
+
+
+
+	public List<testAuditPlanMiles> getTestAuditPlanMiles() {
+		return testAuditPlanMiles;
+	}
+
+
+
+	public void setTestAuditPlanMiles(List<testAuditPlanMiles> testAuditPlanMiles) {
+		this.testAuditPlanMiles = testAuditPlanMiles;
+	}
+
+
+
+	public List<AuditPlanMiles> getAuPlanMiles() {
+		return auPlanMiles;
+	}
+
+
+
+	public void setAuPlanMiles(List<AuditPlanMiles> auPlanMiles) {
+		this.auPlanMiles = auPlanMiles;
+	}
+
+
+
+	public List<AuditPlan> getAuditPlans() {
+		return auditPlans;
+	}
+
+
+
+	public void setAuditPlans(List<AuditPlan> auditPlans) {
+		this.auditPlans = auditPlans;
+	}
+
+
+
+	public List<ticketCatBean> getTicketCatBeans() {
+		return ticketCatBeans;
+	}
+
+
+
+	public void setTicketCatBeans(List<ticketCatBean> ticketCatBeans) {
+		this.ticketCatBeans = ticketCatBeans;
+	}
+
+
+
+	public List<ticketCategoryBean> getTicketCategoryBeans() {
+		return ticketCategoryBeans;
+	}
+
+
+
+	public void setTicketCategoryBeans(
+			List<ticketCategoryBean> getticketCategory) {
+		this.ticketCategoryBeans = ticketCategoryBeans;
+		
+	}
+	public List<supportBean> getSupportBeans() {
+		return supportBeans;
+	}
+
+	public void setSupportBeans(List<supportBean> supportBeans) {
+		this.supportBeans = supportBeans;
+	}
+
+	public List<AuditTrail> getAuditTrail() {
+	  return auditTrail;
+	 }
+
+	 public void setAuditTrail(List<AuditTrail> auditTrail) {
+	  this.auditTrail = auditTrail;
+	 }
+
+	public List<taskBean> getTaskBeans() {
+		return taskBeans;
+	}
+
+	public void setTaskBeans(List<taskBean> taskBeans) {
+		this.taskBeans = taskBeans;
+	}
+
+	public List<RiskBean> getRiskBean() {
+		return riskBean;
+	}
+
+	public void setRiskBean(List<RiskBean> riskBean) {
+		this.riskBean = riskBean;
+	}
+
+	public List<AmcAssetBean> getAmcAssetBeans() {
+		return amcAssetBeans;
+	}
+
+	public void setAmcAssetBeans(List<AmcAssetBean> amcAssetBeans) {
+		this.amcAssetBeans = amcAssetBeans;
+	}
+
+	public List<EmployeeBean> getEmpBeans() {
+		return empBeans;
+	}
+
+	public void setEmpBeans(List<EmployeeBean> empBeans) {
+		this.empBeans = empBeans;
+	}
+
+	public List<MasterBean> getMasterBean() {
+		return masterBean;
+	}
+
+	public void setMasterBean(List<MasterBean> masterBean) {
+		this.masterBean = masterBean;
+	}
+
+	public List<StateBean> getStateBean() {
+		return stateBean;
+	}
+
+	public void setStateBean(List<StateBean> stateBean) {
+		this.stateBean = stateBean;
+	}
+
+	public List<CityBean> getCityBean() {
+		return cityBean;
+	}
+
+	public void setCityBean(List<CityBean> cityBean) {
+		this.cityBean = cityBean;
+	}
+
+	public List<GroupBean> getGroupBean() {
+		return groupBean;
+	}
+
+	public void setGroupBean(List<GroupBean> groupBean) {
+		this.groupBean = groupBean;
+	}
+
+	public List<CompanyBean> getCompanyBean() {
+		return companyBean;
+	}
+
+	public List<DepartmentBean> getDepartmentBean() {
+		return departmentBean;
+	}
+
+	public void setDepartmentBean(List<DepartmentBean> departmentBean) {
+		this.departmentBean = departmentBean;
+	}
+
+	public void setCompanyBean(List<CompanyBean> companyBean) {
+		this.companyBean = companyBean;
+	}
+
+	public List<LegalEntitiesBean> getLegalEntitiesBean() {
+		return legalEntitiesBean;
+	}
+
+	public void setLegalEntitiesBean(List<LegalEntitiesBean> legalEntitiesBean) {
+		this.legalEntitiesBean = legalEntitiesBean;
+	}
+
+	public List<LocationsBean> getLocationsBeans() {
+		return locationsBeans;
+	}
+
+	public void setLocationsBeans(List<LocationsBean> locationsBeans) {
+		this.locationsBeans = locationsBeans;
+	}
+
+	public List<ApplicationsBean> getApplicationsBeans() {
+		return applicationsBeans;
+	}
+
+	public void setApplicationsBeans(List<ApplicationsBean> applicationsBeans) {
+		this.applicationsBeans = applicationsBeans;
+	}
+
+	public List<BusinessProcessesBean> getBusinessProcessesBeans() {
+		return businessProcessesBeans;
+	}
+
+	public void setBusinessProcessesBeans(
+			List<BusinessProcessesBean> businessProcessesBeans) {
+		this.businessProcessesBeans = businessProcessesBeans;
+	}
+
+	public List<String> getEmployeeBeans() {
+		return employeeBeans;
+	}
+
+	public void setEmployeeBeans(List<String> employeeBeans) {
+		this.employeeBeans = employeeBeans;
+	}
+
+	public List<String> getLocationList() {
+		return locationList;
+	}
+
+	public void setLocationList(List<String> locationList) {
+		this.locationList = locationList;
+	}
+
+	public List<String> getDivisionList() {
+		return divisionList;
+	}
+
+	public void setDivisionList(List<String> divisionList) {
+		this.divisionList = divisionList;
+	}
+
+	public List<CategoriesBean> getCategoriesBeans() {
+		return categoriesBeans;
+	}
+
+	public void setCategoriesBeans(List<CategoriesBean> categoriesBeans) {
+		this.categoriesBeans = categoriesBeans;
+	}
+
+	
+	public List<AssetsBean> getAssetsBeans() {
+		return assetsBeans;
+	}
+
+	public void setAssetsBeans(List<AssetsBean> assetsBeans) {
+		this.assetsBeans = assetsBeans;
+	}
+	
+	public List<VendorBean> getVendorBeans() {
+		return vendorBeans;
+	}
+
+	public void setVendorBeans(
+			List<VendorBean> vendorBeans) {
+		this.vendorBeans = vendorBeans;
+	}
+
+	
+	public List<VendorCategoryBean> getVendorCategoryBeans() {
+		return vendorCategoryBeans;
+	}
+
+	public void setVendorCategoryBeans(
+			List<VendorCategoryBean> vendorCategoryBeans) {
+		this.vendorCategoryBeans = vendorCategoryBeans;
+	}
+	
+
+	public List<LanguageKeysBean> getLanguageKeysBean() {
+		return languageKeysBean;
+	}
+
+	public void setLanguageKeysBean(List<LanguageKeysBean> languageKeysBean) {
+		this.languageKeysBean = languageKeysBean;
+	}
+
+	public int getiTotalRecords() {
+		return iTotalRecords;
+	}
+
+	public void setiTotalRecords(int iTotalRecords) {
+		this.iTotalRecords = iTotalRecords;
+	}
+
+	public int getiTotalDisplayRecords() {
+		return iTotalDisplayRecords;
+	}
+
+	public void setiTotalDisplayRecords(int iTotalDisplayRecords) {
+		this.iTotalDisplayRecords = iTotalDisplayRecords;
+	}
+
+	public String getsEcho() {
+		return sEcho;
+	}
+
+	public void setsEcho(String sEcho) {
+		this.sEcho = sEcho;
+	}
+
+	public String getsColumns() {
+		return sColumns;
+	}
+
+	public void setsColumns(String sColumns) {
+		this.sColumns = sColumns;
+	}
+
+
+
+
+
+}

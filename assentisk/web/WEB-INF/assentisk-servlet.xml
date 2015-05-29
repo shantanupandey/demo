@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+
+
+	<bean id="messageSource"
+		class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basename" value="welcome" />
+	</bean>
+
+
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+	</bean>
+
+
+	
+	<bean id="urlMappingAuthenticate"
+		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+
+	
+		<property name="mappings">
+			<props>
+				<prop key="/*.master.htm">mastercontroller</prop>
+				<prop key="/*.group.htm">groupcontroller</prop>
+				<prop key="/*.org.htm">orgcontroller</prop>
+				<prop key="/*.htm">homeController</prop>
+				<prop key="/*.ajaxresponse.htm">ajaxResponseController</prop>
+				<prop key="/*.assets.htm">assestsController</prop>
+				<prop key="/*.reg.htm">regulationcontroller</prop>
+				<prop key="/*.assess.htm">assessmentcontroller</prop>
+
+			</props>
+		</property>
+
+	</bean>
+	<bean id="assessmentcontroller" class="com.assentisk.controller.AssessmentController">
+		<property name="commandClass" value="com.assentisk.bean.CompanyBean" />
+		<property name="assessmentDao" ref="assessmentImpl"></property>
+		<property name="masterDao" ref="masterImpl"></property>
+		<property name="groupDao" ref="groupImpl"></property>
+		<property name="filesService" ref="filesService"/>
+	</bean>
+
+	<bean id="regulationcontroller" class="com.assentisk.controller.RegulationsController">
+		<property name="commandClass" value="com.assentisk.bean.CompanyBean" />
+		<property name="regulationDao" ref="regulationImpl"></property>
+		<property name="masterDao" ref="masterImpl"></property>
+		<property name="groupDao" ref="groupImpl"></property>
+		<property name="filesService" ref="filesService"/>
+	</bean>
+	
+	<bean id="mastercontroller" class="com.assentisk.controller.MasterController">
+		<property name="commandClass" value="com.assentisk.bean.MasterBean" />
+		<property name="masterDao" ref="masterImpl"></property>
+	</bean>
+
+	<bean id="groupcontroller" class="com.assentisk.controller.GroupController">
+		<property name="commandClass" value="com.assentisk.bean.GroupBean" />
+		<property name="groupDao" ref="groupImpl"></property>
+	</bean>
+	<bean id="orgcontroller" class="com.assentisk.controller.OrganizationController">
+		<property name="commandClass" value="com.assentisk.bean.CompanyBean" />
+		<property name="organizationDao" ref="organizationImpl"></property>
+		<property name="masterDao" ref="masterImpl"></property>
+		<property name="groupDao" ref="groupImpl"></property>
+		<property name="filesService" ref="filesService"/>
+	</bean>
+
+	<bean id="homeController" class="com.assentisk.controller.HomeController">
+		<property name="commandClass" value="com.assentisk.bean.UserRecordBean" />
+		<property name="homeDao" ref="homeDaoImpl"></property>
+		<property name="organizationDao" ref="organizationImpl"></property>
+	</bean>
+
+	<bean id="ajaxResponseController" class="com.assentisk.controller.AjaxResponseController">
+		<property name="commandClass" value="com.assentisk.bean.UserRecordBean" />
+		<property name="ajaxDao" ref="ajaxDaoImpl"></property>
+	</bean>
+	
+	<bean id="assestsController" class="com.assentisk.controller.AssestsController">
+		<property name="commandClass" value="com.assentisk.bean.UserRecordBean" />
+		<property name="assestsDao" ref="assetsDaoImpl"></property>
+		<property name="organizationDao" ref="organizationImpl"></property>
+		<property name="masterDao" ref="masterImpl"></property>
+		<property name="filesService" ref="filesService"/>
+	</bean>
+	
+
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass">
+			<value>org.springframework.web.servlet.view.JstlView</value>
+		</property>
+		<property name="prefix">
+			<value>/WEB-INF/jsp/</value>
+		</property>
+		<property name="suffix">
+			<value>.jsp</value>
+		</property>
+	</bean>
+
+
+
+	<bean id="logBeanNameProxyCreator"
+		class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+		<property name="beanNames">
+			<value>*Controller,*Validator</value>
+		</property>
+	</bean>
+
+</beans>

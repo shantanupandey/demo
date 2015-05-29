@@ -1,0 +1,65 @@
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/assentisk/!svn/ver/269/assentisk/src/com/assentisk/controller
+END
+MasterController.java
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/assentisk/!svn/ver/163/assentisk/src/com/assentisk/controller/MasterController.java
+END
+GroupController.java
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/assentisk/!svn/ver/396/assentisk/src/com/assentisk/controller/GroupController.java
+END
+RegulationsController.java
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/assentisk/!svn/ver/438/assentisk/src/com/assentisk/controller/RegulationsController.java
+END
+testcontroller.java
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/assentisk/!svn/ver/1/assentisk/src/com/assentisk/controller/testcontroller.java
+END
+AjaxResponseController.java
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/assentisk/!svn/ver/440/assentisk/src/com/assentisk/controller/AjaxResponseController.java
+END
+PersonJsonObject.java
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/assentisk/!svn/ver/439/assentisk/src/com/assentisk/controller/PersonJsonObject.java
+END
+OrganizationController.java
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/assentisk/!svn/ver/441/assentisk/src/com/assentisk/controller/OrganizationController.java
+END
+AssestsController.java
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/assentisk/!svn/ver/442/assentisk/src/com/assentisk/controller/AssestsController.java
+END
+AssessmentController.java
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/assentisk/!svn/ver/443/assentisk/src/com/assentisk/controller/AssessmentController.java
+END
+HomeController.java
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/assentisk/!svn/ver/437/assentisk/src/com/assentisk/controller/HomeController.java
+END

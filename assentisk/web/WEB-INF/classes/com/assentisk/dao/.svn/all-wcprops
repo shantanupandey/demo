@@ -1,0 +1,107 @@
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/assentisk/!svn/ver/272/assentisk/src/com/assentisk/dao
+END
+MasterDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/assentisk/!svn/ver/333/assentisk/src/com/assentisk/dao/MasterDaoImpl.java
+END
+GroupDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/assentisk/!svn/ver/397/assentisk/src/com/assentisk/dao/GroupDaoImpl.java
+END
+AjaxDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/assentisk/!svn/ver/446/assentisk/src/com/assentisk/dao/AjaxDao.java
+END
+AssestsDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/assentisk/!svn/ver/451/assentisk/src/com/assentisk/dao/AssestsDao.java
+END
+AssessmentDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/assentisk/!svn/ver/450/assentisk/src/com/assentisk/dao/AssessmentDao.java
+END
+OrganizationDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/assentisk/!svn/ver/447/assentisk/src/com/assentisk/dao/OrganizationDaoImpl.java
+END
+HomeDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/assentisk/!svn/ver/444/assentisk/src/com/assentisk/dao/HomeDao.java
+END
+RegulationDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/assentisk/!svn/ver/445/assentisk/src/com/assentisk/dao/RegulationDaoImpl.java
+END
+MasterDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/assentisk/!svn/ver/333/assentisk/src/com/assentisk/dao/MasterDao.java
+END
+GroupDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/assentisk/!svn/ver/154/assentisk/src/com/assentisk/dao/GroupDao.java
+END
+VendorBean.java
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/assentisk/!svn/ver/45/assentisk/src/com/assentisk/dao/VendorBean.java
+END
+OrganizationDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/assentisk/!svn/ver/447/assentisk/src/com/assentisk/dao/OrganizationDao.java
+END
+AjaxDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/assentisk/!svn/ver/446/assentisk/src/com/assentisk/dao/AjaxDaoImpl.java
+END
+AssessmentDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/assentisk/!svn/ver/449/assentisk/src/com/assentisk/dao/AssessmentDaoImpl.java
+END
+AssestsDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/assentisk/!svn/ver/448/assentisk/src/com/assentisk/dao/AssestsDaoImpl.java
+END
+RegulationDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/assentisk/!svn/ver/445/assentisk/src/com/assentisk/dao/RegulationDao.java
+END
+HomeDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/assentisk/!svn/ver/444/assentisk/src/com/assentisk/dao/HomeDaoImpl.java
+END

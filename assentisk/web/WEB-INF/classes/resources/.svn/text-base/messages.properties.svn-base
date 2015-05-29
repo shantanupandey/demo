@@ -1,0 +1,132 @@
+Header_MyProfile = My Profile
+Header_Accounts = Accounts
+Header_Help= Help
+Header_LogOut= Log Out
+
+LeftPannel_Dashboard= Dashboard
+LeftPannel_Widgets= Widgets
+LeftPannel_Organization= Organization
+LeftPannel_Details = Details
+LeftPannel_Divisions = Divisions
+LeftPannel_Locations = Locations 
+LeftPannel_Departments = Departments
+LeftPannel_Masters = Masters
+LeftPannel_Country = Countries
+LeftPannel_State = States
+LeftPannel_City = Cities
+LeftPannel_Group = Group
+LeftPannel_Applications = Applications
+LeftPannel_BuisnessProcess = Business Processes
+LeftPannel_Employees = Employees
+LeftPannel_UserGroup = User Groups
+LeftPannel_Assets = Assets
+LeftPannel_Equipment = Equipment
+LeftPannel_Software = Software
+LeftPannel_Returns = Returns
+LeftPannel_Types = Types
+LeftPannel_Assessment = Assessment
+LeftPannel_Audit= Audit Plan
+LeftPannel_Regulations= Regulations
+LeftPannel_Risk= Risk Library
+LeftPannel_Controls= Controls
+LeftPannel_Tests= Tests
+LeftPannel_Exceptions= Exceptions
+LeftPannel_Remediation= Remediation Plan
+LeftPannel_Tasks= Tasks
+LeftPannel_Supports= Supports
+LeftPannel_Tickets= Tickets
+LeftPannel_Reports= Reports
+LeftPannel_Customize= Customize
+LeftPannel_Updater= Updater
+
+
+
+DashBoard_Dashboard = Dashboard
+DashBoard_YouAreHere = You are here
+DashBoard_Assentisk = Assentisk
+DashBoard_Companies = Companies
+DashBoard_Licenses = Licenses
+DashBoard_RiskModule = Risk Module
+DashBoard_Risks = Risks
+DashBoard_Graph = Graph
+DashBoard_LastLogged = Last Logged in Users
+DashBoard_LastloggedTime = Last logged in
+DashBoard_Messaging = Messaging
+
+Company_Header= Company Details 
+Company_CompanyName=Company Name
+Company_Currency=Currency
+Company_Headoffice=Address 
+Company_Address=Head Office Address
+Company_HeadCountry=Country
+Company_HeadCity=City
+Company_HeadState=State
+Company_HeadZip=Zip
+Company_PrimaryContacts=Primary Contacts
+Company_PrimaryName=Name
+Company_PrimaryNumber=Number 
+Company_PrimaryEmail=Email
+Company_LegalContacts=Legal Contacts
+Company_LegalName=Name
+Company_LegalNumber=Number 
+Company_LegalEmail=Email
+Company_AccountContacts=Account Contacts
+Company_AccountsName=Name
+Company_AccountsContactNumber=Number 
+Company_AccountsContactEmail=Email
+
+
+Country_Header= Country 
+Country_CompanyName=Company Name
+Country_City=City
+Country_State=State
+Country_Zip=Zip
+Country_PrimaryEmail=Primary Email
+Country_SecondaryEmail=Secondary Email
+Country_Mobile=Mobile
+Country_Phone=Phone
+Country_Fax=Fax
+
+Devison_Header=Divisions
+Devision_Name=Division Name
+Devision_Description=Division Description 
+Devision_Company=Company 
+Devision_Department =Department 
+Devision_Branch =Branch 
+Devision_IsActive =IsActive  
+Devision_Status =Status  
+
+Button_Active = Active
+Button_InActive = Inactive  
+
+Department_Header=Departments
+Department_Compnay=Company  Name
+Department_Branch=Branch Name  
+Department_Name=Department Name 
+Department_Description=Department Description 
+Department_IsActive =IsActive 
+Department_Status =Status
+Country_Name=Country Name 
+Country_IsActive =IsActive 
+Country_Status =Status
+
+State_Header =State
+State_Name=State Name
+State_Country=Country Name
+State_IsActive =IsActive 
+State_Status =Status
+
+City_Header =City
+City_Name=City Name
+City_Country=Country Name
+City_State=State Name 
+City_IsActive =IsActive 
+City_Status =Status
+
+Group_Header =Group
+Group_Name=Group Name
+Group_Decription =Group Decription 
+Group_IsActive =IsActive 
+Group_Status =Status
+
+

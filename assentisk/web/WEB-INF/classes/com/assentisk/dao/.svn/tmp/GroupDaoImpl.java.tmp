@@ -1,0 +1,102 @@
+package com.assentisk.dao;
+
+import java.util.List;
+
+import org.springframework.jdbc.core.JdbcTemplate;
+
+import com.assentisk.bean.GroupBean;
+import com.assentisk.util.DBUtill;
+
+public class GroupDaoImpl implements GroupDao {
+
+	DBUtill dbUtil = new DBUtill();
+
+	JdbcTemplate jdbcTemplate = new JdbcTemplate();
+
+	public JdbcTemplate getJdbcTemplate() {
+		return jdbcTemplate;
+	}
+
+	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+		this.jdbcTemplate = jdbcTemplate;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<GroupBean> getList() {
+		List<GroupBean> list = jdbcTemplate
+				.queryForList("select *from assentisk_group  order by GroupID");
+		return list;
+	}
+
+	public void savegroup(String groupname, String Description, Integer isactive) {
+
+		String query = "insert into assentisk_group(Gname, Description, IsActive) values('"
+				+ groupname + "','" + Description + "','" + isactive + "')";
+		jdbcTemplate.execute(query);
+
+	}
+
+	public void updategroup(String gid, String groupname, String Description,
+			Integer isactive) {
+
+		String query = "update assentisk_group set Gname='" + groupname
+				+ "',Description='" + Description + "',IsActive='" + isactive
+				+ "' where GroupID='" + gid + "'";
+
+		jdbcTemplate.execute(query);
+
+	}
+
+	@SuppressWarnings("unchecked")
+	public List getgroup(String id) {
+		List list = jdbcTemplate
+				.queryForList("select *from assentisk_group where GroupID='"
+						+ id + "'");
+		return list;
+	}
+
+	public void deletegroup(String gid) {
+
+		String query = "delete from assentisk_group where GroupID='" + gid
+				+ "'";
+		jdbcTemplate.execute(query);
+
+	}
+	@SuppressWarnings("unchecked")
+	public List getpermission(String id) {
+		List list = jdbcTemplate
+				.queryForList("select m.id ,m.modules_name,m.is_milestone,ifnull(concat(m.view_mod, ''),0) 'view_mod' ,"
+								+" ifnull(concat(m.add_mod, ''),0) 'add_mod',ifnull(concat(m.edit_mod, ''),0) 'edit_mod',"
+								+" ifnull(concat(m.delete_mod, ''),0) 'delete_mod', ifnull(concat(m.per_mod, ''),0) 'per_mod',"
+                                +" ifnull(concat(gp.view_mod, ''),0) 'gp_view_mod',ifnull(concat(gp.add_mod, ''),0) 'gp_add_mod',"
+                                +" ifnull(concat(gp.edit_mod, ''),0) 'gp_edit_mod',ifnull(concat(gp.delete_mod, ''),0) 'gp_delete_mod',ifnull(concat(gp.per_mod, ''),0) 'gp_per_mod'" 
+                                +" from assentisk_modules as m  LEFT JOIN assentisk_grouppermission as gp "
+                                +" ON m.id=gp.moduleId and gp.groupId='"+id+"' order by m.id");
+		         return list;
+	}
+	
+	public List getGroupPermissionList(String query) {
+		List list = jdbcTemplate.queryForList(query.toString());
+		         return list;
+	}
+	public void fireQuery(String query) {
+
+		jdbcTemplate.execute(query);
+			}
+
+
+	public void userAuditTrail(String tableName, String rowID, String action,
+			String changeDate, Integer changeBy, String ipAddress) {
+	
+		String query = "insert into assentisk_audittrail (TableName, RowID, Action, ChangedDate, ChangedBy, IPAddress) values ('"+tableName+"','"+rowID+"','"+action+"','"+changeDate+"','"+changeBy+"','"+ipAddress+"')";
+		jdbcTemplate.execute(query);
+		
+	}
+	public void deletegroupPermission(String id)
+	{
+		String query = "delete from assentisk_grouppermission where groupId='" + id	+ "'";
+			jdbcTemplate.execute(query);
+
+	}
+
+}

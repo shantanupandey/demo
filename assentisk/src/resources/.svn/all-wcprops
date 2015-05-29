@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/assentisk/!svn/ver/1/assentisk/src/resources
+END
+database.properties
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/assentisk/!svn/ver/1/assentisk/src/resources/database.properties
+END
+messages.properties
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/assentisk/!svn/ver/32/assentisk/src/resources/messages.properties
+END
+welcome.properties
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/assentisk/!svn/ver/1/assentisk/src/resources/welcome.properties
+END
+welcome_zh_CN.properties
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/assentisk/!svn/ver/1/assentisk/src/resources/welcome_zh_CN.properties
+END
+messages_fr.properties
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/assentisk/!svn/ver/24/assentisk/src/resources/messages_fr.properties
+END

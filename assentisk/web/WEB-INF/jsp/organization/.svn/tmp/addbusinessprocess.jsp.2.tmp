@@ -1,0 +1,617 @@
+<%@ taglib uri="/WEB-INF/tld/c-1_0.tld" prefix="c"%>
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<link rel="shortcut icon" href="images/favicon.png" type="image/png">
+
+		<title>Assentisk</title>
+
+		<link href="css/custom.css" rel="stylesheet">
+		<script src="js/angular.min.js"></script>
+ 		<link rel="stylesheet" href="css/jquery-ui.css">
+ 		<script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
+ 		<script src="js/jquery-ui.js"></script>
+ <style>
+#description {
+	width: 400px;
+}
+
+.description_text {
+	border: 1px solid lightgrey;
+	color: black;
+	margin-bottom: 10px;
+	margin-top: 8px;
+	padding-bottom: 2px;
+	padding-right: 2px;
+	padding-top: 2px;
+	width: 504px !important;
+	border-radius: 3px;
+	box-shadow: none;
+	font-size: 13px;
+	height: auto;
+	padding: 10px;
+}
+.description_text_loc{
+	border: 1px solid lightgrey;
+	color: black;
+	margin-bottom: 10px;
+	margin-top: 8px;
+	padding-bottom: 2px;
+	padding-right: 2px;
+	padding-top: 2px;
+	width: 504px !important;
+	border-radius: 3px;
+	box-shadow: none;
+	font-size: 13px;
+	height: auto;
+	padding: 10px;
+}
+.append_data {
+	white-space: pre-wrap; /* CSS3 */
+	white-space: -moz-pre-wrap; /* Firefox */
+	white-space: -pre-wrap; /* Opera <7 */
+	white-space: -o-pre-wrap; /* Opera 7 */
+	word-wrap: break-word; /* IE */
+}
+.append_data_loc {
+	white-space: pre-wrap; /* CSS3 */
+	white-space: -moz-pre-wrap; /* Firefox */
+	white-space: -pre-wrap; /* Opera <7 */
+	white-space: -o-pre-wrap; /* Opera 7 */
+	word-wrap: break-word; /* IE */
+}
+.aclass {
+	color: #428bca;
+	float: right;
+	padding-right: 2px;
+	text-decoration: none;
+	font-size:12px;
+}
+
+.add_more {
+	font-size: 25px;
+}
+.add_more_loc {
+	font-size: 25px;
+}
+.imgplus {
+	-moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    border-color: lightgrey lightgrey lightgrey -moz-use-text-color;
+    border-image: none;
+    border-radius: 2px;
+    border-style: solid solid solid none;
+    border-width: 1px 1px 1px medium;
+    height: 40px;
+    margin-top: 28px;
+    padding: 4px;
+    width: 27px;
+}
+</style>
+		<script>
+					
+					var businessprocessapp = angular.module('businessprocessapp', []);
+				
+					businessprocessapp
+							.config( [
+									'$httpProvider',
+									function($httpProvider) {
+										$httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
+									} ]);
+				
+					function addBusinessProcessController($scope, $http) {
+				
+						$("div.leftpanelinner>ul>li#organization").addClass(
+								"nav-parent nav-active");
+						$("div.leftpanelinner>ul>li#organization>ul").css("display", "block");
+						$("div.leftpanelinner>ul>li#organization>ul>li#busiprocess").addClass(
+								"active");
+				
+						$("#imageloader").css("display", "none");
+						$("#complete").css("display", "block");
+				
+						$scope.saveData = function() {
+				
+							var empName = document.getElementById("responsiblehead").value;
+							var businessProc = $scope.businessprocessname;
+							var responsiblehead = $scope.responsiblehead;
+							
+							var divisiondata = "";
+								var myDivisions = document.getElementsByClassName("description_text");
+								for ( var i = 0; i < myDivisions.length; i++) {
+									divDat = myDivisions[i].innerHTML.replace(
+											'<a href="javascript:void(0);" class="aclass">X</a>',
+											"");
+									if (i == myDivisions.length - 1) {
+										divisiondata = divisiondata + divDat;
+									} else {
+										divisiondata = divisiondata + divDat + "','";
+									}
+					
+								}
+								
+								  var locationdata="";
+					              var locDat="";
+					              var myLocations = document.getElementsByClassName("description_text_loc");
+									for(var i = 0; i < myLocations.length; i++)
+									{
+													
+													locDat = myLocations[i].innerHTML.replace(
+															'<a href="javascript:void(0);" class="aclass">X</a>',
+															"");
+									
+													if (i == myDivisions.length - 1) {
+														locationdata = locationdata + locDat;
+													} else {
+														locationdata = locationdata + locDat + "','";
+													}
+								}
+							
+							
+							
+							
+							
+							if (businessProc == '' || businessProc == undefined) {
+								$('#busiAlert').show();
+								$('#busiAlert').delay(1500).fadeOut('slow');
+				
+							}
+						
+							else if (locationdata == '' || locationdata == undefined) {
+				
+								$('#lAlert').show();
+								$('#lAlert').delay(1500).fadeOut('slow');
+							} else if (divisiondata == '' || divisiondata == undefined) {
+								$('#divAlert').show();
+								$('#divAlert').delay(1500).fadeOut('slow');
+				
+							}
+							
+							 else {
+								var responsePromise = $http
+										.post("savebusinessprocess.org.htm?businessprocessname="
+												+ $scope.businessprocessname
+												+ "&location="
+												+ locationdata
+												+ "&division="
+												+ divisiondata
+												+ "&responsiblehead="
+												+ empName + "&isactive=" + $scope.isactive);
+								responsePromise
+										.success(function(data, status, headers, config) {
+											$('#submitSucess').show();
+											$('#submitSucess').delay(1500).fadeOut('slow');
+											window.location.href = "employees.org.htm";
+											window.location.href = "businessprocesses.org.htm";
+										});
+							}
+						};
+				
+					}
+</script>
+
+
+<script type="text/javascript">
+
+    $(function() {      
+        $("#responsiblehead").autocomplete({
+            source: function (request, response) {
+                $.getJSON("employeeList.ajaxresponse.htm", {
+                    term: request.term
+                }, response);
+            }
+        });
+    });
+    
+</script> 
+
+
+<script type="text/javascript">
+var getdivision="";
+$(document).ready(function(){ 
+
+				$('.add_more').click(function()
+                     {
+                      	 var division = $('#test').val();
+                      	 var oldtestdiv= $('#oldtestdiv').val();
+                         var divisiondata="";
+                         var divDat="";
+                         var myDivisions = document.getElementsByClassName("description_text");
+                         document.getElementById("test").value='';		
+                         if(division!='')
+								{
+									if(oldtestdiv.indexOf(division) >= 0)
+									{
+											for(var i = 0; i < myDivisions.length; i++)
+											{
+												divDat=myDivisions[i].innerHTML.replace('<a href="javascript:void(0);" class="aclass">X</a>', "");
+												divisiondata = divisiondata + divDat + ",";	
+											}											
+											if (divisiondata.indexOf(division) >= 0)
+											{
+												$('#alreadyAdd').show();
+												$('#alreadyAdd').delay(1500).fadeOut('slow');
+											}
+											else
+											{
+											     $(".append_data").append('<div class="description_text">'+division+' <a href="javascript:void(0);" class="aclass">X</a></div>');
+											}
+									
+									}
+									else
+									{
+									
+											$('#wrongAddDiv').show();
+											$('#wrongAddDiv').delay(1500).fadeOut('slow');		
+									}
+		
+			                        		
+								}
+								else
+								{
+									$('#wrongDivs').show();
+									$('#wrongDivs').delay(1500).fadeOut('slow');		
+								}
+                     });
+
+				$('.append_data').on('click','.description_text a',function(){
+					$(this).closest('.description_text').remove();
+
+				});
+				
+				
+				
+				
+				$('.add_more_loc').click(function()
+                     {
+                      	 var location = $('#location').val();
+                      	 var oldtestloc= $('#oldtestloc').val();
+                         var locationdata="";
+                         var locDat="";
+                         var myLocations = document.getElementsByClassName("description_text_loc");
+                         document.getElementById("location").value='';		
+                         if(location!='')
+								{
+									if(oldtestloc.indexOf(location) >= 0)
+									{
+											for(var i = 0; i < myLocations.length; i++)
+											{
+												locDat=myLocations[i].innerHTML.replace('<a href="javascript:void(0);" class="aclass">X</a>', "");
+												locationdata = locationdata + locDat + ",";	
+											}											
+											if (locationdata.indexOf(location) >= 0)
+											{
+												$('#alreadyAdd').show();
+												$('#alreadyAdd').delay(1500).fadeOut('slow');
+											}
+											else
+											{
+											     $(".append_data_loc").append('<div class="description_text_loc">'+location+' <a href="javascript:void(0);" class="aclass">X</a></div>');
+											}
+									
+									}
+									else
+									{
+									
+											$('#wrongAddLoc').show();
+											$('#wrongAddLoc').delay(1500).fadeOut('slow');		
+									}
+		
+			                        		
+								}
+								else
+								{
+									$('#wrongLocs').show();
+									$('#wrongLocs').delay(1500).fadeOut('slow');		
+								}
+                     });
+
+				$('.append_data_loc').on('click','.description_text_loc a',function(){
+					$(this).closest('.description_text_loc').remove();
+
+				});
+});
+
+</script>
+<script type="text/javascript">
+
+    $(function() {      
+        $("#test").autocomplete({
+        	multiselect: true,
+            source: function (request, response) {
+                $.getJSON("divisionList.ajaxresponse.htm", {
+                    term: request.term
+                }, response);
+            }
+        });
+    });
+    
+      $(function() {      
+        $("#location").autocomplete({
+            source: function (request, response) {
+                $.getJSON("locationList.ajaxresponse.htm", {
+                   term: request.term
+                }, response);
+            }
+        });
+        
+    }); 
+        
+</script>
+
+		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+		<!--[if lt IE 9]>
+  <script src="js/html5shiv.js"></script>
+  <script src="js/respond.min.js"></script>
+  <![endif]-->
+	</head>
+
+
+<body class="<c:out value="${sessionScope.bodyClass}"></c:out>">
+
+
+		<section>
+
+		<%@include file="/WEB-INF/jsp/leftpanel.jsp"%>
+
+		<div class="mainpanel">
+			<%@include file="/WEB-INF/jsp/header.jsp"%>
+
+			<div class="pageheader">
+				<h2>
+					<c:out value="${sessionScope.addBuisnessHeader}"/>
+				</h2>
+				<div class="breadcrumb-wrapper">
+					<span class="label"><c:out value="${sessionScope.DashBoard_YouAreHere}"/>:</span>
+					<ol class="breadcrumb">
+						<li>
+							<a href="dashboard.login.htm">Assentisk</a>
+						</li>
+						<li class="active">
+							<c:out value="${sessionScope.addBuisnessHeader}"/>
+						</li>
+					</ol>
+				</div>
+			</div>
+
+			<div class="contentpanel">
+
+				<div class="row">
+					<div class="col-md-12">
+						<div class="panel panel-default">
+
+							<div class="panel-body" ng-app="businessprocessapp"
+								ng-controller="addBusinessProcessController">
+								<form ng-submit="saveData()">
+
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													<c:out value="${sessionScope.BuisnessProcessName}"/><font color="red">*</font>
+												</label>
+												<input type="text" name="businessprocessname" class="form-control"
+													ng-model="businessprocessname" >
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+									
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<table>
+													<tbody>
+														<tr>
+															<td>
+																<label class="control-label">
+																	<c:out value="${sessionScope.BuisnessProcessLocation}"/>
+																	<font color="red">*</font>
+																</label>
+																<input type="text" id="location" style="width: 478px;" name="location"
+																	class="form-control" ng-model="location">
+																	
+																<input type="hidden" id="testloc" name="testloc">
+																<input type="hidden" id="oldtestloc" name="oldtestloc"
+																	value="<c:out value="${getLocations}"/>">
+															</td>
+															<td style="width: 31px; border-top-width: 14px;">
+															<div
+																	style=""
+																	class="imgplus">
+																	<a href="javascript:void(0);" class="add_more_loc"><img
+																			alt="" src="images/plus.jpg" style="width: 16px;">
+																	</a>
+																</div>
+															</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									
+									<table border="0" width="500" cellspacing="0">
+										   <tbody class="append_data_loc"></tbody>									    
+										</table> 
+									
+									
+									<!-- row -->
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<table>
+													<tbody>
+														<tr>
+															<td>
+																<label class="control-label">
+																	<c:out value="${sessionScope.BuisnessProcessDivision}"/>
+																	<font color="red">*</font>
+																</label>
+
+																<input type="hidden" id="testdiv" name="testdiv">
+																<input type="hidden" id="oldtestdiv" name="oldtestdiv"
+																	value="<c:out value="${getDivisions}"/>">
+
+																<input type="text" style="width: 478px;" id="test" name="test"
+																	class="form-control" ng-model="test">
+															</td>
+															<td style="width: 31px; border-top-width: 14px;">
+																<div
+																	style=""
+																	class="imgplus">
+																	<a href="javascript:void(0);" class="add_more"><img
+																			alt="" src="images/plus.jpg" style="width: 16px;">
+																	</a>
+																</div>
+															</td>
+															
+														</tr>
+													</tbody>
+												</table>
+
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+										<table border="0" width="500" cellspacing="0">
+										   <tbody class="append_data"></tbody>									    
+										</table> 
+									
+									
+									
+									
+									
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+<<<<<<< .mine
+													Responsible Head
+=======
+													<c:out value="${sessionScope.BuisnessProcessResponsibleHead}"/><font color="red">*</font>
+>>>>>>> .r118
+												</label>
+												 <input type="text" name="responsiblehead" class="form-control" ng-model="responsiblehead" id="responsiblehead">
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+
+
+									<div class="row" style="display:none;">
+										<div class="col-sm-6">
+											<div class="form-group">
+												<label class="control-label">
+													<c:out value="${sessionScope.IsActive}"/>
+												</label>
+													 <input type="checkbox" name="isactive" ng-model="isactive" ng-init="isactive=true">
+											</div>
+										</div>
+										<!-- col-sm-6 -->
+									</div>
+									<!-- row -->
+									</br>
+									<div class="panel-footer">
+										<button class="btn btn-primary" type="submit">
+											<c:out value="${sessionScope.submit}"/>
+										</button>
+										<a href="businessprocesses.org.htm"><button
+												class="btn btn-primary" type="button">
+												<c:out value="${sessionScope.cancel}"/>
+											</button> </a>
+										<button type="reset" class="btn btn-default"
+											ng-click="reset()">
+											<c:out value="${sessionScope.reset}"/>
+										</button>
+
+
+									</div>
+								</form>
+							</div>
+						</div>
+
+					</div>
+
+
+
+
+
+				</div>
+				<!-- contentpanel -->
+
+			</div>
+			<!-- mainpanel -->
+
+		</div>
+
+		</section>
+
+
+		<script src="js/jquery-1.11.1.min.js"></script>
+		<script src="js/jquery-migrate-1.2.1.min.js"></script>
+		<script src="js/jquery-ui-1.10.3.min.js"></script>
+		<script src="js/bootstrap.min.js"></script>
+		<script src="js/modernizr.min.js"></script>
+		<script src="js/jquery.custom.min.js"></script>
+		<script src="js/toggles.min.js"></script>
+		<script src="js/jquery.cookies.js"></script>
+		<script src="js/left-menu.js"></script>
+
+					<div id="submitSucess" class="success">
+						<span>  <c:out value="${sessionScope.SubmitAlert}"/>  </span>
+					</div>
+					<div id="busiAlert" class="error2">
+						<span> <c:out value="${sessionScope.Buisness_Name_Alert}"/></span>
+					</div>
+					<div id="lAlert" class="error2">
+						<span> <c:out value="${sessionScope.Buisness_Location_Alert}"/> </span>
+					</div>
+					<div id="divAlert" class="error2">
+						<span> <c:out value="${sessionScope.Buisness_Devisions_Alert}"/> </span>
+					</div>
+					
+					  <div id="alreadyAdd" class="error2">
+        				 <span >  <c:out value="${sessionScope.Buisness_added_Alert}"/> </span>
+					 </div>
+					 <div id="wrongDivs" class="error2">
+					         <span > <c:out value="${sessionScope.Buisness_Devisions_Alert}"/> </span>
+					 </div>
+					  <div id="wrongLocs" class="error2">
+					         <span > <c:out value="${sessionScope.Buisness_Location_Alert}"/>  </span>
+					 </div>
+					 <div id="wrongAddDiv" class="error2">
+					         <span > <c:out value="${sessionScope.Buisness_validDiv_Alert}"/> </span>
+					 </div>
+					  <div id="wrongAddLoc" class="error2">
+					         <span ><c:out value="${sessionScope.Buisness_validLoc_Alert}"/> </span>
+					 </div>
+					 <div  id="divlocationAlert" class="error2">
+					         <span ><c:out value="${sessionScope.Buisness_addLoc_Alert}"/></span>
+					 </div>
+					
+					  
+					 <div  id="divtestAlert" class="error2">
+					         <span > <c:out value="${sessionScope.Buisness_AddDiv_Alert}"/></span>
+					 </div>
+ 
+					<div id="responsibleheadAlert" class="error2">
+						<span> <c:out value="${sessionScope.Buisness_Resp_Head}"/></span>
+					</div>
+				
+					
+
+
+	</body>
+</html>

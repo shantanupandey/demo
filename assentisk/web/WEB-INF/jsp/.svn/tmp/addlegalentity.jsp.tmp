@@ -1,0 +1,343 @@
+<%@ taglib uri="/WEB-INF/tld/c-1_0.tld" prefix="c" %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="images/favicon.png" type="image/png">
+
+  <title>Assentisk</title>
+
+  <link href="css/custom.css" rel="stylesheet">
+  <script src="js/angular.min.js"></script>
+  
+ <link rel="stylesheet" href="css/jquery-ui.css">
+ <script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
+ <script src="js/jquery-ui.js"></script>
+
+  <script>
+ 
+	var departmentapp = angular.module('departmentapp', []);
+	
+	departmentapp.config(['$httpProvider', function ($httpProvider) {    
+	$httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
+	
+	}]);
+	
+	function addDepartmentController($scope, $http) {
+		    $("div.leftpanelinner>ul>li#group").css("background","#003366");
+    			$("div.leftpanelinner>ul>li#group>a").css("color","white");
+    		    $("div.leftpanelinner>ul>li#group>a>span").css("color","white");
+	
+			$("div.leftpanelinner>ul>li#organization").addClass("nav-parent nav-active");
+			$("div.leftpanelinner>ul>li#organization>ul").css("display","block");
+			$("div.leftpanelinner>ul>li#organization>ul>li#division").addClass("active");
+	
+	 	$("#imageloader").css("display", "none");
+         $("#complete").css("display", "block");
+
+		$scope.reset = function() {
+		$scope.legalentityname="";
+		$scope.legalentitydesc="";
+		$scope.companyid="";
+		$scope.branchid="";
+		$scope.departmentid="";
+		$scope.companyperiodid="";
+		};
+				
+ 		    $scope.saveData = function() { 
+ 		    var companyid=document.getElementById("companyid").value;
+			var branchid = document.getElementById("branchid").value;
+			var filter=/^[0-9a-zA-Z]+$/;
+			var departmentid=document.getElementById("departmentid").value;
+			var empName =document.getElementById("responsiblehead").value;
+			
+		   var divName=$scope.legalentityname;
+		   var legalentitydesc=$scope.legalentitydesc;
+		   var companyid=$scope.companyid;
+		 
+		   var companyperiodid=$scope.companyperiodid;
+			 
+			       if(divName=='' || divName==undefined){
+										$('#divNameAlert').show();
+										$('#divNameAlert').delay(1500).fadeOut('slow');	
+									
+				    }
+				  
+				    else if(legalentitydesc=='' || legalentitydesc==undefined){
+										$('#divDescAlert').show();
+										$('#divDescAlert').delay(1500).fadeOut('slow');	
+									
+				    }else if(companyid=='' || companyid==undefined){
+										$('#divCompanyAlert').show();
+										$('#divCompanyAlert').delay(1500).fadeOut('slow');	
+									
+				    }else if(branchid=='' || branchid==undefined){
+										$('#divBracnhAlert').show();
+										$('#divBracnhAlert').delay(1500).fadeOut('slow');	
+									
+				    }else if(departmentid=='' || departmentid==undefined){
+										$('#divDeptAlert').show();
+										$('#divDeptAlert').delay(1500).fadeOut('slow');	
+									
+				    }else if(companyperiodid=='' || companyperiodid==undefined){
+										$('#divRespAlert').show();
+										$('#divRespAlert').delay(1500).fadeOut('slow');	
+									
+				    }
+					 
+				else{    		 	    		 			 		   	
+ 					var responsePromise = $http.post("savelegalentity.org.htm?legalentityname="+$scope.legalentityname+"&legalentitydesc="+$scope.legalentitydesc+"&companyid="+companyid+"&departmentid="+departmentid+"&branchid="+branchid+"&companyperiodid="+$scope.companyperiodid+"&isactive="+$scope.isactive+"&empName="+empName);
+                	responsePromise.success(function(data, status, headers, config) {
+                	$('#submitSucess').show();
+					$('#submitSucess').delay(1500).fadeOut('slow');
+                    window.location.href = "legalentities.org.htm";
+                });
+                
+                }
+    		};
+    		$scope.callbranch = function(id) { 		    		 	    		 			 		   	
+ 					var responsePromise = $http.get("callbranch.org.htm?id="+id);
+                	responsePromise.success(function(data, status, headers, config) {
+                		document.getElementById("branchselect").innerHTML = data;
+                	
+                	});
+    		};
+    		
+	}
+	function calldep()
+	{
+	
+
+		var companyid=document.getElementById("companyid").value;
+		var branchid=document.getElementById("branchid").value;
+		
+		
+				 var all=$.ajax(
+	 				{
+	 			   		type: "GET",
+	 			   		dataType: 'HTML',
+	 			   		url: '<c:url value="/calldept.org.htm"/>?branchid='+branchid+'&companyid='+companyid,	 			   			 			   	
+	 			  		success: function(data)
+	 			  				{		 			  							  				
+	 			  						document.getElementById("departmentselect").innerHTML = data;			  					
+								}
+								});
+			
+	}
+</script>
+
+<script type="text/javascript">
+
+    $(function() {      
+        $("#responsiblehead").autocomplete({
+            source: function (request, response) {
+                $.getJSON("employeeList.ajaxresponse.htm", {
+                    term: request.term
+                }, response);
+            }
+        });
+    });
+    
+</script>  
+  
+  <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+  <script src="js/html5shiv.js"></script>
+  <script src="js/respond.min.js"></script>
+  <![endif]-->
+</head>
+
+<body class="<c:out value="${sessionScope.bodyClass}"></c:out>">
+
+
+<section>
+
+<%@include file="leftpanel.jsp" %>
+
+  <div class="mainpanel">
+     <%@include file="header.jsp" %>
+
+    <div class="pageheader">
+      <h2>Add Division</h2>
+      <div class="breadcrumb-wrapper">
+        <span class="label">You are here:</span>
+        <ol class="breadcrumb">
+         <li><a href="dashboard.login.htm">Assentisk</a></li>
+          <li class="active">Add Division</li>
+        </ol>
+      </div>
+    </div>
+    
+    <div class="contentpanel">
+     
+      <div class="row">
+        <div class="col-md-12">
+          <div class="panel panel-default">
+            
+            <div class="panel-body" ng-app="departmentapp" ng-controller="addDepartmentController">
+            <form ng-submit="saveData()">        
+             
+              
+                 <div class="row">               
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label class="control-label">Division Name<font color="red">*</font></label>
+                    <input type="text" name="legalentityname" class="form-control" ng-model="legalentityname" >
+                  </div>
+                </div><!-- col-sm-6 -->
+              </div><!-- row -->
+              
+                <div class="row">               
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label class="control-label">Division Description<font color="red">*</font></label>
+                    <input type="text" name="legalentitydesc" class="form-control" ng-model="legalentitydesc" >
+                  </div>
+                </div><!-- col-sm-6 -->
+              </div><!-- row -->
+              
+                         
+               <div class="row">               
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label class="control-label">Company<font color="red">*</font></label>
+                     <select class="form-control" id="companyid" ng-model="companyid"  ng-change="callbranch(companyid);">
+                     	<option value="">-- Select Company --</option>
+                    	<c:forEach var="companyList" items="${companyList}">
+                    		<option value="<c:out value="${companyList.CompanyID}"/>"><c:out value="${companyList.CompanyName}"/></option>	
+                    	</c:forEach>
+                    </select>
+                    
+                  </div>
+                </div><!-- col-sm-6 -->
+              </div><!-- row -->
+              
+               <div class="row">               
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label class="control-label">Location<font color="red">*</font></label>
+                      <span id="branchselect">
+                    
+                     <select class="form-control" id="branchid" ng-model="branchid"  ng-change="calldepartment()">
+                      	<option value="">-- Select Location --</option>
+                    </select>
+                    </span>
+                  </div>
+                </div><!-- col-sm-6 -->
+              </div><!-- row -->
+              
+              
+              
+              
+              <div class="row">               
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label class="control-label">Department<font color="red">*</font></label>
+                    
+                    <span id="departmentselect">
+                    <select class="form-control" id="departmentid" ng-model="departmentid"  >
+                     	<option value="">-- Select Department --</option>
+                   </select>
+                    </span>
+                  </div>
+                </div><!-- col-sm-6 -->
+              </div><!-- row -->
+              
+                             
+             
+              
+               <div class="row" style="display:none;">               
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label class="control-label">CompanyPeriod</label>
+                    <input type="text" name="companyperiodid" class="form-control" ng-model="companyperiodid"  ng-init='companyperiodid = 1' >
+                  </div>
+                </div><!-- col-sm-6 -->
+              </div><!-- row -->
+              
+             <div class="row">               
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label class="control-label">Responsible Head</label>
+                    <input type="text" name="responsiblehead" class="form-control" ng-model="responsiblehead" id="responsiblehead">
+                  </div>
+                </div><!-- col-sm-6 -->
+              </div><!-- row -->
+              
+              <div class="row" style="display:none;">
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label class="control-label">IsActive</label>
+                            <input type="checkbox" name="isactive" ng-model="isactive"  ng-init='isactive = 1' ng-checked="1"> 
+                  </div>
+                </div><!-- col-sm-6 -->              
+              </div><!-- row -->
+			</br>
+            <div class="panel-footer">
+              <button class="btn btn-primary" type="submit">Submit</button>
+              <a href="legalentities.org.htm"><button class="btn btn-primary" type="button">Cancel</button></a>
+			  <button type="reset" class="btn btn-default" ng-click="reset()">Reset</button>
+			  
+            </div>            
+            </form>
+          </div>
+        </div>
+        
+      </div>
+
+      
+
+      
+
+    </div><!-- contentpanel -->
+
+  </div><!-- mainpanel -->
+
+  </div>
+
+</section>
+
+
+<script src="js/jquery-1.11.1.min.js"></script>
+<script src="js/jquery-migrate-1.2.1.min.js"></script>
+<script src="js/jquery-ui-1.10.3.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/modernizr.min.js"></script>
+<script src="js/jquery.custom.min.js"></script>
+<script src="js/toggles.min.js"></script>
+<script src="js/jquery.cookies.js"></script>
+<script src="js/left-menu.js"></script>
+
+
+ <div id="submitSucess" class="success">
+         <span > Submit Successfully </span>
+ </div>
+<div  id="divNameAlert" class="error2">
+         <span >  Enter Division Name</span>
+ </div>
+ <div  id="divDescAlert" class="error2">
+         <span >  Enter Division Description</span>
+ </div>
+ <div  id="divCompanyAlert" class="error2">
+         <span >  Select Company</span>
+ </div>
+ <div  id="divBranchAlert" class="error2">
+         <span >  Select Branch</span>
+ </div>
+  <div  id="divDeptAlert" class="error2">
+         <span >  Select Department</span>
+ </div>
+ <div  id="divRespAlert" class="error2">
+         <span >  Select Responsible Head</span>
+ </div>
+ 
+ <div  id="divBracnhAlert" class="error2">
+         <span >  Select Branch</span>
+ </div>
+
+
+</body>
+</html>

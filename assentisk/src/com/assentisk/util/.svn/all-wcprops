@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/assentisk/!svn/ver/275/assentisk/src/com/assentisk/util
+END
+DBUtill.java
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/assentisk/!svn/ver/1/assentisk/src/com/assentisk/util/DBUtill.java
+END
+Files.java
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/assentisk/!svn/ver/386/assentisk/src/com/assentisk/util/Files.java
+END
+FilesService.java
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/assentisk/!svn/ver/452/assentisk/src/com/assentisk/util/FilesService.java
+END
+SessionLostInterceptor.java
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/assentisk/!svn/ver/453/assentisk/src/com/assentisk/util/SessionLostInterceptor.java
+END
+SendMailUtill.java
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/assentisk/!svn/ver/454/assentisk/src/com/assentisk/util/SendMailUtill.java
+END
+UrlUtill.java
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/assentisk/!svn/ver/1/assentisk/src/com/assentisk/util/UrlUtill.java
+END

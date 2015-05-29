@@ -1,0 +1,731 @@
+<%@ taglib uri="/WEB-INF/tld/c-1_0.tld" prefix="c"%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="shortcut icon" href="images/favicon.ico">
+  
+   <link href="css/font-awesome.css" rel="stylesheet">
+   <script type="text/javascript" charset="utf8" src="js/jquery.js"></script>        
+<script src="js/angular.min.js"></script>
+  <title>Assentisk</title>
+
+  <link href="css/custom.css" rel="stylesheet">
+<link rel="stylesheet" href="css/jquery.mCustomScrollbar.css">
+ <script type="text/javascript">
+  var rowID;
+<<<<<<< .mine
+  var type;
+ var sortingOrder = 'amcname';
+=======
+  var type;
+ var sortingOrder = 'taskName';
+>>>>>>> .r480
+function personController($scope,$http,$filter) {
+				
+	$("div.leftpanelinner>ul>li#task").css("background","#012345");
+    $scope.sortingOrder = sortingOrder;
+    $scope.reverse = false; 
+    $scope.filteredItems = [];
+    $scope.groupedItems = [];
+    $scope.itemsPerPage = 15;
+    $scope.pagedItems = [];
+    $scope.currentPage = 0;
+  	$http.get('taskList.assets.htm').
+    success(function(data, status, headers, config) {
+    $scope.items = data.taskBeans;
+     $("#imageloader").css("display", "none");
+      $("#complete").css("display", "block");
+                         var searchMatch = function (haystack, needle) {
+        if (!needle) {
+            return true;
+        }
+        return haystack.toString().toLowerCase().indexOf(needle.toLowerCase()) !== -1;
+    };
+
+    // init the filtered items
+    $scope.search = function () {
+        $scope.filteredItems = $filter('filter')($scope.items, function (item) {
+            for(var attr in item) {
+                if (searchMatch(item[attr], $scope.query))
+                    return true;
+            }
+            return false;
+        });
+        // take care of the sorting order
+        if ($scope.sortingOrder !== '') {
+            $scope.filteredItems = $filter('orderBy')($scope.filteredItems, $scope.sortingOrder, $scope.reverse);
+        }
+        $scope.currentPage = 0;
+        // now group by pages
+        $scope.groupToPages();
+    };
+    
+    // calculate page in place
+    $scope.groupToPages = function () {
+        $scope.pagedItems = [];
+        
+        for (var i = 0; i < $scope.filteredItems.length; i++) {
+            if (i % $scope.itemsPerPage === 0) {
+                $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)] = [ $scope.filteredItems[i] ];
+            } else {
+                $scope.pagedItems[Math.floor(i / $scope.itemsPerPage)].push($scope.filteredItems[i]);
+            }
+        }
+    };
+    
+    $scope.range = function (start, end) {
+        var ret = [];
+        if (!end) {
+            end = start;
+            start = 0;
+        }
+        for (var i = start; i < end; i++) {
+            ret.push(i);
+        }
+        return ret;
+    };
+    
+    $scope.prevPage = function () {
+        if ($scope.currentPage > 0) {
+            $scope.currentPage--;
+        }
+    };
+    
+    $scope.nextPage = function () {
+        if ($scope.currentPage < $scope.pagedItems.length - 1) {
+            $scope.currentPage++;
+        }
+    };
+    
+    $scope.setPage = function () {
+        $scope.currentPage = this.n;
+    };
+
+    // functions have been describe process the data for display
+    $scope.search();
+
+    // change sorting order
+    
+
+    $scope.sort_by = function(predicate) {
+    
+    
+ $scope.predicate = predicate;
+ $scope.reverse = !$scope.reverse;
+ };
+ 
+    }).
+    error(function(data, status, headers, config) {
+      // log error
+    });
+ 
+}
+personController.$inject = ['$scope','$http','$filter'];  
+<<<<<<< .mine
+var taskIDrow="";
+var singleID=""; 
+ function confirmRow(id,tasktype)
+=======
+ 
+ function confirmRow(id,tasktype)
+>>>>>>> .r480
+{
+	rowID = id;
+	type=tasktype;
+	$('#divConfirmAlert').show();
+
+
+}
+function confirmSingleRow(taskid,singletaskid,tasktype){
+	taskIDrow=taskid;
+	singleID=singletaskid;
+	type=tasktype;
+	$('#divConfirmAlertfortaskdelete').show();
+}
+function deleteRow(action)
+{	
+	
+	if(action == 'yes')
+	{
+		$('#divConfirmAlert').delay(1500).fadeOut('slow');
+				
+			$.get("deletetask.assets.htm?id="+rowID+"&type="+type,function(data,status){location.reload(true);});
+		
+	}
+	else
+	{
+		$('#divConfirmAlert').hide();
+	}
+}
+
+function editRowManual(taskID,singletaskID){
+	$('#divConfirmAlertfortask').show();
+	taskIDrow=taskID;
+	singleID=singletaskID;
+	
+}
+
+function editRowSystem(taskID,singletaskID){
+	$('#divConfirmAlertforSystem').show();
+	taskIDrow=taskID;
+	singleID=singletaskID;
+	
+}
+function editrowsingle(type){
+
+	if(type== 'single')
+	{
+			window.location.href = "singleedittask.assets.htm?taskid="+singleID;
+	}
+	else if(type== 'cancel')
+	{
+	 $('#divConfirmAlertfortask').delay(1000).fadeOut('slow');
+	}
+	else
+	{
+			window.location.href = "edittask.assets.htm?taskid="+taskIDrow;
+	
+	}
+}
+function editrowsingleSystem(type){
+
+
+	if(type== 'single')
+	{
+			window.location.href = "editsingleAMC.assets.htm?taskid="+singleID;
+	}
+	else if(type== 'cancel')
+	{
+	 $('#divConfirmAlertforSystem').delay(1000).fadeOut('slow');
+	}
+	else
+	{
+			window.location.href = "editAMC.assets.htm?taskid="+taskIDrow;
+	
+	}
+}
+
+function deleterowsingle(typeval){
+
+	
+	if(typeval== 'single'){
+		$.get("deletetask.assets.htm?id="+singleID+"&type="+type+"&typeval="+typeval,function(data,status){location.reload(true);});
+	}
+	else if(typeval== 'cancel')
+	{
+	 $('#divConfirmAlertfortaskdelete').delay(1000).fadeOut('slow');
+	}
+	else{
+		$.get("deletetask.assets.htm?id="+taskIDrow+"&type="+type+"&typeval="+typeval,function(data,status){location.reload(true);});
+	}
+				
+	
+}
+var globalid="";
+var globalstatus="";
+function callAction (id,status,type){
+  
+            globalid="";
+            globalstatus="";
+            	$.get("getcommentValue.htm?id=" + id+"&type="+type, function(data, status) {	
+            			document.getElementById("dialog-1").innerHTML=data;
+            			$('#dialog-1').modal('show');
+            	});
+            		 //savecomment(id,status);
+            globalid = id;
+          	globalstatus = status;
+            }
+            
+function savecomment(){
+ 		var id=globalid;
+ 		var status=globalstatus;
+ 		
+  		var active = $("input:radio[name=active]:checked").val();
+  		var comment=document.getElementById("comment").value;
+  		
+  		if(active== undefined){
+  		
+  			active = status;
+  		}
+  		if(comment=='')
+  		{
+  					 $('#divcommentAlert').show();
+					 $('#divcommentAlert').delay(1500).fadeOut('slow');
+  		
+  		}
+  		else 
+  		{
+  			$.get("addcomment.htm?id=" + id+"&status="+active+"&comment="+comment, function(data, status) {
+  			 		$("#cldailog").trigger( "click" );
+  			 		
+  			 		$.get("pendingStatus.htm", function(data, status) {
+  						 location.reload();
+  					 });
+  			});
+  		}
+  }
+  
+</script>
+</head>
+
+<body class="<c:out value="${sessionScope.bodyClass}"></c:out>">
+
+<section>
+ 
+<%@include file="/WEB-INF/jsp/leftpanel.jsp"%>
+		<div class="mainpanel">
+			<%@include file="/WEB-INF/jsp/header.jsp"%>
+
+    <div class="pageheader">
+      <h2><c:out value="${sessionScope.Task_Header}"/></h2>
+      <div class="breadcrumb-wrapper">
+        <span class="label"><c:out value="${sessionScope.DashBoard_YouAreHere}"/>:</span>
+        <ol class="breadcrumb">
+         <li><a href="dashboard.login.htm">Assentisk</a></li>
+          <li class="active"><c:out value="${sessionScope.Task_Header}"/></li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="contentpanel">
+   <div ng-app="" ng-controller="personController">
+<<<<<<< .mine
+   	<c:if test="${sessionScope.view_mod_26=='1'}">
+   <a class="btn btn-success" href="addtask.assets.htm" title="<c:out value="${sessionScope.tooltip_add}"/>" style="margin-bottom:10px;"><c:out value="${sessionScope.tooltip_add}"/>&nbsp;&nbsp;<i class="fa fa-plus"></i></a>
+=======
+   	<c:if test="${sessionScope.view_mod_25=='1'}">
+   <a class="btn btn-success" href="addtask.assets.htm" title="<c:out value="${sessionScope.tooltip_add}"/>" style="margin-bottom:10px;"><c:out value="${sessionScope.tooltip_add}"/>&nbsp;&nbsp;<i class="fa fa-plus"></i></a>
+>>>>>>> .r480
+      
+      </c:if>
+            <div class="input-append">
+                <input type="text" ng-model="query" ng-change="search()" class="input-large search-query" placeholder="<c:out value="${sessionScope.toolip_search}"/>">
+            <span class="add-on"><i class="icon-search"></i></span>
+            </div></br>
+            
+        <div class="content demo-x">
+    		 <table class="table table-striped table-condensed table-hover" id="country">
+      			  <thead>
+           			 <tr>
+                                		
+<<<<<<< .mine
+                  		<th class="amcname" style="min-width:250px;max-width:250px;"><a ng-click="sort_by('amcname')"><i class="icon-sort"></i><c:out value="${sessionScope.task_name}"/></a></th>
+                  		<th class="startdate" style="min-width:100px;max-width:100px;"><a ng-click="sort_by('startdate')"><i class="icon-sort"></i><c:out value="${sessionScope.task_fromdate}"/></a></th>
+						<th class="enddate" style="min-width:100px;max-width:100px;"><a ng-click="sort_by('enddate')"><i class="icon-sort"></i><c:out value="${sessionScope.task_todate}"/></a></th>
+						<th class="assignedBy" style="min-width:100px;max-width:100px;"><a ng-click="sort_by('assignedBy')"><i class="icon-sort"></i><c:out value="${sessionScope.Dashboard_AssignedBy}" /></a></th>
+						<th class="assignedTo" style="min-width:100px;max-width:100px;"><a ng-click="sort_by('assignedTo')"><i class="icon-sort"></i><c:out value="${sessionScope.Dashboard_AssignedTo}" /></a></th>
+           				<th class="dateSchedule" style="min-width:100px;max-width:100px;"><a ng-click="sort_by('dateSchedule')"><i class="icon-sort"></i><c:out value="${sessionScope.Dashboard_Schedule_time}" /></a></th>
+           				<th class="status" style="min-width:100px;max-width:100px;"><a ng-click="sort_by('status')"><i class="icon-sort"></i><c:out value="${sessionScope.Dashboard_Status}" /></a></th>
+           			  	<th class="generatedBy" style="min-width:100px;max-width:100px;"><a ng-click="sort_by('generatedBy')"><i class="icon-sort"></i><c:out value="${sessionScope.task_tasktype}"/></a></th>
+           			     <th style="min-width:150px;max-width:150px;">Action</th>                              
+=======
+                  		<th class="taskName"><a ng-click="sort_by('taskName')"><i class="icon-sort"></i><c:out value="${sessionScope.task_name}"/></a></th>
+                  		<th class="fromDate"><a ng-click="sort_by('fromDate')"><i class="icon-sort"></i><c:out value="${sessionScope.task_fromdate}"/></a></th>
+						<th class="toDate"><a ng-click="sort_by('toDate')"><i class="icon-sort"></i><c:out value="${sessionScope.task_todate}"/></a></th>
+						<th class="responsiblePerson"><a ng-click="sort_by('responsiblePerson')"><i class="icon-sort"></i><c:out value="${sessionScope.task_responsible}"/></a></th>
+<!--                  		<th class="IsActive">IsActive&nbsp;<a ng-click="sort_by('IsActive')"><i class="icon-sort"></i></a></th>                             -->
+           			  	<th class="tasktype"><a ng-click="sort_by('tasktype')"><i class="icon-sort"></i><c:out value="${sessionScope.task_tasktype}"/></a></th>
+           			     <th>Action</th>                              
+>>>>>>> .r480
+           			
+           			 </tr>
+       			</thead> 
+       
+        		<tfoot>
+<<<<<<< .mine
+                    <td colspan="9">
+                        <div class="pagination pull-right"  style="height:auto;">
+=======
+                    <td colspan="6">
+                        <div class="pagination pull-right"  style="height:auto;">
+>>>>>>> .r480
+                            <ul>
+                                <li ng-class="{disabled: currentPage == 0}">
+                                    <a href ng-click="prevPage()">« <c:out value="${sessionScope.Footer_previous}"/></a>
+                                </li>
+                                <li ng-repeat="n in range(pagedItems.length)"
+                                    ng-class="{active: n == currentPage}"
+                                    ng-click="setPage()">
+                                    <a href ng-bind="n + 1">1</a>
+                                </li>
+                                <li ng-class="{disabled: currentPage == pagedItems.length - 1}">
+                                    <a href ng-click="nextPage()"><c:out value="${sessionScope.Footer_next}"/> »</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </td>
+                </tfoot> 
+       <tbody>
+            <tr ng-repeat="item in pagedItems[currentPage] | orderBy:sortingOrder:reverse">            	
+<<<<<<< .mine
+            		<td  style="min-width:250px;max-width:250px;word-wrap: break-word;">
+            				{{item.amcname}}
+=======
+            		<td  style="max-width:500px;word-wrap: break-word;">
+            				{{item.taskName}}
+>>>>>>> .r480
+            		</td>
+            		<td style="min-width:100px;max-width:100px;word-wrap: break-word;">
+            				{{item.startdate}}
+            		</td>
+            		<td style="min-width:100px;max-width:100px;word-wrap: break-word;">
+            				{{item.enddate}}
+            		</td>
+            		<td style="min-width:100px;max-width:100px;word-wrap: break-word;">
+            				{{item.assignedBy}}
+            		</td>
+<<<<<<< .mine
+            		<td style="min-width:100px;max-width:100px;word-wrap: break-word;">
+            				{{item.assignedTo}}
+            		</td>
+            		<td style="min-width:100px;max-width:100px;word-wrap: break-word;">
+            				{{item.dateSchedule}}
+            		</td>
+            		<td style="min-width:100px;max-width:100px;word-wrap: break-word;">
+            				{{item.status}}
+            		</td>
+					<td style="min-width:100px;max-width:100px;word-wrap: break-word;">
+            				{{item.generatedBy}}
+            		</td>
+            		 <td class="center" style="min-width:150px;max-width:150px;word-wrap: break-word;">
+
+										<div ng-switch on="item.userlogin">
+											
+											<div ng-switch-when="1">
+												<div ng-switch on="item.generatedBy">
+													<div ng-switch-when="Manual">
+														<div ng-switch on="item.schedulerRelated">
+
+															<div ng-switch-when="0">
+																<c:if test="${sessionScope.view_mod_26=='1'}">
+																	<a class="btn btn-info"
+																		href="edittask.assets.htm?taskid={{item.taskID}}"
+																		title="<c:out value="${sessionScope.tooltip_edit}"/>"><i
+																		class="fa fa-edit "></i> </a>
+																</c:if>
+																<c:if test="${sessionScope.view_mod_26=='1'}">
+																	<button class="btn btn-danger"
+																		onclick="confirmRow({{item.taskID}},'Manual')"
+																		title="<c:out value="${sessionScope.tooltip_delete}"/>">
+																		<i class="fa fa-trash-o "></i>
+																	</button>
+																</c:if>
+															</div>
+															<div ng-switch-when="1">
+																<c:if test="${sessionScope.view_mod_26=='1'}">
+																	<a class="btn btn-info" href="#"
+																		onclick="editRowManual({{item.taskID}},{{item.id}})"
+																		title="<c:out value="${sessionScope.tooltip_edit}"/>"><i
+																		class="fa fa-edit "></i> </a>
+																</c:if>
+																<c:if test="${sessionScope.view_mod_26=='1'}">
+																	<button class="btn btn-danger"
+																		onclick="confirmSingleRow({{item.taskID}},{{item.id}},'Manual')"
+																		title="<c:out value="${sessionScope.tooltip_delete}"/>">
+																		<i class="fa fa-trash-o "></i>
+																	</button>
+																</c:if>
+															</div>
+														</div>
+													</div>
+													<div ng-switch-when="System">
+													
+													
+														<div ng-switch on="item.schedulerRelated">
+
+															<div ng-switch-when="0">
+																<c:if test="${sessionScope.view_mod_26=='1'}">
+																	<a class="btn btn-info"
+																		href="editAMC.assets.htm?taskid={{item.assetID}}"
+																		title="<c:out value="${sessionScope.tooltip_edit}"/>"><i
+																		class="fa fa-edit "></i> </a>
+																</c:if>
+																<c:if test="${sessionScope.view_mod_26=='1'}">
+																		<button class="btn btn-danger"
+																			onclick="confirmRow({{item.assetID}},'System')"
+																			title="<c:out value="${sessionScope.tooltip_delete}"/>">
+																			<i class="fa fa-trash-o "></i>
+																		</button>
+																</c:if>
+															</div>
+															<div ng-switch-when="1">
+																<c:if test="${sessionScope.view_mod_26=='1'}">
+																	<a class="btn btn-info" href="#"
+																		onclick="editRowSystem({{item.assetID}},{{item.id}})"
+																		title="<c:out value="${sessionScope.tooltip_edit}"/>"><i
+																		class="fa fa-edit "></i> </a>
+																</c:if>
+																<c:if test="${sessionScope.view_mod_26=='1'}">
+																	<button class="btn btn-danger"
+																		onclick="confirmSingleRow({{item.assetID}},{{item.id}},'System')"
+																		title="<c:out value="${sessionScope.tooltip_delete}"/>">
+																		<i class="fa fa-trash-o "></i>
+																	</button>
+																</c:if>
+															</div>
+														</div>		
+														
+														
+														
+																								
+													
+														
+														
+														
+														
+													</div>
+													<div ng-switch-when="Support Ticket">
+														<c:if test="${sessionScope.view_mod_26=='1'}">
+															<a class="btn btn-info"
+																href="editSupportTask.assets.htm?taskid={{item.taskID}}"
+																title="<c:out value="${sessionScope.tooltip_edit}"/>"><i
+																class="fa fa-edit "></i> </a>
+														</c:if>
+														<c:if test="${sessionScope.view_mod_26=='1'}">
+															<button class="btn btn-danger"
+																onclick="confirmRow({{item.taskID}},'Support Ticket')"
+																title="<c:out value="${sessionScope.tooltip_delete}"/>">
+																<i class="fa fa-trash-o "></i>
+															</button>
+														</c:if>
+													</div>
+												</div>
+											</div>
+											<div ng-switch-when="0">
+												<span class="btn btn-info"
+																onclick="callAction({{item.id}},'{{item.status}}','{{item.generatedBy}}')"
+																title="<c:out value="${sessionScope.tooltip_edit}"/>"><i
+																class="fa fa-edit " style="cursor: pointer;"></i> </span>
+											</div>
+										</div>
+									</td>
+=======
+<!--            		<td>-->
+<!--            				 <div ng-switch on="item.IsActive">-->
+<!--   							 <span ng-switch-when="true"><span class="active">Active</span></span>-->
+<!--  							 <span ng-switch-when="false"><span class="pending">Inactive</span></span>-->
+<!-- 						</div>-->
+<!--    						-->
+<!--            			    -->
+<!--            		</td>-->
+						<td>
+            				{{item.tasktype}}
+            		</td>
+            		 <td class="center">
+            		 <div ng-switch on="item.tasktype">
+            		 	<div ng-switch-when="Manual">
+										<c:if test="${sessionScope.view_mod_25=='1'}">
+											<a class="btn btn-info"
+												href="edittask.assets.htm?taskid={{item.TaskID}}"
+												title="<c:out value="${sessionScope.tooltip_edit}"/>"><i
+												class="fa fa-edit "></i>
+											</a>
+										</c:if>
+										<c:if test="${sessionScope.view_mod_25=='1'}">
+											<button class="btn btn-danger"
+												onclick="confirmRow({{item.TaskID}},'Manual')"
+												title="<c:out value="${sessionScope.tooltip_delete}"/>">
+												<i class="fa fa-trash-o "></i>
+											</button>
+										</c:if>
+						</div>
+						<div  ng-switch-when="System">
+										<c:if test="${sessionScope.view_mod_25=='1'}">
+											<a class="btn btn-info"
+												href="editAMC.assets.htm?taskid={{item.assetID}}"
+												title="<c:out value="${sessionScope.tooltip_edit}"/>"><i
+												class="fa fa-edit "></i>
+											</a>
+										</c:if>
+										<c:if test="${sessionScope.view_mod_25=='1'}">
+											<button class="btn btn-danger"
+												onclick="confirmRow({{item.assetID}},'System')"
+												title="<c:out value="${sessionScope.tooltip_delete}"/>">
+												<i class="fa fa-trash-o "></i>
+											</button>
+										</c:if>
+						</div>
+						<div  ng-switch-when="Support Ticket">
+										<c:if test="${sessionScope.view_mod_25=='1'}">
+											<a class="btn btn-info"
+												href="editSupportTask.assets.htm?taskid={{item.TaskID}}"
+												title="<c:out value="${sessionScope.tooltip_edit}"/>"><i
+												class="fa fa-edit "></i>
+											</a>
+										</c:if>
+										<c:if test="${sessionScope.view_mod_25=='1'}">
+											<button class="btn btn-danger"
+												onclick="confirmRow({{item.TaskID}},'Support Ticket')"
+												title="<c:out value="${sessionScope.tooltip_delete}"/>">
+												<i class="fa fa-trash-o "></i>
+											</button>
+										</c:if>
+						</div>
+					</div>
+					 </td>
+>>>>>>> .r480
+            </tr>
+         </tbody>    
+    </table>
+</div>
+</div>
+     
+            </div><!-- panel-body -->
+          </div><!-- panel -->
+       
+
+ <div class="modal fade" id="dialog-1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+ 
+</div>      
+
+    
+                            <input type="hidden" id="toggledata" class="form-control" ng-model="toggledata" ng-init='toggledata = "<c:out value="${sessionScope.toggle}"/>"' value="<c:out value="${sessionScope.toggle}"/>">		
+  
+
+</section>
+
+
+<script src="js/jquery-1.11.1.min.js"></script>
+<script src="js/jquery-migrate-1.2.1.min.js"></script>
+<script src="js/jquery-ui-1.10.3.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/modernizr.min.js"></script>
+<script src="js/jquery.custom.min.js"></script>
+<script src="js/toggles.min.js"></script>
+<script src="js/jquery.cookies.js"></script>
+<script src="js/left-menu.js"></script>
+<script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
+<script>
+		(function($){
+			$(window).load(function(){
+				 var flag=false;	
+				$.mCustomScrollbar.defaults.theme="light-2"; //set "light-2" as the default theme
+				
+				$(".demo-y").mCustomScrollbar();
+				
+				$(".demo-x").mCustomScrollbar({
+					axis:"x",
+					advanced:{autoExpandHorizontalScroll:true}
+				});
+				
+				$(".demo-yx").mCustomScrollbar({
+					axis:"yx"
+				});
+				
+				$(".scrollTo a").click(function(e){
+					e.preventDefault();
+					var $this=$(this),
+						rel=$this.attr("rel"),
+						el=rel==="content-y" ? ".demo-y" : rel==="content-x" ? ".demo-x" : ".demo-yx",
+						data=$this.data("scroll-to"),
+						href=$this.attr("href").split(/#(.+)/)[1],
+						to=data ? $(el).find(".mCSB_container").find(data) : el===".demo-yx" ? eval("("+href+")") : href,
+						output=$("#info > p code"),
+						outputTXTdata=el===".demo-yx" ? data : "'"+data+"'",
+						outputTXThref=el===".demo-yx" ? href : "'"+href+"'",
+						outputTXT=data ? "$('"+el+"').find('.mCSB_container').find("+outputTXTdata+")" : outputTXThref;
+					$(el).mCustomScrollbar("scrollTo",to);
+					output.text("$('"+el+"').mCustomScrollbar('scrollTo',"+outputTXT+");");
+				});
+				var value= document.getElementById("toggledata").value;
+					
+            		if(value==1){  			
+            			if(flag == false)
+            			{            			
+            				flag = true;
+            				
+            		  		$('div#mCSB_1_container').removeAttr('style');
+            		        $('div#mCSB_1_container').removeAttr('id');
+            		        $('div#mCSB_1_container').removeAttr('ltr');
+            		        	$('div#mCSB_1_dragger_horizontal').css('display','block');
+            		        	   $('div#mCSB_1_container').css('display','block');			
+            			}
+            			
+            			else if(flag  == true)
+            			{            				
+            				flag = false;
+            				$('#mCSB_1>div').attr('id', 'mCSB_1_container');
+	 			  				$('div#mCSB_1_dragger_horizontal').css('display','block');
+	 			  				   $('div#mCSB_1_container').css('display','block');
+            			}
+            			}
+            			else if(value==0){  			
+            			if(flag == true)
+            			{            			
+            				flag = false;
+            					
+            		  		 $('div#mCSB_1_container').removeAttr('style');
+            		   		 $('div#mCSB_1_container').removeAttr('id');
+            		  		 $('div#mCSB_1_container').removeAttr('ltr');	
+            		  		 $('div#mCSB_1_dragger_horizontal').css('display','block');	
+            		  		    $('div#mCSB_1_container').css('display','block');	
+            			}
+            			
+            			else if(flag  == false)
+            			{            				
+            				flag = true;
+            				$('#mCSB_1>div').attr('id', 'mCSB_1_container');
+	 			  				$('div#mCSB_1_dragger_horizontal').css('display','block');
+	 			  				   $('div#mCSB_1_container').css('display','block');
+            			}
+            			}
+				
+			});
+		})(jQuery);
+	</script>
+
+<div  id="divConfirmAlert" class="error2">
+ 		<label> <c:out value="${sessionScope.deleteRow}"/></label>
+         <span > <input type="button" value="Yes" onclick="deleteRow('yes')"/></span>
+         <span > <input type="button" value="No" onclick="deleteRow('no')"/></span>
+ </div>
+
+<div  id="divConfirmAlertfortask" class="error2">
+ 		<label><c:out value="${sessionScope.task_edit_alert}"/></label></br>
+         <span > <a class="btn btn-info"	href="#" onclick="editrowsingle('single')" title="<c:out value="${sessionScope.task_single}"/>">
+         					<i class="fa fa-edit "></i>
+         				</a> &nbsp;<label><c:out value="${sessionScope.task_single}"/></label>&nbsp;&nbsp;&nbsp;&nbsp;
+         </span >
+         <span > <a class="btn btn-info"	href="#" onclick="editrowsingle('all')" title="<c:out value="${sessionScope.task_all}"/>">
+         					<i class="fa fa-edit "></i>
+         			</a>&nbsp;<label><c:out value="${sessionScope.task_all}"/></label></span>&nbsp;&nbsp;&nbsp;&nbsp;
+         <span > <a class="btn btn-info"	href="#" onclick="editrowsingle('cancel')" title="<c:out value="${sessionScope.task_cancel}"/>">
+         					<i class="fa fa-arrows-alt"></i>
+         			</a>&nbsp;<label><c:out value="${sessionScope.task_cancel}"/></label></span>			
+ </div>
+ 
+ 
+ <div  id="divConfirmAlertfortaskdelete" class="error2">
+ 		<label><c:out value="${sessionScope.task_delete}"/></label></br>
+         <span > <a class="btn btn-info" href="#" onclick="deleterowsingle('single')" title="<c:out value="${sessionScope.task_single}"/>">
+         					<i class="fa fa-trash-o "></i>
+         				</a> &nbsp;<label><c:out value="${sessionScope.task_single}"/></label>&nbsp;&nbsp;&nbsp;&nbsp;
+         </span >
+         <span > <a class="btn btn-info"	href="#" onclick="deleterowsingle('all')" title="<c:out value="${sessionScope.task_all}"/>">
+         					<i class="fa fa-trash-o "></i>
+         			</a>&nbsp;<label><c:out value="${sessionScope.task_all}"/></label></span>&nbsp;&nbsp;&nbsp;&nbsp;
+         			
+        <span > <a class="btn btn-info"	href="#" onclick="deleterowsingle('cancel')" title="<c:out value="${sessionScope.task_cancel}"/>">
+         					<i class="fa fa-arrows-alt"></i>
+         			</a>&nbsp;<label><c:out value="${sessionScope.task_cancel}"/></label></span>	 			
+ </div>
+ <div  id="divConfirmAlertforSystem" class="error2">
+ 		<label><c:out value="${sessionScope.task_edit_alert}"/></label></br>
+         <span > <a class="btn btn-info"	href="#" onclick="editrowsingleSystem('single')" title="<c:out value="${sessionScope.task_single}"/>">
+         					<i class="fa fa-edit "></i>
+         				</a> &nbsp;<label><c:out value="${sessionScope.task_single}"/></label>&nbsp;&nbsp;&nbsp;&nbsp;
+         </span >
+         <span > <a class="btn btn-info"	href="#" onclick="editrowsingleSystem('all')" title="<c:out value="${sessionScope.task_all}"/>">
+         					<i class="fa fa-edit "></i>
+         			</a>&nbsp;<label><c:out value="${sessionScope.task_all}"/></label></span>&nbsp;&nbsp;&nbsp;&nbsp;
+         <span > <a class="btn btn-info"	href="#" onclick="editrowsingleSystem('cancel')" title="<c:out value="${sessionScope.task_cancel}"/>">
+         					<i class="fa fa-arrows-alt"></i>
+         			</a>&nbsp;<label><c:out value="${sessionScope.task_cancel}"/></label></span>					
+ </div>
+ 
+</body>
+</html>

@@ -1,0 +1,574 @@
+
+package com.assentisk.controller;
+
+import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindException;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.SimpleFormController;
+
+import com.assentisk.dao.HomeDao;
+import com.assentisk.dao.OrganizationDao;
+import com.assentisk.util.UrlUtill;
+import com.assentisk.bean.*;
+
+
+public class HomeController extends SimpleFormController {
+
+
+	protected HomeDao homeDao;
+	protected OrganizationDao organizationDao;
+	UserRecordBean userbean;
+	ModelAndView modelAndView;
+	ModelMap map;
+	
+	
+	public HomeDao getHomeDao() {
+		return homeDao;
+	}
+
+	public void setHomeDao(HomeDao homeDao) {
+		this.homeDao = homeDao;
+	}
+
+	
+	public OrganizationDao getOrganizationDao() {
+		return organizationDao;
+	}
+
+	public void setOrganizationDao(OrganizationDao organizationDao) {
+		this.organizationDao = organizationDao;
+	}
+
+	protected ModelAndView showForm(HttpServletRequest req,
+			HttpServletResponse res, BindException ex) throws Exception {
+
+		String url = UrlUtill.UrlName(req.getRequestURI());
+
+		if (url.equals("dashboard")) {
+			return dashboard(req, res);
+		}
+		else if (url.equals("login")) {
+			return login(req, res);
+		}
+		else if (url.equals("logout")) {			
+			return logout(req,res);
+		}
+		else if(url.equals("setSess")){
+			return setSessionValue(req, res);
+		}
+		else if(url.equals("setRisk")){
+			return setRisk(req,res);
+		}
+		else if(url.equals("addcomment")){
+			return addcomment(req,res);
+		}
+		else if(url.equals("getcommentValue")){
+			return getcomment(req,res);
+		}
+		else if(url.equals("changeloginpage"))
+		{
+			return changeloginpage(req, res);
+		}
+		else if(url.equals("pendingStatus")){
+			return pendingStatus(req,res);
+		}
+
+		return null;
+	}
+
+	protected ModelAndView onSubmit(HttpServletRequest req,
+			HttpServletResponse res, Object cmd, BindException errors)
+			throws Exception {
+
+		String url = UrlUtill.UrlName(req.getRequestURI());
+
+		if (url.equals("verify")) {
+			return authenticate(req, res);
+		}
+
+		return null;
+	}
+
+	public ModelAndView authenticate(HttpServletRequest req,
+			HttpServletResponse res) {
+
+		try {
+			userbean=new UserRecordBean() ;
+			map = new ModelMap();
+			PrintWriter out = res.getWriter();
+			String uname = req.getParameter("uname");
+			String pword = req.getParameter("pword");
+			String language = req.getParameter("language");
+						
+			req.getSession().setAttribute("languageVal",language);
+			
+			
+			Cookie cookie = new Cookie("language",language);
+			
+			res.addCookie(cookie);
+			
+			List getRiskLibrary = homeDao.getFileDetail();
+			req.getSession().setAttribute("riskList",getRiskLibrary);
+			
+			List getUserInfo = homeDao.authenticate(uname, pword);
+			System.out.println("size: " + getUserInfo.size());
+			if(getUserInfo.size() == 0)
+			{	
+				List list = homeDao.getLanguageList();
+				map.addObject("languagelist", list);
+				map.addObject("action", "error");
+				modelAndView = new ModelAndView("login", map);
+				
+			}
+			else if (getUserInfo.size() > 0) {
+								
+				Map m = (Map) getUserInfo.get(0);
+				String group = m.get("groupID").toString();
+				String status= m.get("expandBar").toString();
+				req.getSession().setAttribute("UserRecordID",m.get("UserRecordID").toString());
+				req.getSession().setAttribute("EmpUsername",m.get("EmpUsername").toString());
+				req.getSession().setAttribute("EmpName",m.get("EmpName").toString());
+				req.getSession().setAttribute("riskID",m.get("riskID").toString());
+				userbean.setUserRecordID(Integer.parseInt(m.get("UserRecordID").toString()));
+				String getsevenAfterDate=homeDao.getsevenAfterDate();
+				List pending=homeDao.getAMCdataList(m.get("UserRecordID").toString(),getsevenAfterDate);
+				if(pending.size()>0){
+					Map mp=(Map)pending.get(0);
+					req.getSession().setAttribute("pendingTask", mp.get("size").toString());
+				}
+				 if(status.equals("1")){
+				    	req.getSession().setAttribute("toggle", "1");
+						req.getSession().setAttribute("bodyClass","nav-parent nav-active leftpanel-collapsed");
+				    }
+				    else
+				    {
+				    	req.getSession().setAttribute("toggle", "0");
+						req.getSession().setAttribute("bodyClass","nav-parent nav-active");			   
+				    }
+				 
+				 int count = 0;
+					List getPermission = homeDao.getGroupPermission(group);
+					if (getPermission.size() > 0) {
+						for (int i = 0; i < getPermission.size(); i++) {
+						
+							
+							Map gp = (Map) getPermission.get(i);
+							int size=Integer.parseInt(gp.get("moduleId").toString());
+							count = size;
+							double view = Double.parseDouble(gp.get("view_mod").toString());
+							if (view > 0) {
+								req.getSession().setAttribute(
+										"view_mod_" + count + "",
+										1);
+							} else {
+								req.getSession().setAttribute(
+										"view_mod_" + count + "", 0);
+
+							}
+
+							double add = Double.parseDouble(gp.get("add_mod").toString());
+							if (add > 0) {
+								req.getSession().setAttribute(
+										"add_mod_" + count + "", 1);
+							} else {
+								req.getSession().setAttribute(
+										"add_mod_" + count + "", 0);
+
+							}
+
+							double edit = Double.parseDouble(gp.get("edit_mod").toString());
+							if (edit > 0) {
+								req.getSession().setAttribute(
+										"edit_mod_" + count + "",
+										1);
+							} else {
+								req.getSession().setAttribute(
+										"edit_mod_" + count + "", 0);
+
+							}
+							double delete = Double.parseDouble(gp.get("delete_mod").toString());
+							if (delete > 0) {
+								req.getSession().setAttribute(
+										"delete_mod_" + count + "",
+										1);
+							} else {
+								req.getSession().setAttribute(
+										"delete_mod_" + count + "", 0);
+
+							}
+
+							double per = Double.parseDouble(gp.get("per_mod").toString());
+							if (per > 0) {
+								req.getSession().setAttribute(
+										"per_mod_" + count + "", 1);
+							} else {
+								req.getSession().setAttribute(
+										"per_mod_" + count + "", 0);
+
+							}
+							
+							double sch = Double.parseDouble(gp.get("sch_mod").toString());
+							if (sch > 0) {
+								req.getSession().setAttribute(
+										"sch_mod_" + count + "", 1);
+							} else {
+								req.getSession().setAttribute(
+										"sch_mod_" + count + "", 0);
+
+							}
+							
+							double copy = Double.parseDouble(gp.get("copy_mod").toString());
+							if (copy > 0) {
+								req.getSession().setAttribute(
+										"copy_mod_" + count + "", 1);
+							} else {
+								req.getSession().setAttribute(
+										"copy_mod_" + count + "", 0);
+
+							}
+						}
+					}
+				 
+				 
+				 
+				 
+				 
+//				for (int k = 1; k < 36; k++) {
+//					
+//					String query = "select * from assentisk_grouppermission where groupId IN ("
+//							+ group
+//							+ ")"
+//							+ " and view_mod='1' and moduleId='"
+//							+ k + "'";
+//
+//					List viewmodData = homeDao.getList(query);
+//					if (viewmodData.size() > 0) {
+//						Map view = (Map) viewmodData.get(0);
+//						req.getSession().setAttribute("view_mod_" + k + "",
+//								view.get("view_mod"));
+//					} else {
+//						req.getSession().setAttribute("view_mod_" + k + "", 0);
+//					}
+//
+//					query = "select * from assentisk_grouppermission where groupId IN ("
+//							+ group
+//							+ ")"
+//							+ " and add_mod='1' and moduleId='"
+//							+ k + "'";
+//
+//					List addmodData = homeDao.getList(query);
+//					if (addmodData.size() > 0) {
+//						Map add = (Map) addmodData.get(0);
+//						req.getSession().setAttribute("add_mod_" + k + "",
+//								add.get("add_mod"));
+//					} else {
+//						req.getSession().setAttribute("add_mod_" + k + "", 0);
+//					}
+//
+//					query = "select * from assentisk_grouppermission where groupId IN ("
+//							+ group
+//							+ ")"
+//							+ " and edit_mod='1' and moduleId='"
+//							+ k + "'";
+//					List editmodData = homeDao.getList(query);
+//					if (editmodData.size() > 0) {
+//						Map edit = (Map) editmodData.get(0);
+//						req.getSession().setAttribute("edit_mod_" + k + "",
+//								edit.get("edit_mod"));
+//					} else {
+//						req.getSession().setAttribute("edit_mod_" + k + "", 0);
+//					}
+//
+//					query = "select * from assentisk_grouppermission where groupId IN ("
+//							+ group
+//							+ ")"
+//							+ " and delete_mod='1' and moduleId='" + k + "'";
+//					List deletemodData = homeDao.getList(query);
+//					if (deletemodData.size() > 0) {
+//						Map delete = (Map) deletemodData.get(0);
+//						req.getSession().setAttribute("delete_mod_" + k + "",
+//								delete.get("delete_mod"));
+//					} else {
+//						req.getSession()
+//								.setAttribute("delete_mod_" + k + "", 0);
+//					}
+//
+//					query = "select * from assentisk_grouppermission where groupId IN ("
+//							+ group
+//							+ ")"
+//							+ " and per_mod='1' and moduleId='"
+//							+ k + "'";
+//					List permodData = homeDao.getList(query);
+//					if (permodData.size() > 0) {
+//						Map per = (Map) permodData.get(0);
+//						req.getSession().setAttribute("per_mod_" + k + "",
+//								per.get("per_mod"));
+//					} else {
+//						req.getSession().setAttribute("per_mod_" + k + "", 0);
+//					}
+//
+//				}
+
+				req.getSession().setAttribute("password", "true");
+								
+				List getLanguageKey = organizationDao.getLaungageKey(language);
+								
+				if (getLanguageKey.size() > 0) {
+					
+					for (int i = 0; i < getLanguageKey.size(); i++) {
+
+						Map mapVal = (Map) getLanguageKey.get(i);							
+						req.getSession().setAttribute(mapVal.get("CFG_KEY").toString(), mapVal.get("CFG_VALUE").toString());
+					}
+
+				}
+				
+				out.write("success");
+				modelAndView = new ModelAndView("redirect:/dashboard.htm", map);
+			} else {
+				out.write("failed");
+
+			}
+
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+		return modelAndView;
+	}
+	
+	public ModelAndView logout(HttpServletRequest req,
+			HttpServletResponse res) {
+		
+		try
+		{
+			res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+		    res.setHeader("Pragma", "no-cache");
+		    res.setDateHeader("Expiresponse", 0);
+			req.getSession().invalidate();
+		}
+		catch(Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		return new ModelAndView("redirect:/login.htm");
+	}
+	
+	public ModelAndView setSessionValue(HttpServletRequest req,
+			HttpServletResponse res) {
+
+			try {
+				String userId= userbean.getUserRecordID().toString();
+			
+			    String status=req.getParameter("status");
+			    if(status.equals("1")){
+			    	req.getSession().setAttribute("toggle", "1");
+					req.getSession().setAttribute("bodyClass","nav-parent nav-active leftpanel-collapsed");
+					homeDao.updateExpandValue(status,userId);
+			    }
+			    else
+			    {
+			    	req.getSession().setAttribute("toggle", "0");
+					req.getSession().setAttribute("bodyClass","nav-parent nav-active");
+					homeDao.updateExpandValue(status,userId);
+			   
+			    }
+			}
+		 catch (Exception exception) {
+				exception.printStackTrace();
+			}
+			return null;
+		}
+	
+	
+	
+	public ModelAndView setRisk(HttpServletRequest req,
+			HttpServletResponse res) {
+
+			try {
+				String userId= userbean.getUserRecordID().toString();
+			    String riskID=req.getParameter("riskID");
+			    req.getSession().setAttribute("riskID",riskID);
+			  
+			    
+				homeDao.updateRiskValue(riskID,userId);
+					
+			}
+		 catch (Exception exception) {
+				exception.printStackTrace();
+			}
+			return null;
+		}
+	
+	
+	public ModelAndView dashboard(HttpServletRequest req,
+			HttpServletResponse res) {
+		
+		
+		try
+		{
+			String userId = (String) req.getSession().getAttribute("UserRecordID");
+			map = new ModelMap();
+			List getTaskList = homeDao.getTaskByEmployeeID(Integer.parseInt(userId));
+			if(getTaskList.size()>0)
+			{
+				map.addObject("taskList", getTaskList);
+			}
+		}
+		catch(Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		return new ModelAndView("dashboard", map);
+	}
+	
+	public ModelAndView login(HttpServletRequest req,
+			HttpServletResponse res) {
+		
+		try
+		{		
+			
+			String language = "";
+			map = new ModelMap();
+			List list = homeDao.getLanguageList();
+			map.addObject("languagelist", list);
+			Cookie[] cookies = req.getCookies();
+			
+			if(cookies!=null)
+			{
+			  for(Cookie cookie : cookies){
+				  
+				  if("language".equals(cookie.getName())){				        				        
+						 language = cookie.getValue();
+				    }	 
+				 
+			  }
+			}
+			else
+			{				
+				language = "English";
+			}
+			
+			System.out.println("language: " + language);
+			List getLanguageKey = organizationDao.getLaungageKey(language);
+			Cookie cookie = new Cookie("language","English");			
+			res.addCookie(cookie);
+			if (getLanguageKey.size() > 0) {
+				
+				for (int i = 0; i < getLanguageKey.size(); i++) {
+
+					Map mapVal = (Map) getLanguageKey.get(i);							
+					req.getSession().setAttribute(mapVal.get("CFG_KEY").toString(), mapVal.get("CFG_VALUE").toString());
+				}
+
+			}
+		}
+		catch(Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		return new ModelAndView("login", map);
+	}
+	
+	public ModelAndView addcomment(HttpServletRequest req,
+			HttpServletResponse res) {
+		
+		try
+		{
+	     String id=req.getParameter("id");
+	     String status=req.getParameter("status");
+	     String comment=req.getParameter("comment");
+	     if(status.equals("3")){
+	    	 status="Cancelled";
+	     }
+	      else  if(status.equals("2")){
+	    	 status="Completed";
+	     }
+	     else if(status.equals("1")){
+	    	 status="Approved";
+	     }
+	     
+	     else
+	     {
+	    	 status=""; 
+	     }
+	    
+	     homeDao.savecomment(id, status,comment);
+		}
+		catch(Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		return null;
+	}
+	
+	public ModelAndView getcomment(HttpServletRequest req,
+			HttpServletResponse res) {
+		
+		try
+		{
+	     String amcid=req.getParameter("id");
+	    	    
+	    List getcomment= homeDao.getcomment(amcid);
+	
+	    if(getcomment.size()>0){
+	    	Map m=(Map)getcomment.get(0);
+	    	map.addObject("status", m.get("status").toString());
+	    	map.addObject("comment", m.get("comment").toString());
+	    
+	    }
+	    modelAndView = new ModelAndView("ajaxresponse/comment", map);			
+		}
+		catch(Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		return modelAndView;
+	}
+	
+	public ModelAndView changeloginpage(HttpServletRequest req,
+			HttpServletResponse res) {
+		
+		try
+		{
+			String language = req.getParameter("language");									
+			Cookie cookie = new Cookie("language", language);
+			res.addCookie(cookie);
+		}
+		catch(Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		return new ModelAndView("redirect:/login.htm");
+	}
+	
+	public ModelAndView pendingStatus(HttpServletRequest req,
+			HttpServletResponse res) {
+		try
+		{
+			String userId = (String) req.getSession().getAttribute("UserRecordID");
+			
+			String getsevenAfterDate=homeDao.getsevenAfterDate();
+			List pending=homeDao.getAMCdataList(userId,getsevenAfterDate);
+			if(pending.size()>0){
+				Map mp=(Map)pending.get(0);
+				req.getSession().setAttribute("pendingTask", mp.get("size").toString());
+			}
+		}
+		catch(Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		return null;
+	}
+	
+
+}

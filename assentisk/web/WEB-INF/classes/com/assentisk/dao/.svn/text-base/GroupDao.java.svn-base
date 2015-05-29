@@ -1,0 +1,38 @@
+package com.assentisk.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.jdbc.core.JdbcTemplate;
+
+import com.assentisk.bean.GroupBean;
+import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
+
+public interface GroupDao {
+
+	public List<GroupBean> getList();
+	public List getgroup(String id);
+
+
+	public void savegroup(String groupName, String groupDesc, Integer isactive);
+	public void updategroup(String gid,String groupName, String groupDesc, Integer isactive);
+	public void deletegroup(String gid);
+	public List getpermission(String id);
+	public List getpermissioninspanish(String id);
+	
+	
+	public List getGroupPermissionList(String query) ;
+
+	public void fireQuery(String query) ;
+	
+
+	public void userAuditTrail(String tableName, String rowID, String action, String changeDate, Integer changeBy, String ipAddress);
+	
+	public void deletegroupPermission(String id);
+	public Map copygroup(String id);
+
+	
+	public String pastegroup(Map getGroupList, String id);
+
+
+}

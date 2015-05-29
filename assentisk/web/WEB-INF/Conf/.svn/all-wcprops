@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/assentisk/!svn/ver/6/assentisk/web/WEB-INF/Conf
+END
+assentisk-service.xml
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/assentisk/!svn/ver/261/assentisk/web/WEB-INF/Conf/assentisk-service.xml
+END
+dbConfig.xml
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/assentisk/!svn/ver/9/assentisk/web/WEB-INF/Conf/dbConfig.xml
+END
+log4j.properties
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/assentisk/!svn/ver/39/assentisk/web/WEB-INF/Conf/log4j.properties
+END
+assentisk-datadao.xml
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/assentisk/!svn/ver/261/assentisk/web/WEB-INF/Conf/assentisk-datadao.xml
+END

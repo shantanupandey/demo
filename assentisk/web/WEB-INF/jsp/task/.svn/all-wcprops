@@ -1,0 +1,89 @@
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/assentisk/!svn/ver/362/assentisk/web/WEB-INF/jsp/task
+END
+upload.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/assentisk/!svn/ver/362/assentisk/web/WEB-INF/jsp/task/upload.jsp
+END
+editticketcategory.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/assentisk/!svn/ver/480/assentisk/web/WEB-INF/jsp/task/editticketcategory.jsp
+END
+editTask.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/assentisk/!svn/ver/485/assentisk/web/WEB-INF/jsp/task/editTask.jsp
+END
+editSupportticketTask.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/assentisk/!svn/ver/417/assentisk/web/WEB-INF/jsp/task/editSupportticketTask.jsp
+END
+editticket.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/assentisk/!svn/ver/482/assentisk/web/WEB-INF/jsp/task/editticket.jsp
+END
+singleeditTask.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/assentisk/!svn/ver/486/assentisk/web/WEB-INF/jsp/task/singleeditTask.jsp
+END
+addticketcategory.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/assentisk/!svn/ver/480/assentisk/web/WEB-INF/jsp/task/addticketcategory.jsp
+END
+addTask.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/assentisk/!svn/ver/484/assentisk/web/WEB-INF/jsp/task/addTask.jsp
+END
+singleEditAMCtask.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/assentisk/!svn/ver/486/assentisk/web/WEB-INF/jsp/task/singleEditAMCtask.jsp
+END
+addticket.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/assentisk/!svn/ver/483/assentisk/web/WEB-INF/jsp/task/addticket.jsp
+END
+amcschedule.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/assentisk/!svn/ver/478/assentisk/web/WEB-INF/jsp/task/amcschedule.jsp
+END
+ticketcategory.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/assentisk/!svn/ver/479/assentisk/web/WEB-INF/jsp/task/ticketcategory.jsp
+END
+task.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/assentisk/!svn/ver/481/assentisk/web/WEB-INF/jsp/task/task.jsp
+END
+ticket.jsp
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/assentisk/!svn/ver/477/assentisk/web/WEB-INF/jsp/task/ticket.jsp
+END

@@ -1,0 +1,1214 @@
+package com.assentisk.controller;
+
+import java.io.BufferedOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Iterator;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindException;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.SimpleFormController;
+
+import com.assentisk.dao.GroupDao;
+import com.assentisk.dao.MasterDao;
+import com.assentisk.dao.OrganizationDao;
+import com.assentisk.dao.RegulationDao;
+
+import com.assentisk.bean.ApplicationsBean;
+import com.assentisk.bean.BusinessProcessesBean;
+import com.assentisk.bean.CityBean;
+import com.assentisk.bean.CompanyBean;
+import com.assentisk.bean.ControlCategoryBean;
+import com.assentisk.bean.CountryBean;
+import com.assentisk.bean.DepartmentBean;
+import com.assentisk.bean.EmployeeBean;
+import com.assentisk.bean.GroupBean;
+import com.assentisk.bean.LanguageKeysBean;
+import com.assentisk.bean.LegalEntitiesBean;
+import com.assentisk.bean.LocationsBean;
+import com.assentisk.bean.RiskBean;
+import com.assentisk.bean.StateBean;
+import com.assentisk.bean.UserRecordBean;
+import com.assentisk.bean.VendorBean;
+import com.assentisk.bean.VendorCategoryBean;
+import com.assentisk.bean.VendorContactBean;
+import com.assentisk.util.Files;
+import com.assentisk.util.FilesService;
+import com.assentisk.util.UrlUtill;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.mysql.jdbc.Connection;
+import com.mysql.jdbc.PreparedStatement;
+import com.sun.xml.internal.bind.v2.runtime.Location;
+import java.io.File;
+import java.io.FileInputStream;
+
+
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Row;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.xssf.usermodel.*;
+
+import uk.ltd.getahead.dwrdemo.test.TestBean;
+
+public class RegulationsController extends SimpleFormController {
+
+	protected RegulationDao regulationDao;
+	protected MasterDao masterDao;
+	protected GroupDao groupDao;
+	protected FilesService filesService;
+	protected OrganizationDao organizationDao;
+
+
+	ModelAndView modelAndView;
+	PrintWriter out;
+	ModelMap map;
+	private VendorContactBean contactBean;
+
+	public RegulationDao getRegulationDao() {
+		return regulationDao;
+	}
+
+	public void setRegulationDao(RegulationDao regulationDao) {
+		this.regulationDao = regulationDao;
+	}
+
+	public ModelAndView getModelAndView() {
+		return modelAndView;
+	}
+
+	public void setModelAndView(ModelAndView modelAndView) {
+		this.modelAndView = modelAndView;
+	}
+
+	public PrintWriter getOut() {
+		return out;
+	}
+
+	public void setOut(PrintWriter out) {
+		this.out = out;
+	}
+	
+	
+
+	public OrganizationDao getOrganizationDao() {
+		return organizationDao;
+	}
+
+	public void setOrganizationDao(OrganizationDao organizationDao) {
+		this.organizationDao = organizationDao;
+	}
+
+	public ModelMap getMap() {
+		return map;
+	}
+
+	public void setMap(ModelMap map) {
+		this.map = map;
+	}
+
+	public VendorContactBean getContactBean() {
+		return contactBean;
+	}
+
+	public void setContactBean(VendorContactBean contactBean) {
+		this.contactBean = contactBean;
+	}
+
+	public MasterDao getMasterDao() {
+		return masterDao;
+	}
+
+	public void setMasterDao(MasterDao masterDao) {
+		this.masterDao = masterDao;
+	}
+
+	public GroupDao getGroupDao() {
+		return groupDao;
+	}
+
+	public void setGroupDao(GroupDao groupDao) {
+		this.groupDao = groupDao;
+	}
+
+	public FilesService getFilesService() {
+		return filesService;
+	}
+
+	public void setFilesService(FilesService filesService) {
+		this.filesService = filesService;
+	}
+	
+	protected ModelAndView showForm(HttpServletRequest req,
+			HttpServletResponse res, BindException ex) throws Exception {
+
+		String url = UrlUtill.UrlName(req.getRequestURI());
+		
+		
+		if (url.equals("risklibrary")) {
+			modelAndView = new ModelAndView("regulation/risklibrary");
+		} else if (url.equals("risklist")){
+			return riskList(req, res);
+		} else if(url.equals("downloadExcelForRisk")){
+			return downloadExcelForRisk(req, res);
+		}else if(url.equals("controls")){
+			modelAndView = new ModelAndView("regulation/controls");
+		}else if(url.equals("controlsList")){
+			return controlsList(req, res);
+		}else if(url.equals("test")){
+			modelAndView = new ModelAndView("regulation/test");
+		}else if(url.equals("testList")){
+			return testList(req, res);
+		}else if(url.equals("addImportExcel")){
+			modelAndView = new ModelAndView("regulation/addImportExcel");
+		}else if(url.equals("importExcel")){
+			return importExcelForPositionProfile(req, res);
+		}else if(url.equals("riskLibraryList")){
+			return riskLibraryList(req, res);
+		}
+		else if(url.equals("addcontrol")){
+			modelAndView = new ModelAndView("regulation/addcontrol");
+		}
+		else if(url.equals("checkcontrolid")){
+			return checkControlID(req, res);
+		}
+		else if (url.equalsIgnoreCase("savecontrol")) {						
+			return saveControl(req, res);
+		}
+		else if (url.equalsIgnoreCase("editcontrol")) {						
+			return editControl(req, res);
+		}
+		else if (url.equalsIgnoreCase("updatecontrol")) {						
+			return updateControl(req, res);
+		}
+		else if (url.equalsIgnoreCase("deletecontrol")) {						
+			return deleteControl(req, res);
+		}
+		else if (url.equalsIgnoreCase("addtest")) {						
+			return addTest(req, res);
+		}
+		
+		else if (url.equalsIgnoreCase("edittest")) {						
+			return editTest(req, res);
+		}
+
+		else if (url.equalsIgnoreCase("deletetest")) {						
+			return deleteTest(req, res);
+		}
+		
+		else if (url.equalsIgnoreCase("listOfTest")){						
+			return listOfTest(req, res);
+		}else if (url.equals("downloadExcelForRisk")) {
+			return downloadExcelForRisk(req, res);
+		}else if (url.equals("controlCategory")) {
+			return controlCategory(req, res);
+		}else if (url.equalsIgnoreCase("savecontrolCategory")) {						
+			return savecontrolCategory(req, res);
+		}
+		else if (url.equalsIgnoreCase("updatecontrolCategory")) {						
+			return updatecontrolCategory(req, res);
+		}
+		return modelAndView;
+	}
+
+	private ModelAndView listOfTest(HttpServletRequest req,
+			HttpServletResponse res) {
+		try {
+			out = res.getWriter();
+			String id = req.getParameter("id");
+			List gettestList = regulationDao.getTest(id);
+			Map m = (Map)gettestList.get(0);
+			System.out.println("check this test>>"+gettestList);
+			out.print(m.get("Test_Steps"));
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+		return null;
+	}
+
+	protected ModelAndView onSubmit(HttpServletRequest req,
+			HttpServletResponse res, Object cmd, BindException errors)
+			throws Exception {
+		String url = UrlUtill.UrlName(req.getRequestURI());
+		if (url.equals("savecompany")) {
+			return savecompany(req, res);
+		}else if (url.equalsIgnoreCase("importExcel")) {
+			return importExcelForPositionProfile(req, res);
+		}else if (url.equalsIgnoreCase("savecontrol")) {
+
+			return saveControl(req, res);
+		}
+		else if (url.equalsIgnoreCase("upload")) {						
+			return upload(req, res);
+		}
+		else if(url.equalsIgnoreCase("updatetest")){
+			return updatedTest(req,res);
+		}
+		else if (url.equalsIgnoreCase("savetest")){						
+			return saveTest(req, res);
+		}else if (url.equalsIgnoreCase("saveTree")) {						
+			return saveTree(req, res);
+		}
+		return null;
+
+	}
+
+	private ModelAndView riskLibraryList(HttpServletRequest req,
+			   HttpServletResponse res){
+			 
+			  try
+			  {
+			   PrintWriter out = res.getWriter();
+			   String fileName = req.getParameter("fileName");
+			   List<CountryBean> riskLibrary = masterDao.checkRiskLibrary(fileName);
+			   if(riskLibrary.size()>0)
+			   {
+			    out.write("exist");
+			   }
+			   else
+			   {
+			    out.write("notexist");
+			   }
+			   
+			  }
+			  catch(Exception exception)
+			  {
+			   exception.printStackTrace();
+			  }
+			  return null;
+			 }
+	private ModelAndView testList(HttpServletRequest req,
+			HttpServletResponse res) {
+		try {
+			out = res.getWriter();
+            String riskLibrary=req.getSession().getAttribute("riskID").toString();
+			List<RiskBean> testList = regulationDao.getTestList(riskLibrary);
+			PersonJsonObject personJsonObject = new PersonJsonObject();
+			personJsonObject.setRiskBean(testList);
+
+			Gson gson = new GsonBuilder().disableHtmlEscaping().create();			
+			String json2 = gson.toJson(personJsonObject);	
+		
+			out.print(json2);
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+		return null;
+	}
+
+	private ModelAndView controlsList(HttpServletRequest req,
+			HttpServletResponse res){
+		try {
+			out = res.getWriter();
+            String riskLibrary=req.getSession().getAttribute("riskID").toString();
+			List<RiskBean> controlsList = regulationDao.getControlsList(riskLibrary);
+			PersonJsonObject personJsonObject = new PersonJsonObject();
+			personJsonObject.setRiskBean(controlsList);
+
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			String json2 = gson.toJson(personJsonObject);	
+			out.print(json2);
+			
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+		return null;
+	}
+
+	private ModelAndView riskList(HttpServletRequest req,
+			HttpServletResponse res) {
+		try {
+			out = res.getWriter();
+
+			List<RiskBean> riskList = regulationDao.getRiskList();
+			PersonJsonObject personJsonObject = new PersonJsonObject();
+			personJsonObject.setRiskBean(riskList);
+
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			String json2 = gson.toJson(personJsonObject);			
+			out.print(json2);
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+		return null;
+	}
+
+	
+	private ModelAndView savecontrolCategory(HttpServletRequest req,
+			HttpServletResponse res) {
+
+		try
+		{
+			System.out.println("hi inside..updating.");
+			String controlCategory = "Folder";
+			String buisnessProcess = "1";
+			String parent = req.getParameter("parent");
+			
+		
+			System.out.println("parent id>"+parent);
+			
+			String userId = (String) req.getSession().getAttribute(
+			"UserRecordID");
+			
+			regulationDao.savecontrolCategory(controlCategory, buisnessProcess, parent, userId);
+		}
+			
+		catch(Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		return null;
+	}
+
+
+
+
+
+
+	//importing excel for elements
+
+
+	//importing excel for elements
+
+	protected ModelAndView importExcelForPositionProfile(HttpServletRequest req,
+				HttpServletResponse res) throws Exception {
+		
+			map = new ModelMap();
+			MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) req;
+			MultipartFile multipartFile = multipartRequest.getFile("myexcel");
+			String fileName = multipartFile.getOriginalFilename();
+			
+			
+			String name=req.getParameter("fileName");
+			boolean status=false;
+			boolean buisnessStatus=false;
+			boolean controlStatus=false;
+			
+			
+			byte[] b = multipartFile.getBytes();
+			
+			FileOutputStream fout = new FileOutputStream(new File(fileName));
+			List<String> dataStatus=new ArrayList<String>();
+			fout.write(b);
+			fout.flush();
+			fout.close();
+			try {
+				int business_id=0;
+				String control_ID="",risk="",control_Objective = "",control_Description  = "", test_Steps = "",business_process="",control_Category="";
+				List<BusinessProcessesBean> businessProcessesBeans = regulationDao.getBusinessProcessesList();
+				List<ControlCategoryBean> controlCategoryBeans = regulationDao.getControlCategoryList();
+				
+				
+				
+				FileInputStream file = new FileInputStream(new File(fileName));
+				boolean flag=false;
+				int counter=0;
+				int rowNum=0;
+				
+				//Reading .xls files
+				if (fileName.toLowerCase().endsWith(".xls")){
+	         	   
+					// Get the workbook instance for XLS file
+					HSSFWorkbook workbook = new HSSFWorkbook(file);
+					// Get first sheet from the workbook
+					HSSFSheet sheet = workbook.getSheetAt(0);
+					
+				
+					
+					sheet.setColumnHidden((short) 14, false);
+					// Iterate through each rows from first sheet
+					Iterator<Row> rowIterator = sheet.rowIterator();
+					if(sheet.getPhysicalNumberOfRows()>1){
+						
+						while (rowIterator.hasNext()){
+							
+							short cellIndex = 0;
+							HSSFRow hsrow = (HSSFRow) rowIterator.next();
+						
+							if (hsrow instanceof HSSFRow){
+								counter=counter+1;
+								controlStatus=false;
+								buisnessStatus=false;
+								System.out.println("check physical number ---->>>"+hsrow.getRowNum());
+								
+								
+								control_ID = hsrow.getCell((short) 0).getStringCellValue();
+								
+								if(control_ID.length()!= 0){
+									status=false;
+								}
+								
+								risk=hsrow.getCell((short) 1).getStringCellValue();
+								risk= risk.replaceAll("\"", "");
+								risk=risk.replaceAll("\\<.*?\\>", "");
+								if(risk.length()!= 0){
+									status=false;
+								}
+								
+								control_Objective=hsrow.getCell((short) 2).getStringCellValue();
+								control_Objective= control_Objective.replaceAll("\"", "");
+								control_Objective=control_Objective.replaceAll("\\<.*?\\>", "");
+								if(control_Objective.length()!= 0){
+									status=false;
+								}
+								
+								control_Description=hsrow.getCell((short) 3).getStringCellValue();
+								control_Description= control_Description.replaceAll("\"", "");
+								control_Description=control_Description.replaceAll("\\<.*?\\>", "");
+								if(control_Description.length()!= 0){
+									status=false;
+								}
+								
+								test_Steps=hsrow.getCell((short) 4).getStringCellValue();
+								test_Steps= test_Steps.replaceAll("\"", "");
+								test_Steps=test_Steps.replaceAll("\\<.*?\\>", "");
+								if(test_Steps.length()!= 0){
+									status=false;
+								}
+								
+								
+								business_process=hsrow.getCell((short) 5).getStringCellValue();
+								business_process= business_process.replaceAll("\"", "");
+								business_process=business_process.replaceAll("\\<.*?\\>", "");
+								if(business_process.length()!= 0){
+									status=false;
+								}
+
+								for(int i=0;i<businessProcessesBeans.size();i++){
+										
+								Map m = (Map) businessProcessesBeans.get(i);
+								
+								if(business_process.equals(m.get("BusinessProcessName"))){
+									buisnessStatus= true;
+									business_id=Integer.parseInt(m.get("BusinessProcessID").toString());
+									
+								}
+								
+								}
+								
+								
+								
+								control_Category=hsrow.getCell((short) 6).getStringCellValue();
+								control_Category= control_Category.replaceAll("\"", "");
+								control_Category=control_Category.replaceAll("\\<.*?\\>", "");
+								if(control_Category.length()!= 0){
+									status=false;
+								}
+								
+								for(int i=0;i<controlCategoryBeans.size();i++){
+									
+									Map m = (Map) controlCategoryBeans.get(i);
+									
+									if(control_Category.equals(m.get("CtrlCategoryName"))){
+										controlStatus= true;
+										
+									}
+									
+								}
+								
+								fileName=name;
+								System.out.println("check this> buisnessStatus>>"+buisnessStatus);
+								System.out.println("check this> business_id>>"+business_id);
+								System.out.println("check this> business_process>>"+business_process);
+								System.out.println("check this> controlStatus>>"+controlStatus);
+								System.out.println("check this> control_Category>>"+control_Category);
+								rowNum=hsrow.getRowNum()+1;
+									
+									 try {
+											List getFileName = regulationDao.getFile(fileName);
+											System.out.println(flag+"getFileSize----------"+getFileName.size());
+											if(getFileName.size() == 0 && flag==false){
+												System.out.println("hellooooo");
+												if((controlStatus==true && buisnessStatus==true)){
+													System.out
+															.println("inside if"+controlStatus+"bs>"+buisnessStatus);
+												regulationDao.removeFields(fileName);
+												regulationDao.addFields("\"" + fileName + "\"","\""+control_ID+ "\"","\""+risk+ "\"","\""+control_Objective+ "\"","\""+control_Description+ "\"","\""+test_Steps+ "\"",business_id,"\""+control_Category+"\"");
+												flag=true;
+												
+												req.setAttribute("message", "Updated Successfully");
+												}else{
+													req.setAttribute("controlErrorMessage", "Row "+rowNum+" doesn't match with Buisness process and Controll category");
+													dataStatus.add("Row "+rowNum+" doesn't match with Buisness process and Controll category");
+													
+												//	map.addObject("controlErrorMessage", "Row "+rowNum+" doesn't match with Buisness process and Controll category");	
+												}
+											}else{
+												if(hsrow.getRowNum()!=0){
+												if(controlStatus==true && buisnessStatus==true ){
+													System.out
+													.println("inside else"+controlStatus+"bs>"+buisnessStatus);
+												regulationDao.addFields("\"" + fileName + "\"","\""+control_ID+ "\"","\""+risk+ "\"","\""+control_Objective+ "\"","\""+control_Description+ "\"","\""+test_Steps+ "\"",business_id,"\""+control_Category+"\"");
+												req.setAttribute("message", "Updated Successfully");
+												}else{
+													req.setAttribute("controlErrorMessage", "Row "+rowNum+" doesn't match with Buisness process and Controll category");
+													dataStatus.add("Row "+rowNum+" doesn't match with Buisness process and Controll category");
+
+												//map.addObject("controlErrorMessage", "Row "+rowNum+" doesn't match with Buisness process and Controll category");
+													
+												}
+												}
+											}	
+											}
+												catch (Exception ex){						
+												req.setAttribute("message", "Updated Successfully");
+											}
+												
+												try {
+													control_Description=hsrow.getCell((short) 3).getStringCellValue();
+													
+												} catch (Exception ex){
+													// sectionhea=hsrow.getCell((short)5).getStringCellValue();
+													control_Description = " ";
+												}
+												try {
+													test_Steps=hsrow.getCell((short) 4).getStringCellValue();
+													
+												} catch (Exception ex){
+													// sectionhea=hsrow.getCell((short)5).getStringCellValue();
+													test_Steps = " ";
+												}
+												
+								
+							
+							}
+						
+						}
+						
+					}else{
+						System.out.println("hiiiiii blank file...");
+
+						System.out.println("hiiiiii blank file...");
+						map.addObject("errormessage", "Blank file can't be uploaded");
+
+					}
+					
+					file.close();
+					
+
+					File f = new File(fileName);
+					
+					if (f.exists()) {
+						f.delete();
+						
+
+					}
+	         	   
+	            }
+				//Reading .xlsx files
+				else if (fileName.toLowerCase().endsWith(".xlsx")){
+	         	   
+					// Get the workbook instance for XLS file
+					XSSFWorkbook wBook = new XSSFWorkbook(file);
+					// Get first sheet from the workbook
+					XSSFSheet sheet = wBook.getSheetAt(0);
+					sheet.setColumnHidden((short) 14, false);
+					// Iterate through each rows from first sheet
+					Iterator<Row> rowIterator = sheet.rowIterator();
+					if(sheet.getPhysicalNumberOfRows()>1){
+						while(rowIterator.hasNext()){
+							Row row = rowIterator.next();
+							Iterator<Cell> cite = row.cellIterator();
+							controlStatus=false;
+							buisnessStatus=false;
+							while(cite.hasNext()){
+								Cell c = cite.next();
+								
+								if(c.getColumnIndex()==0){
+									control_ID=c.toString();
+									
+								}if(c.getColumnIndex()==1){
+									risk=c.toString();
+									risk= risk.replaceAll("\"", "");
+									risk=risk.replaceAll("\\<.*?\\>", "");
+								}if(c.getColumnIndex()==2){
+									control_Objective=c.toString();
+									control_Objective= control_Objective.replaceAll("\"", "");
+									control_Objective=control_Objective.replaceAll("\\<.*?\\>", "");
+								}if(c.getColumnIndex()==3){
+									control_Description=c.toString();
+									control_Description= control_Description.replaceAll("\"", "");
+									control_Description=control_Description.replaceAll("\\<.*?\\>", "");
+						        }
+								if(c.getColumnIndex()==4){
+									test_Steps=c.toString();
+									test_Steps= test_Steps.replaceAll("\"", "");
+									test_Steps=test_Steps.replaceAll("\\<.*?\\>", "");
+								}if(c.getColumnIndex()==5){
+									business_process=c.toString();
+									business_process= business_process.replaceAll("\"", "");
+									business_process=business_process.replaceAll("\\<.*?\\>", "");
+									for(int i=0;i<businessProcessesBeans.size();i++){
+										
+										Map m = (Map) businessProcessesBeans.get(i);
+										
+										if(business_process.equals(m.get("BusinessProcessName"))){
+											buisnessStatus= true;
+											business_id=Integer.parseInt(m.get("BusinessProcessID").toString());
+											System.out.println("true valuessssss"+m.get("BusinessProcessID").toString());
+											
+										}
+										
+										}
+									
+								}if(c.getColumnIndex()==6){
+									control_Category=c.toString();
+									control_Category= control_Category.replaceAll("\"", "");
+									control_Category=control_Category.replaceAll("\\<.*?\\>", "");
+									
+									
+									for(int i=0;i<controlCategoryBeans.size();i++){
+										
+										Map m = (Map) controlCategoryBeans.get(i);
+										
+										if(control_Category.equals(m.get("CtrlCategoryName"))){
+											controlStatus= true;
+											
+										}
+										
+									}
+								}
+							
+							}
+							fileName=name;
+							System.out.println(row.getRowNum());
+							rowNum=row.getRowNum()+1;
+							System.out.println("check this> buisnessStatus>>"+buisnessStatus);
+							System.out.println("check this> business_id....>>"+business_id);
+							System.out.println("check this> business_process>>"+business_process);
+							System.out.println("check this> controlStatus>>"+controlStatus);
+							System.out.println("check this> control_Category>>"+controlStatus);
+							
+							try {
+								List getFileName = regulationDao.getFile(fileName);
+								System.out.println(flag+"getFileSize----------"+getFileName.size());
+								if(getFileName.size() == 0 && row.getRowNum()!=0){
+									System.out.println("hellooooo"+row.getRowNum());
+									if((controlStatus==true && buisnessStatus==true)){
+										System.out
+												.println("inside if"+controlStatus+"bs>"+buisnessStatus);
+									regulationDao.removeFields(fileName);
+									regulationDao.addFields("\"" + fileName + "\"","\""+control_ID+ "\"","\""+risk+ "\"","\""+control_Objective+ "\"","\""+control_Description+ "\"","\""+test_Steps+ "\"",business_id,"\""+control_Category+"\"");
+									flag=true;
+									req.setAttribute("message", "Updated Successfully");
+									}else{
+										req.setAttribute("controlErrorMessage", ""+rowNum+"Row doesn't match with Buisness process and Controll category");
+										dataStatus.add("Row "+rowNum+" doesn't match with Buisness process and Controll category");
+
+										//	map.addObject("controlErrorMessage", ""+rowNum+"Row doesn't match with Buisness process and Controll category");	
+									}
+								}else{
+									if(row.getRowNum()!=0){
+									if(controlStatus==true && buisnessStatus==true ){
+										System.out
+										.println("inside else"+controlStatus+"bs>"+buisnessStatus);
+									regulationDao.addFields("\"" + fileName + "\"","\""+control_ID+ "\"","\""+risk+ "\"","\""+control_Objective+ "\"","\""+control_Description+ "\"","\""+test_Steps+ "\"",business_id,"\""+control_Category+"\"");
+									req.setAttribute("message", "Updated Successfully");
+									}else{
+										req.setAttribute("controlErrorMessage", ""+rowNum+"Row doesn't match with Buisness process and Controll category");
+										dataStatus.add("Row "+rowNum+" doesn't match with Buisness process and Controll category");
+
+										//	map.addObject("controlErrorMessage", ""+rowNum+"Row doesn't match with Buisness process and Controll category");
+										
+									}
+									}
+								}	
+								
+							}
+									catch(Exception ex){						
+									req.setAttribute("message", "Updated Successfully");
+								}
+									
+							
+						}
+					}else{
+						map.addObject("errormessage", "Blank file can't be uploaded");
+						req.setAttribute("errormessage", "Blank file can't be uploaded");
+					}
+					map.addObject("controlErrorMessage",dataStatus);
+					
+					file.close();
+					File f = new File(fileName);
+					
+					if (f.exists()) {
+						f.delete();
+						
+
+					}
+	         	   
+	         	
+	            }
+
+				
+
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+				req.setAttribute("invalidmsg", "Invalid data file");
+			} catch (IOException e) {
+				e.printStackTrace();
+				req.setAttribute("invalidmsg", "Invalid data file");
+			} catch (Exception e) {
+				e.printStackTrace();
+				req.setAttribute("invalidmsg", "Invalid data file");
+			}
+			
+			System.out.println("check this message>>>"+req.getAttribute("message"));
+			List getRiskLibrary = regulationDao.getFileDetail();
+			req.getSession().setAttribute("riskList",getRiskLibrary);		
+			return new ModelAndView("regulation/addImportExcel",map);
+		}
+
+
+	private ModelAndView savecompany(HttpServletRequest req,
+			HttpServletResponse res) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
+
+
+	//downloading excel for Category
+	protected ModelAndView downloadExcelForRisk(HttpServletRequest req,
+			HttpServletResponse res) throws Exception {
+		
+		PrintWriter out = res.getWriter();
+		FilesService fs = new FilesService();
+		
+		
+		String doc_name = req.getParameter("doc_name");
+		
+
+		List catList = regulationDao.getFileDetail(doc_name);	
+	
+		
+		
+		
+		fs.generatePositionProfileXls(req,doc_name,catList);
+		try {
+			String filename = ""+doc_name+".xls";
+
+			// set the http content type to "APPLICATION/OCTET-STREAM
+			res.setContentType("APPLICATION/OCTET-STREAM");
+
+			// initialize the http content-disposition header to
+			// indicate a file attachment with the default filename
+			// "myFile.txt"
+			String disHeader = "Attachment;Filename=\""+doc_name+".xls\"";
+			res.setHeader("Content-Disposition", disHeader);
+
+			// transfer the file byte-by-byte to the response object
+			File fileToDownload = new File(filename);
+
+		
+
+			FileInputStream fileInputStream = new FileInputStream(
+					fileToDownload);
+			int i;
+			while ((i = fileInputStream.read()) != -1) {
+				out.write(i);
+			}
+			fileInputStream.close();
+			out.close();
+		} catch (Exception e) // file IO errors
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	protected ModelAndView checkControlID(HttpServletRequest req,
+			HttpServletResponse res) throws Exception {
+				
+		try
+		{
+			PrintWriter out = res.getWriter();
+			String controlid = req.getParameter("controlid");
+			List<RiskBean> getRow = regulationDao.checkControlID(controlid);
+			if(getRow.size()>0)
+			{
+				out.write("exist");
+			}			
+		}
+		catch(Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		return null;
+	}
+	
+	private ModelAndView saveControl(HttpServletRequest req,
+			HttpServletResponse res) {
+
+		try
+		{
+			String riskLibrary=req.getSession().getAttribute("riskID").toString();
+			String controlid = req.getParameter("controlid");
+			String risk = req.getParameter("risk");
+			String controlobjective = req.getParameter("controlobjective");
+			String controldesc = req.getParameter("controldesc");
+		    String controlcategory = req.getParameter("control");
+			String businessProc=req.getParameter("businessProc");
+			regulationDao.saveControler(riskLibrary, controlid, risk, controlobjective, controldesc,
+					"",controlcategory,regulationDao.getbusinesProcID(businessProc));
+			
+			
+		}
+		catch(Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		return null;
+	}
+	
+	private ModelAndView editControl(HttpServletRequest req,
+			HttpServletResponse res) {
+
+		try
+		{
+			map = new ModelMap();
+			String id = req.getParameter("id");
+			List<RiskBean>  getRow = regulationDao.getControlById(Integer.parseInt(id));
+			if(getRow.size()>0)
+			{
+				Map m = (Map)getRow.get(0);
+				map.addObject("id", m.get("id"));
+				map.addObject("docname", m.get("Doc_name"));
+				map.addObject("controlid", m.get("Control_ID"));
+				map.addObject("risk", m.get("Risk"));
+				map.addObject("controlobjective", m.get("Control_Objective"));
+				map.addObject("controldesc", m.get("Control_Description"));
+				map.addObject("business", m.get("business"));
+				map.addObject("controlcategoryID", m.get("controlcategory"));
+			}
+			
+			
+		}
+		catch(Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		return new ModelAndView("regulation/editcontrol",map);
+	}
+	
+	private ModelAndView updateControl(HttpServletRequest req,
+			HttpServletResponse res) {
+
+		try
+		{
+			String id = req.getParameter("id");
+			System.out.println("id---"+id);
+			String riskLibrary=req.getSession().getAttribute("riskID").toString();
+			String controlid = req.getParameter("controlid");
+			String risk = req.getParameter("risk");
+			String controlobjective = req.getParameter("controlobjective");
+			String controldesc = req.getParameter("controldesc");
+			  String controlcategory = req.getParameter("control");
+				String businessProc=req.getParameter("businessProc");
+			
+			regulationDao.updateControler(id, riskLibrary, controlid, risk,
+					controlobjective, controldesc, "",controlcategory,regulationDao.getbusinesProcID(businessProc));
+			
+			
+		}
+		catch(Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		return null;
+	}
+	private ModelAndView deleteControl(HttpServletRequest req,
+			HttpServletResponse res) {
+		
+		try
+		{
+			String id = req.getParameter("id");
+			regulationDao.deleteControlById(Integer.parseInt(id));
+		}
+		catch(Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		return null;
+	}
+	private ModelAndView addTest(HttpServletRequest req,
+			HttpServletResponse res) {
+		
+		try
+		{
+			map = new ModelMap();
+			String riskLibrary = req.getSession().getAttribute("riskID").toString();
+			List<RiskBean> getList = regulationDao.getControlListByDoc(riskLibrary);
+			map.addObject("controlList", getList);
+		}
+		catch(Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		return new ModelAndView("regulation/addtest", map);
+	}
+	
+	private ModelAndView saveTest(HttpServletRequest req,
+			HttpServletResponse res) {
+
+		try
+		{
+			String riskLibrary=req.getSession().getAttribute("riskID").toString();
+			String controlid = req.getParameter("controlid");
+			String teststep = req.getParameter("teststep");
+			
+			regulationDao.saveTest(riskLibrary, controlid,teststep);
+			
+			
+		}
+		catch(Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		return null;
+	}
+	
+	private ModelAndView deleteTest(HttpServletRequest req,
+			HttpServletResponse res){
+		
+		try
+		{
+			String id = req.getParameter("id");
+			regulationDao.deleteTestById(Integer.parseInt(id));
+		}
+		catch(Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		return null;
+	}
+	
+	private ModelAndView upload(HttpServletRequest req, HttpServletResponse res) {
+		// TODO Auto-generated method stub
+
+		String saveFile = "";
+		String targetDir = "";
+		String testid = "";
+		MultipartHttpServletRequest multi = null;
+		MultipartFile multipartFile = null;
+		targetDir = getContextPathForDirectory(req, "temp");
+		
+		File tarDirFile = new File(targetDir);
+		String fileName = null;
+		if (!tarDirFile.exists()) {
+			tarDirFile.mkdir();
+		}
+		try {
+			multi = (MultipartHttpServletRequest) req;
+			multipartFile = multi.getFile("uploadFile");
+			testid = multi.getParameter("testid");
+			
+			fileName = multipartFile.getOriginalFilename();
+
+		} catch (Exception ex5) {
+			ex5.printStackTrace();
+		
+		}
+
+		File f = new File(fileName);
+
+		
+
+		try {
+
+			if (f != null) {
+				fileName = f.getName();
+				saveFile = targetDir + "/" + testid+fileName; // saving path with
+				FileOutputStream fileOut = null;			
+				fileOut = new FileOutputStream(saveFile);
+				BufferedOutputStream bout = new BufferedOutputStream(fileOut);
+				byte[] b = multipartFile.getBytes();
+				bout.write(b);
+				bout.flush();
+				bout.close();
+				
+			}
+			String fileType="";
+			System.out.println("fileName---"+fileName);
+			String type = fileName.split("\\.")[1];
+			
+			System.out.println("222---"+type);
+			if(type.equals("pdf")){
+				fileType="pdf";
+				
+			}
+			else if(type.equals("doc") || type.equals("docx")|| type.equals("log")|| type.equals("msg")|| type.equals("odt")|| type.equals("pages") ||type.equals("rtf")||type.equals("tex")||type.equals("txt")||type.equals("wpd")||type.equals("wps")||type.equals("xls")||type.equals("xlsx"))
+			{
+				fileType="doc";
+			}
+			else if(type.equals("jpg") || type.equals("png")|| type.equals("tif")|| type.equals("gif")|| type.equals("bmp")|| type.equals("jpeg")|| type.equals("bmp")){
+				fileType="image";
+			}
+			else if(type.equals("webm") || type.equals("mkv")|| type.equals("flv")|| type.equals("ogv")||
+					type.equals("mpg")|| type.equals("mpeg")|| type.equals("m2v")|| type.equals("mp4")||
+					type.equals("m4p")|| type.equals("m4v")|| type.equals("wmv")|| type.equals("yuv")|| 
+					type.equals("rm")|| type.equals("svi")|| type.equals("avi"))
+				{
+					fileType="vedio";
+				}
+			
+			regulationDao.uploadTestDoc(Integer.parseInt(testid), testid+fileName,fileType,type);
+			
+		}catch (Exception ex) {
+			
+		}
+
+		return new ModelAndView("regulation/test");
+	}
+	public String getContextPathForDirectory(HttpServletRequest request,
+			String dirName) {
+		HttpSession session = request.getSession(true);
+		ServletContext context = session.getServletContext();
+		String curDir = context.getRealPath(request.getContextPath());
+		curDir = curDir.replaceAll("\\\\", "/");
+		String targetDir = curDir.substring(0, curDir.lastIndexOf("/")) + "/"
+				+ dirName;
+		return targetDir;
+	}
+	
+	private ModelAndView editTest(HttpServletRequest req,
+			HttpServletResponse res) {
+		
+		try
+		{
+			map = new ModelMap();
+			String id = req.getParameter("id");
+			String riskLibrary = req.getSession().getAttribute("riskID").toString();
+			List<RiskBean> getList = regulationDao.getControlListByDoc(riskLibrary);
+			map.addObject("controlList", getList);
+			map.addObject("testid", id);
+			List gettestList = regulationDao.updateTest(id);
+			if(gettestList.size()>0){
+				Map m=(Map)gettestList.get(0);
+				map.addObject("controlid", m.get("Control_ID").toString());
+				map.addObject("Test_Steps", m.get("Test_Steps").toString());
+			}
+		
+		}
+		catch(Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		return new ModelAndView("regulation/edittest", map);
+	}
+	
+	private ModelAndView updatedTest(HttpServletRequest req,
+			HttpServletResponse res) {
+            System.out.println("update test---");
+		try
+		{
+			String riskLibrary=req.getSession().getAttribute("riskID").toString();
+			String controlid = req.getParameter("controlid");
+			String teststep = req.getParameter("teststep");
+			String testId = req.getParameter("testId");
+			System.out.println("check the test id******>>>"+testId);
+			System.out.println("check the test steps******>>>"+teststep);
+			regulationDao.updateTestbyID(testId, controlid,teststep);
+			
+			
+		}
+		catch(Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		return null;
+	}
+	
+	
+	public ModelAndView controlCategory(HttpServletRequest req,
+			HttpServletResponse res) {
+		
+		try
+		{
+			map = new ModelMap();
+			System.out.println("checkl thjs");
+			PrintWriter out = res.getWriter();
+		
+			List valueTree= regulationDao.getTreeValue();
+			Map m= (Map)valueTree.get(0);
+			map.addObject("treeView", m.get("textdata").toString().replaceAll("singleQuoto", "'"));
+			
+			
+		}
+		catch(Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		modelAndView = new ModelAndView("regulation/controlCategoryView", map);
+		return modelAndView;
+	}
+	
+	private ModelAndView updatecontrolCategory(HttpServletRequest req,
+			HttpServletResponse res) {
+		try
+		{
+			System.out.println("hi inside..updating.");
+			String renameVal = req.getParameter("renameVal");
+			String treeNodeId = req.getParameter("treeNodeId");
+			
+		
+			System.out.println("parent id>"+renameVal);
+			
+			String userId = (String) req.getSession().getAttribute(
+			"UserRecordID");
+			
+			regulationDao.updatecontrolCategory(renameVal, treeNodeId);
+		}
+			
+		catch(Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		return null;
+	}
+	
+	private ModelAndView saveTree(HttpServletRequest req,
+			HttpServletResponse res) {
+		try
+		{
+		map = new ModelMap();
+		out = res.getWriter();
+		String treeValue = req.getParameter("htmlVal");
+		System.out.println("check tree value>>>"+treeValue);
+		regulationDao.saveTree(treeValue);
+		List valueTree= regulationDao.getTreeValue();
+		Map m= (Map)valueTree.get(0);
+		map.addObject("treeView", m.get("textdata"));
+		out.write(m.get("textdata").toString().replaceAll("singleQuoto", "'"));
+		}	catch(Exception exception)
+		{
+			exception.printStackTrace();
+		}
+		return null;
+		
+	}
+
+
+	
+}
